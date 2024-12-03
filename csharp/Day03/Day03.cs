@@ -1,53 +1,36 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Xunit.Abstractions;
 
 namespace AdventOfCode2024.Day03;
 
-public sealed class Day03(ITestOutputHelper output)
+public sealed class Day03
 {
     [Fact]
     public void PartOne()
     {
-        var sum = 0;
-        var input = ProcessFile();
+        var sum = Regex
+            .Matches(ReadFile(), @"mul\((\d+),(\d+)\)")
+            .Sum(m => int.Parse(m.Groups[1].Value) * int.Parse(m.Groups[2].Value));
         
-        foreach (Match match in Regex.Matches(input, @"mul\(\d+,\d+\)"))
-        {
-            var numbers = Regex.Matches(match.Value, @"\d+");
-            sum += int.Parse(numbers[0].Value) * int.Parse(numbers[1].Value);
-        }
-        
-        output.WriteLine(sum.ToString());
         Assert.Equal(161085926, sum);
     }
 
     [Fact]
     public void PartTwo()
     {
-        var sum = 0;
-        var input = ProcessFile();
-
-        var dos = Regex.Matches(input, @"do\(\)").Select(m => m.Index).ToArray();
-        var donts = Regex.Matches(input, @"don't\(\)").Select(m => m.Index).ToArray();
+        var (_, sum) = Regex
+            .Matches(ReadFile(), @"mul\((\d+),(\d+)\)|do\(\)|don't\(\)")
+            .Aggregate((IsMatchEnabled: true, Sum: 0), (x, match) =>
+            {
+                if (match.Value.StartsWith("mul") && x.IsMatchEnabled)
+                    return (true, x.Sum + int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value));
+                
+                return (match.Value == "do()", x.Sum);
+            });
         
-        foreach (Match match in Regex.Matches(input, @"mul\(\d+,\d+\)"))
-        {
-            var closestDo = dos.LastOrDefault(x => x < match.Index);
-            var closestDont = donts.LastOrDefault(x => x < match.Index);
-
-            if (closestDont > closestDo)
-                continue;
-            
-            var numbers = Regex.Matches(match.Value, @"\d+");
-            sum += int.Parse(numbers[0].Value) * int.Parse(numbers[1].Value);
-        }
-        
-        output.WriteLine(sum.ToString());
         Assert.Equal(82045421, sum);
     }
-
-    private static string ProcessFile()
-    {
-        return File.ReadAllText(Path.Combine("Day03", "input.txt"));
-    }
+    
+    private static string ReadFile() => File.ReadAllText(Path.Combine("Day03", "input.txt"));
 }
