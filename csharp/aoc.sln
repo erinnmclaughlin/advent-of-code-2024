@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2024", "csharp\AdventOfCode2024.csproj", "{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2024", "AdventOfCode2024.csproj", "{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{E59C18FF-17A2-431F-8BB9-07CD5838F4D7}"
 	ProjectSection(SolutionItems) = preProject
