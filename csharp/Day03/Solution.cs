@@ -2,23 +2,17 @@
 
 namespace AdventOfCode2024.Day03;
 
-public sealed class Day03
+public static class Solution
 {
-    [Fact]
-    public void PartOne()
+    public static long SolvePartOne(string input)
     {
-        var sum = Regex
-            .Matches(ReadFile(), @"mul\((\d+),(\d+)\)")
+        return ParseInput(input, @"mul\((\d+),(\d+)\)")
             .Sum(m => int.Parse(m.Groups[1].Value) * int.Parse(m.Groups[2].Value));
-        
-        Assert.Equal(161085926, sum);
     }
 
-    [Fact]
-    public void PartTwo()
+    public static long SolvePartTwo(string input)
     {
-        var (_, sum) = Regex
-            .Matches(ReadFile(), @"mul\((\d+),(\d+)\)|do\(\)|don't\(\)")
+        var (_, sum) = ParseInput(input, @"mul\((\d+),(\d+)\)|do\(\)|don't\(\)")
             .Aggregate((IsMatchEnabled: true, Sum: 0), (x, match) =>
             {
                 if (match.Value.StartsWith("mul") && x.IsMatchEnabled)
@@ -26,9 +20,9 @@ public sealed class Day03
                 
                 return (match.Value == "do()", x.Sum);
             });
-        
-        Assert.Equal(82045421, sum);
+
+        return sum;
     }
-    
-    private static string ReadFile() => File.ReadAllText(Path.Combine("Day03", "input.txt"));
+
+    private static MatchCollection ParseInput(string input, string pattern) => Regex.Matches(input, pattern);
 }
