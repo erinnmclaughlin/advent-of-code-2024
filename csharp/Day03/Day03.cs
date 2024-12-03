@@ -1,6 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Xunit.Abstractions;
 
 namespace AdventOfCode2024.Day03;
 
