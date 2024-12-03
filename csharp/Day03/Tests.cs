@@ -4,7 +4,11 @@ namespace AdventOfCode2024.Day03;
 
 public sealed class Tests(ITestOutputHelper testOutput)
 {
-    [Fact]
+    [Fact(
+#if DEBUG
+        Skip = "Benchmarks are disabled for debug builds."
+#endif
+    )]
     public void Day_03_Benchmarks() => testOutput.WriteLine(BenchmarkRunner.Run<Benchmarks>());
     
     [Fact]
