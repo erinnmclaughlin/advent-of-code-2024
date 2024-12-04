@@ -4,7 +4,7 @@ using Xunit.Abstractions;
 namespace AdventOfCode2024.Day04;
 
 [MemoryDiagnoser]
-public class Day04(ITestOutputHelper? output = null)
+public partial class Day04(ITestOutputHelper? output = null)
 {
     private readonly string[] _fileLines = File.ReadLines(Path.Combine("Day04", "input.txt")).ToArray();
     
