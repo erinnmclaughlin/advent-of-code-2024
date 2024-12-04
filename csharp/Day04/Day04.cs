@@ -23,6 +23,7 @@ public sealed class Day04
     {
         var count = 0;
         
+        // pad cols & rows by 1 to ensure there's room for the "X" shape
         for (var i = 1; i < _fileLines.Length - 1; i++)
         {
             for (var j = 1; j < _fileLines[i].Length - 1; j++)
@@ -85,6 +86,7 @@ public sealed class Day04
         {
             for (var j = 0; j < lines[i].Length - 3; j++)
             {
+                // just need to grab 4 chars at a time; we'll loop around to the rest of the diagonal
                 char[] chars =
                 [
                     lines[i][j],
@@ -106,8 +108,7 @@ public sealed class Day04
 
         for (var i = 0; i < line.Length; i++)
         {
-            var next = line[i..];
-            if (next.StartsWith("XMAS") || next.StartsWith("SAMX"))
+            if (line[i..].StartsWith("XMAS") || line[i..].StartsWith("SAMX"))
                 count++;
         }
         
