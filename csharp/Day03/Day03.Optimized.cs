@@ -4,8 +4,7 @@ namespace AdventOfCode2024.Day03;
 
 public partial class Day03
 {
-    [Fact]
-    [Benchmark]
+    [Fact, Benchmark]
     public void Part01_Optimized()
     {
         var sum = 0;
@@ -20,8 +19,7 @@ public partial class Day03
         Assert.Equal(161085926, sum);
     }
     
-    [Fact]
-    [Benchmark]
+    [Fact, Benchmark]
     public void Part02_Optimized()
     {
         var sum = 0;

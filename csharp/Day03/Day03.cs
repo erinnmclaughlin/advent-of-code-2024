@@ -7,7 +7,7 @@ namespace AdventOfCode2024.Day03;
 [MemoryDiagnoser]
 public partial class Day03(ITestOutputHelper? output = null)
 {
-    private readonly string _fileText = File.ReadAllText("Day03\\input.txt");
+    private readonly string _fileText = File.ReadAllText("Day03/input.txt");
 
     [BenchmarkRunner]
     public void Benchmarks()
@@ -16,8 +16,7 @@ public partial class Day03(ITestOutputHelper? output = null)
         output?.WriteLine(summary);
     }
 
-    [Fact]
-    [Benchmark]
+    [Fact, Benchmark]
     public void Part01()
     {
         var sum = Regex
@@ -27,8 +26,7 @@ public partial class Day03(ITestOutputHelper? output = null)
         Assert.Equal(161085926, sum);
     }
     
-    [Fact]
-    [Benchmark]
+    [Fact, Benchmark]
     public void Part02()
     {
         var (_, sum) = Regex

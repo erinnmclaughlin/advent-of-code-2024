@@ -1,12 +1,14 @@
-﻿using Xunit.Abstractions;
+﻿using BenchmarkDotNet.Attributes;
+using Xunit.Abstractions;
 
 namespace AdventOfCode2024.Day04;
 
-public sealed class Day04
+[MemoryDiagnoser]
+public class Day04(ITestOutputHelper? output = null)
 {
     private readonly string[] _fileLines = File.ReadLines(Path.Combine("Day04", "input.txt")).ToArray();
     
-    [Fact]
+    [Fact, Benchmark]
     public void Part01()
     {
         var horizontal = CountHorizontal(_fileLines);
@@ -18,7 +20,7 @@ public sealed class Day04
         Assert.Equal(2500, sum);
     }
 
-    [Fact]
+    [Fact, Benchmark]
     public void Part02()
     {
         var count = 0;
@@ -113,5 +115,12 @@ public sealed class Day04
         }
         
         return count;
+    }
+    
+    [BenchmarkRunner]
+    public void Benchmarks()
+    {
+        var summary = BenchmarkRunner.Run<Day04>();
+        output?.WriteLine(summary);
     }
 }
