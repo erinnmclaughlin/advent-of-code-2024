@@ -4,14 +4,14 @@ namespace AdventOfCode2024.Day04;
 
 public sealed class Day04(ITestOutputHelper? output = null)
 {
+    private readonly string[] _fileLines = File.ReadLines(Path.Combine("Day04", "input.txt")).ToArray();
+    
     [Fact]
     public void Part01()
     {
-        var chars = File.ReadAllLines("Day04/input.txt").Select(l => l.ToCharArray()).ToArray();
-        
-        var horizontal = CountHorizontal(chars);
-        var vertical = CountVertical(chars);
-        var diagonal = CountDiagonal(chars) + CountDiagonal(chars.Reverse().ToArray());
+        var horizontal = CountHorizontal(_fileLines);
+        var vertical = CountVertical(_fileLines);
+        var diagonal = CountDiagonal(_fileLines) + CountDiagonal(_fileLines.Reverse().ToArray());
 
         var sum = horizontal + vertical + diagonal;
         
@@ -72,12 +72,31 @@ public sealed class Day04(ITestOutputHelper? output = null)
         output?.WriteLine(count.ToString());
     }
     
-    private static int CountHorizontal(char[][] lines)
+    private static int CountHorizontal(string[] lines)
     {
         return lines.Sum(line => CountXmas(line));
     }
 
-    private static int CountDiagonal(char[][] lines)
+    private static int CountVertical(string[] lines)
+    {
+        var sum = 0;
+        
+        for (var i = 0; i < lines[0].Length; i++)
+        {
+            var newLine = new char[lines.Length];
+            
+            for (var j = 0; j < lines.Length; j++)
+            {
+                newLine[j] = lines[j][i];
+            }
+
+            sum += CountXmas(newLine);
+        }
+
+        return sum;
+    }
+
+    private static int CountDiagonal(string[] lines)
     {
         var sum = 0;
 
@@ -97,25 +116,6 @@ public sealed class Day04(ITestOutputHelper? output = null)
             }
         }
         
-        return sum;
-    }
-    
-    private static int CountVertical(char[][] lines)
-    {
-        var sum = 0;
-        
-        for (var i = 0; i < lines[0].Length; i++)
-        {
-            var newLine = new char[lines.Length];
-            
-            for (var j = 0; j < lines.Length; j++)
-            {
-                newLine[j] = lines[j][i];
-            }
-
-            sum += CountXmas(newLine);
-        }
-
         return sum;
     }
 
