@@ -2,7 +2,7 @@
 
 namespace AdventOfCode2024.Day04;
 
-public sealed class Day04(ITestOutputHelper? output = null)
+public sealed class Day04
 {
     private readonly string[] _fileLines = File.ReadLines(Path.Combine("Day04", "input.txt")).ToArray();
     
@@ -15,61 +15,42 @@ public sealed class Day04(ITestOutputHelper? output = null)
 
         var sum = horizontal + vertical + diagonal;
         
-        output?.WriteLine(sum.ToString());
         Assert.Equal(2500, sum);
     }
 
     [Fact]
     public void Part02()
     {
-        var chars = File.ReadAllLines("Day04/input.txt").Select(l => l.ToCharArray()).ToArray();
         var count = 0;
         
-        for (var i = 0; i < chars.Length; i++)
+        for (var i = 1; i < _fileLines.Length - 1; i++)
         {
-            for (var j = 0; j < chars[i].Length; j++)
+            for (var j = 1; j < _fileLines[i].Length - 1; j++)
             {
-                if (chars[i][j] is not 'A')
+                if (_fileLines[i][j] is not 'A')
                     continue;
 
-                try
+                var letters = new
                 {
-                    var topLeft = chars[i - 1][j - 1];
-                    var bottomRight = chars[i + 1][j + 1];
+                    TopLeft = _fileLines[i - 1][j - 1],
+                    TopRight = _fileLines[i - 1][j + 1],
+                    BottomLeft = _fileLines[i + 1][j - 1],
+                    BottomRight = _fileLines[i + 1][j + 1]
+                };
                 
-                    if (topLeft is not 'M' and not 'S' ||
-                        bottomRight is not 'M' and not 'S')
-                        continue;
+                // make sure top left to bottom right diagonal is "MAS" or "SAM"
+                if (letters is not { TopLeft: 'M', BottomRight: 'S' } and not { TopLeft: 'S', BottomRight: 'M' })
+                    continue;
                 
-                    if (topLeft is 'S' && bottomRight is not 'M')
-                        continue;
+                // make sure top right to bottom left diagonal is "MAS" or "SAM"
+                if (letters is not { TopRight: 'M', BottomLeft: 'S' } and not { TopRight: 'S', BottomLeft: 'M' })
+                    continue;
                 
-                    if (topLeft is 'M' && bottomRight is not 'S')
-                        continue;
-
-                    var topRight = chars[i + 1][j - 1];
-                    var bottomLeft = chars[i - 1][j + 1];
-
-                    if (topRight is not 'M' and not 'S' ||
-                        bottomLeft is not 'M' and not 'S')
-                        continue;
-
-                    if (topRight is 'S' && bottomLeft is not 'M')
-                        continue;
-                
-                    if (topRight is 'M' && bottomLeft is not 'S')
-                        continue;
-                    
-                    count++;
-                }
-                catch
-                {
-                    
-                }
+                count++;
             }
         }
         
-        output?.WriteLine(count.ToString());
+        Assert.Equal(1933, count);
     }
     
     private static int CountHorizontal(string[] lines)
