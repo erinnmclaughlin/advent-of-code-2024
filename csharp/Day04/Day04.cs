@@ -7,36 +7,22 @@ public sealed class Day04(ITestOutputHelper? output = null)
     [Fact]
     public void Part01()
     {
-        var chars = File.ReadAllLines("Day04\\input.txt").Select(l => l.ToCharArray()).ToArray();
+        var chars = File.ReadAllLines("Day04/input.txt").Select(l => l.ToCharArray()).ToArray();
         
         var horizontal = CountHorizontal(chars);
-        var horizontalReverse = CountHorizontal(chars.Select(x => x.Reverse().ToArray()).ToArray());
-        
         var vertical = CountVertical(chars);
-        var verticalReverse = CountVertical(chars.Reverse().ToArray());
+        var diagonal = CountDiagonal(chars) + CountDiagonal(chars.Reverse().ToArray());
 
-        var diagonal1 = CountDiagonal(chars);
-        var diagonal2 = CountDiagonal(chars.Reverse().Select(c => c.Reverse().ToArray()).ToArray());
-        var diagonal3 = CountDiagonal(chars.Reverse().ToArray());
-        var diagonal4 = CountDiagonal(chars.Select(x => x.Reverse().ToArray()).ToArray());
-        
-        var sum =  horizontal + 
-                   horizontalReverse + 
-                   vertical + 
-                   verticalReverse +
-                   diagonal1 + 
-                   diagonal2 +
-                   diagonal3 +
-                   diagonal4
-                   ;
+        var sum = horizontal + vertical + diagonal;
         
         output?.WriteLine(sum.ToString());
+        Assert.Equal(2500, sum);
     }
 
     [Fact]
     public void Part02()
     {
-        var chars = File.ReadAllLines("Day04\\input.txt").Select(l => l.ToCharArray()).ToArray();
+        var chars = File.ReadAllLines("Day04/input.txt").Select(l => l.ToCharArray()).ToArray();
         var count = 0;
         
         for (var i = 0; i < chars.Length; i++)
@@ -88,42 +74,29 @@ public sealed class Day04(ITestOutputHelper? output = null)
     
     private static int CountHorizontal(char[][] lines)
     {
-        var sum = 0;
-        foreach (var line in lines)
-        {
-            var count = CountXmas(line);
-            sum += count;
-        }
-
-        return sum;
+        return lines.Sum(line => CountXmas(line));
     }
 
-    private int CountDiagonal(char[][] lines)
+    private static int CountDiagonal(char[][] lines)
     {
         var sum = 0;
-        var max = Math.Max(lines.Length, lines[0].Length);
 
-        for (var i = 0; i < max; i++)
+        for (var i = 0; i < lines.Length - 3; i++)
         {
-            for (var j = 0; j < max; j++)
+            for (var j = 0; j < lines[i].Length - 3; j++)
             {
-                try
-                {
-                    var newLine = new char[4];
-                    newLine[0] = lines[i][j];
-                    newLine[1] = lines[i + 1][j + 1];
-                    newLine[2] = lines[i + 2][j + 2];
-                    newLine[3] = lines[i + 3][j + 3];
-
-                    if (string.Join("", newLine) == "XMAS")
-                        sum++;
-                }
-                catch
-                {
-                }
+                char[] chars =
+                [
+                    lines[i][j],
+                    lines[i + 1][j + 1],
+                    lines[i + 2][j + 2],
+                    lines[i + 3][j + 3]
+                ];
+                
+                sum += CountXmas(chars);
             }
         }
-
+        
         return sum;
     }
     
@@ -146,37 +119,17 @@ public sealed class Day04(ITestOutputHelper? output = null)
         return sum;
     }
 
-    private static int CountXmas(char[] line)
+    private static int CountXmas(ReadOnlySpan<char> line)
     {
         var count = 0;
-        var nextChar = 'X';
-        
-        foreach (var c in line)
+
+        for (var i = 0; i < line.Length; i++)
         {
-            if (c != nextChar)
-            {
-                if (c == 'X')
-                {
-                    nextChar = 'M';
-                    continue;
-                }
-                
-                nextChar = 'X';
-                continue;
-            }
-
-            nextChar = c switch
-            {
-                'X' => 'M',
-                'M' => 'A',
-                'A' => 'S',
-                'S' => 'X'
-            };
-
-            if (nextChar == 'X')
+            var next = line[i..];
+            if (next.StartsWith("XMAS") || next.StartsWith("SAMX"))
                 count++;
         }
-
+        
         return count;
     }
 }
