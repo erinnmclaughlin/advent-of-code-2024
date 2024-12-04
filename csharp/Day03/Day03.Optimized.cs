@@ -38,11 +38,21 @@ public partial class Day03
             else if (span[i..].StartsWith("don't()"))
             {
                 enabled = false;
-                i += 4;
+                i += 6;
             }
-            else if (enabled && span[i..].StartsWith("mul("))
+            else if (span[i..].StartsWith("mul("))
             {
-                GetProduct(ref span, ref i, ref sum);
+                if (enabled)
+                {
+                    GetProduct(ref span, ref i, ref sum);
+                }
+                else
+                {
+                    // skip "mul("
+                    i += 4;
+                    while (i < span.Length && !span[i..].StartsWith("do()")) i++;
+                    i--;
+                }
             }
         }
         

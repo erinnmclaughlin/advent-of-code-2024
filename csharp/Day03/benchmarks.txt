@@ -8,12 +8,11 @@ AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 
 | Method           | Mean      | Error    | StdDev   | Gen0    | Gen1   | Allocated |
 |----------------- |----------:|---------:|---------:|--------:|-------:|----------:|
-| Part01           | 232.81 μs | 4.442 μs | 4.155 μs | 48.3398 | 1.2207 |  405280 B |
-| Part02           | 243.65 μs | 1.817 μs | 1.700 μs | 46.3867 | 2.4414 |  388392 B |
-| Part01_Optimized |  25.61 μs | 0.353 μs | 0.313 μs |       - |      - |     184 B |
-| Part02_Optimized |  41.47 μs | 0.401 μs | 0.356 μs |       - |      - |     184 B |
+| Part01           | 224.51 μs | 2.835 μs | 2.652 μs | 48.3398 | 1.2207 |  405280 B |
+| Part02           | 246.63 μs | 1.745 μs | 1.547 μs | 46.3867 | 2.4414 |  388392 B |
+| Part01_Optimized |  25.54 μs | 0.400 μs | 0.374 μs |       - |      - |     184 B |
+| Part02_Optimized |  28.08 μs | 0.360 μs | 0.337 μs |       - |      - |     184 B |
 
 // * Hints *
 Outliers
-  Day03.Part01_Optimized: Default -> 1 outlier  was  removed (26.73 μs)
-  Day03.Part02_Optimized: Default -> 1 outlier  was  removed (42.59 μs)
+  Day03.Part02: Default -> 1 outlier  was  removed, 2 outliers were detected (242.60 μs, 251.18 μs)
