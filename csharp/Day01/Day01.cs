@@ -1,26 +1,25 @@
 ﻿namespace AdventOfCode2024.Day01;
 
-public sealed class Day01
+public static class Day01
 {
-    [Fact]
-    public void PartOne()
+    public static int PartOne(string[] fileLines)
     {
-        var (left, right) = ProcessFile();
-        var answer = left.Select((l, i) => Math.Abs(l - right[i])).Sum();
-        Assert.Equal(1879048, answer);
+        var (left, right) = ParseFile(fileLines);
+        
+        return left
+            .Order()
+            .Zip(right.Order().ToArray(), (l, r) => Math.Abs(l - r))
+            .Sum();
     }
     
-    [Fact]
-    public void PartTwo()
+    public static int PartTwo(string[] fileLines)
     {
-        var (left, right) = ProcessFile();
-        var answer = left.Select(l => l * right.Count(r => r == l)).Sum();
-        Assert.Equal(21024792, answer);
+        var (left, right) = ParseFile(fileLines);
+        return left.Select(l => l * right.Count(r => r == l)).Sum();
     }
 
-    private static (int[] Left, int[] Right) ProcessFile()
+    private static (int[] Left, int[] Right) ParseFile(string[] lines)
     {
-        var lines = File.ReadAllLines(Path.Combine("Day01", "input.txt"));
         var (left, right) = (new int[lines.Length], new int[lines.Length]);
 
         for (var i = 0; i < lines.Length; i++)
@@ -29,6 +28,6 @@ public sealed class Day01
             (left[i], right[i]) = (int.Parse(parts[0]), int.Parse(parts[1]));
         }
 
-        return (left.Order().ToArray(), right.Order().ToArray());
+        return (left, right);
     }
 }

@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{A7C72E
 		..\readme.md = ..\readme.md
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsharp", "..\fsharp\fsharp.fsproj", "{D79E48F4-714B-47B5-B53B-85AF325A47E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D79E48F4-714B-47B5-B53B-85AF325A47E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D79E48F4-714B-47B5-B53B-85AF325A47E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D79E48F4-714B-47B5-B53B-85AF325A47E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D79E48F4-714B-47B5-B53B-85AF325A47E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

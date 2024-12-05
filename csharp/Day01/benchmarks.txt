@@ -1,0 +1,19 @@
+
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.22631.4541/23H2/2023Update/SunValley3)
+AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
+.NET SDK 9.0.100
+  [Host]     : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
+  DefaultJob : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
+
+
+| Method         | Mean     | Error   | StdDev  | Gen0    | Gen1   | Allocated |
+|--------------- |---------:|--------:|--------:|--------:|-------:|----------:|
+| PartOne        | 108.4 μs | 2.10 μs | 2.42 μs | 14.4043 | 0.3662 |  117.7 KB |
+| PartTwo        | 474.5 μs | 7.29 μs | 6.82 μs | 23.9258 | 0.4883 | 195.67 KB |
+| PartOne_FSharp | 129.3 μs | 1.87 μs | 1.56 μs | 17.0898 | 0.7324 | 140.94 KB |
+| PartTwo_FSharp | 422.7 μs | 6.53 μs | 5.79 μs | 34.6680 | 0.9766 | 284.27 KB |
+
+// * Hints *
+Outliers
+  Day01.PartOne_FSharp: Default -> 2 outliers were removed (135.10 μs, 137.40 μs)
+  Day01.PartTwo_FSharp: Default -> 1 outlier  was  removed (441.50 μs)
