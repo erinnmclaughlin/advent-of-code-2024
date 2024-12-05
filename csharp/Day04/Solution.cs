@@ -1,44 +1,34 @@
-﻿using BenchmarkDotNet.Attributes;
-using Xunit.Abstractions;
+﻿namespace AdventOfCode2024.Day04;
 
-namespace AdventOfCode2024.Day04;
-
-[MemoryDiagnoser]
-public partial class Day04(ITestOutputHelper? output = null)
+public static class Solution
 {
-    private readonly string[] _fileLines = File.ReadLines(Path.Combine("Day04", "input.txt")).ToArray();
-    
-    [Fact, Benchmark]
-    public void Part01()
+    public static int PartOne(string[] fileLines)
     {
-        var horizontal = CountHorizontal(_fileLines);
-        var vertical = CountVertical(_fileLines);
-        var diagonal = CountDiagonal(_fileLines) + CountDiagonal(_fileLines.Reverse().ToArray());
+        var horizontal = CountHorizontal(fileLines);
+        var vertical = CountVertical(fileLines);
+        var diagonal = CountDiagonal(fileLines) + CountDiagonal(fileLines.Reverse().ToArray());
 
-        var sum = horizontal + vertical + diagonal;
-        
-        Assert.Equal(2500, sum);
+        return horizontal + vertical + diagonal;
     }
 
-    [Fact, Benchmark]
-    public void Part02()
+    public static int PartTwo(string[] fileLines)
     {
         var count = 0;
         
         // pad cols & rows by 1 to ensure there's room for the "X" shape
-        for (var i = 1; i < _fileLines.Length - 1; i++)
+        for (var i = 1; i < fileLines.Length - 1; i++)
         {
-            for (var j = 1; j < _fileLines[i].Length - 1; j++)
+            for (var j = 1; j < fileLines[i].Length - 1; j++)
             {
-                if (_fileLines[i][j] is not 'A')
+                if (fileLines[i][j] is not 'A')
                     continue;
 
                 var letters = new
                 {
-                    TopLeft = _fileLines[i - 1][j - 1],
-                    TopRight = _fileLines[i - 1][j + 1],
-                    BottomLeft = _fileLines[i + 1][j - 1],
-                    BottomRight = _fileLines[i + 1][j + 1]
+                    TopLeft = fileLines[i - 1][j - 1],
+                    TopRight = fileLines[i - 1][j + 1],
+                    BottomLeft = fileLines[i + 1][j - 1],
+                    BottomRight = fileLines[i + 1][j + 1]
                 };
                 
                 // make sure top left to bottom right diagonal is "MAS" or "SAM"
@@ -52,8 +42,8 @@ public partial class Day04(ITestOutputHelper? output = null)
                 count++;
             }
         }
-        
-        Assert.Equal(1933, count);
+
+        return count;
     }
     
     private static int CountHorizontal(string[] lines)
@@ -115,12 +105,5 @@ public partial class Day04(ITestOutputHelper? output = null)
         }
         
         return count;
-    }
-    
-    [BenchmarkRunner]
-    public void Benchmarks()
-    {
-        var summary = BenchmarkRunner.Run<Day04>();
-        output?.WriteLine(summary);
     }
 }

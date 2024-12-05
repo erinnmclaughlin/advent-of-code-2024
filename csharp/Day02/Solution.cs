@@ -1,25 +1,15 @@
 ﻿namespace AdventOfCode2024.Day02;
 
-public sealed class Day02
+public static class Solution
 {
-    [Fact]
-    public void PartOne()
-    {
-        var answer = ProcessFile().Count(IsSafe);
-        Assert.Equal(407, answer);
-    }
+    public static int PartOne(string[] fileLines) => fileLines
+        .Select(l => l.Split(' ').Select(int.Parse).ToArray())
+        .Count(IsSafe);
 
-    [Fact]
-    public void PartTwo()
-    {
-        var answer = ProcessFile().Count(levels => IsSafe(levels) || levels.Any((_, i) => IsSafeWithoutElement(levels, i)));
-        Assert.Equal(459, answer);
-    }
+    public static int PartTwo(string[] fileLines) => fileLines
+        .Select(l => l.Split(' ').Select(int.Parse).ToArray())
+        .Count(levels => IsSafe(levels) || levels.Any((_, i) => IsSafeWithoutElement(levels, i)));
     
-    private static IEnumerable<int[]> ProcessFile() => File
-        .ReadLines(Path.Combine("Day02", "input.txt"))
-        .Select(line => line.Split(' ').Select(int.Parse).ToArray());
-
     private static bool IsSafe(int[] levels)
     {
         var shouldDescend = levels[1] < levels[0];

@@ -1,15 +1,12 @@
-using BenchmarkDotNet.Attributes;
-
 namespace AdventOfCode2024.Day04;
 
-public partial class Day04
+public static class Day04Optimized
 {
-    [Fact, Benchmark]
-    public void Part01_Optimized()
+    public static int PartOne(string[] fileLines)
     {
         short count = 0;
         
-        var lines = _fileLines.AsSpan();
+        var lines = fileLines.AsSpan();
         
         for (var i = 0; i < lines.Length; i++)
         {
@@ -60,15 +57,14 @@ public partial class Day04
             }
         }
 
-        Assert.Equal(2500, count);
+        return count;
     }
 
-    [Fact, Benchmark]
-    public void Part02_Optimized()
+    public static int PartTwo(string[] fileLines)
     {
         short count = 0;
 
-        var lines = _fileLines.AsSpan();
+        var lines = fileLines.AsSpan();
         
         // pad cols & rows by 1 to ensure there's room for the "X" shape
         for (var i = 1; i < lines.Length - 1; i++)
@@ -97,8 +93,8 @@ public partial class Day04
                 count++;
             }
         }
-        
-        Assert.Equal(1933, count);
+
+        return count;
     }
 
     [Flags]

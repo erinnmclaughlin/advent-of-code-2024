@@ -5,6 +5,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{A7C72E0C-BB8B-4C1B-B587-886AA01643AC}"
 	ProjectSection(SolutionItems) = preProject
 		..\readme.md = ..\readme.md
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsharp", "..\fsharp\fsharp.fsproj", "{D79E48F4-714B-47B5-B53B-85AF325A47E8}"

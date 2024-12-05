@@ -1,45 +1,31 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿namespace AdventOfCode2024.Day05;
 
-namespace AdventOfCode2024.Day05;
-
-[MemoryDiagnoser]
-public class Day05
+public static class Solution
 {
-    private readonly string[] _fileLines = File.ReadAllLines(Path.Combine("Day05", "input.txt"));
-
-    [BenchmarkRunner]
-    public void Run() => BenchmarkRunner.Run<Day05>();
-    
-    [Fact, Benchmark]
-    public void PartOne()
+    public static int PartOne(string[] fileLines)
     {
-        var (numbers, comparer) = ParseFile();
+        var (numbers, comparer) = ParseFile(fileLines);
         
-        var sum = numbers
+        return numbers
             .Select(x => x.Split(','))
             .Where(x => IsOrdered(x, comparer))
             .Sum(x => int.Parse(x[x.Length / 2]));
-        
-        Assert.Equal(5268, sum);
     }
     
-    [Fact, Benchmark]
-    public void PartTwo()
+    public static int PartTwo(string[] fileLines)
     {
-        var (numbers, comparer) = ParseFile();
+        var (numbers, comparer) = ParseFile(fileLines);
         
-        var sum = numbers
+        return numbers
             .Select(x => x.Split(','))
             .Where(x => !IsOrdered(x, comparer))
             .Select(x => x.Order(comparer).ToArray())
             .Sum(x => int.Parse(x[x.Length / 2]));
-
-        Assert.Equal(5799, sum);
     }
 
-    private (string[], Comparer<string>) ParseFile()
+    private static (string[], Comparer<string>) ParseFile(string[] fileLines)
     {
-        var lines = _fileLines.AsSpan();
+        var lines = fileLines.AsSpan();
         var splitIndex = lines.IndexOf("");
         var numbers = lines[(splitIndex + 1)..].ToArray();
         var comparer = CreateComparer(lines[..splitIndex].ToArray());

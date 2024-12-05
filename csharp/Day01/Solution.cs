@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode2024.Day01;
 
-public static class Day01
+public static class Solution
 {
     public static int PartOne(string[] fileLines)
     {

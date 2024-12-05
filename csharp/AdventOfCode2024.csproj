@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="**\input.txt" CopyToOutputDirectory="PreserveNewest" />
+      <None Include="..\inputs\*.txt" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>

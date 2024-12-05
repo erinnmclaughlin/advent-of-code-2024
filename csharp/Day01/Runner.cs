@@ -1,28 +1,23 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Xunit.Abstractions;
 
 namespace AdventOfCode2024.Day01;
 
 [MemoryDiagnoser]
-public class Runner(ITestOutputHelper? output = null)
+public class Runner
 {
-    private readonly string[] _fileLines = File.ReadAllLines(Path.Combine("Day01", "input.txt"));
+    private readonly string[] _fileLines = File.ReadAllLines("day01.txt");
 
     [BenchmarkRunner]
-    public void Benchmarks()
-    {
-        var summary = BenchmarkRunner.Run<Runner>();
-        output?.WriteLine(summary);
-    }
+    public void RunBenchmarks() => BenchmarkRunner.Run<Runner>();
 
     [Fact, Benchmark]
-    public void PartOne_CSharp() => AssertPartOne(Day01.PartOne(_fileLines));
-
-    [Fact, Benchmark]
-    public void PartTwo_CSharp() => AssertPartTwo(Day01.PartTwo(_fileLines));
+    public void PartOne_CSharp() => AssertPartOne(Solution.PartOne(_fileLines));
 
     [Fact, Benchmark]
     public void PartOne_FSharp() => AssertPartOne(fsharp.day01.part1(_fileLines));
+
+    [Fact, Benchmark]
+    public void PartTwo_CSharp() => AssertPartTwo(Solution.PartTwo(_fileLines));
 
     [Fact, Benchmark]
     public void PartTwo_FSharp() => AssertPartTwo(fsharp.day01.part2(_fileLines));

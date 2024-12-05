@@ -1,30 +1,26 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿namespace AdventOfCode2024.Day03;
 
-namespace AdventOfCode2024.Day03;
-
-public partial class Day03
+public static class SolutionOptimized
 {
-    [Fact, Benchmark]
-    public void Part01_Optimized()
+    public static int PartOne(string fileText)
     {
         var sum = 0;
-        var span = _fileText.AsSpan();
+        var span = fileText.AsSpan();
 
         for (var i = 0; i < span.Length; i++)
         {
             if (span[i..].StartsWith("mul("))
                 GetProduct(ref span, ref i, ref sum);
         }
-        
-        Assert.Equal(161085926, sum);
+
+        return sum;
     }
     
-    [Fact, Benchmark]
-    public void Part02_Optimized()
+    public static int PartTwo(string fileText)
     {
         var sum = 0;
         var enabled = true;
-        var span = _fileText.AsSpan();
+        var span = fileText.AsSpan();
 
         for (var i = 0; i < span.Length; i++)
         {
@@ -53,8 +49,8 @@ public partial class Day03
                 }
             }
         }
-        
-        Assert.Equal(82045421, sum);
+
+        return sum;
     }
 
     private static void GetProduct(ref ReadOnlySpan<char> span, ref int i, ref int sum)

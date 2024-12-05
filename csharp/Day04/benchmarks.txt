@@ -6,15 +6,9 @@ Apple M3 Max, 1 CPU, 14 logical and 14 physical cores
   DefaultJob : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
 
 
-| Method           | Mean      | Error    | StdDev   | Gen0     | Allocated |
-|----------------- |----------:|---------:|---------:|---------:|----------:|
-| Part01           | 375.50 μs | 1.143 μs | 1.013 μs | 148.4375 | 1245185 B |
-| Part02           |  34.12 μs | 0.107 μs | 0.100 μs |  13.8550 |  116080 B |
-| Part01_Optimized |  42.21 μs | 0.295 μs | 0.363 μs |        - |     184 B |
-| Part02_Optimized |  19.30 μs | 0.034 μs | 0.026 μs |        - |     184 B |
-
-// * Hints *
-Outliers
-  Day04.Part01: Default           -> 1 outlier  was  removed (379.85 μs)
-  Day04.Part01_Optimized: Default -> 7 outliers were removed (45.92 μs..49.53 μs)
-  Day04.Part02_Optimized: Default -> 3 outliers were removed (19.83 μs..19.93 μs)
+| Method                   | Mean      | Error    | StdDev   | Gen0     | Allocated |
+|------------------------- |----------:|---------:|---------:|---------:|----------:|
+| PartOne_CSharp           | 370.41 μs | 1.920 μs | 1.796 μs | 148.4375 | 1245184 B |
+| PartOne_CSharp_Optimized |  40.15 μs | 0.323 μs | 0.302 μs |        - |     184 B |
+| PartTwo_CSharp           |  34.81 μs | 0.376 μs | 0.351 μs |  13.8550 |  116080 B |
+| PartTwo_CSharp_Optimized |  19.27 μs | 0.060 μs | 0.056 μs |        - |     184 B |

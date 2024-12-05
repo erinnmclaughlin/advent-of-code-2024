@@ -9,7 +9,7 @@ namespace AdventOfCode2024;
 
 public static class BenchmarkRunner
 {
-    public static string Run<T>([CallerFilePath] string callerFilePath = "") where T : class
+    public static void Run<T>([CallerFilePath] string callerFilePath = "") where T : class
     {
         var config = ManualConfig.Create(DefaultConfig.Instance).CreateImmutableConfig();
         var result = BenchmarkDotNet.Running.BenchmarkRunner.Run<T>(config);
@@ -21,8 +21,6 @@ public static class BenchmarkRunner
         MarkdownExporter.Console.ExportToLog(result, logger);
         ConclusionHelper.Print(logger, config.GetCompositeAnalyser().Analyse(result).ToList());
 
-        var log = logger.GetLog();
-
         var filePath = Path.Combine(Path.GetDirectoryName(callerFilePath) ?? callerFilePath, "benchmarks.txt");
 
         if (File.Exists(filePath))
@@ -30,8 +28,6 @@ public static class BenchmarkRunner
         
         using var outputFile = File.OpenWrite(filePath);
         using var fileWriter = new StreamWriter(outputFile);
-        fileWriter.Write(log);
-
-        return log;
+        fileWriter.Write(logger.GetLog());
     }
 }

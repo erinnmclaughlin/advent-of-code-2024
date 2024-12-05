@@ -6,13 +6,15 @@ Apple M3 Max, 1 CPU, 14 logical and 14 physical cores
   DefaultJob : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
 
 
-| Method           | Mean      | Error    | StdDev   | Gen0    | Gen1    | Allocated |
-|----------------- |----------:|---------:|---------:|--------:|--------:|----------:|
-| Part01           | 138.70 μs | 1.955 μs | 1.829 μs | 48.3398 | 16.8457 |  405280 B |
-| Part02           | 160.96 μs | 1.209 μs | 1.131 μs | 46.3867 | 21.2402 |  388392 B |
-| Part01_Optimized |  15.48 μs | 0.089 μs | 0.079 μs |       - |       - |     184 B |
-| Part02_Optimized |  20.67 μs | 0.251 μs | 0.234 μs |       - |       - |     184 B |
+| Method                   | Mean      | Error    | StdDev   | Gen0    | Gen1    | Allocated |
+|------------------------- |----------:|---------:|---------:|--------:|--------:|----------:|
+| PartOne_CSharp           | 137.16 μs | 1.301 μs | 1.086 μs | 48.3398 | 16.8457 |  405280 B |
+| PartOne_CSharp_Optimized |  15.12 μs | 0.071 μs | 0.066 μs |  0.0153 |       - |     184 B |
+| PartTwo_CSharp           | 150.40 μs | 0.613 μs | 0.544 μs | 46.3867 | 21.2402 |  388392 B |
+| PartTwo_CSharp_Optimized |  20.37 μs | 0.035 μs | 0.029 μs |       - |       - |     184 B |
 
 // * Hints *
 Outliers
-  Day03.Part01_Optimized: Default -> 1 outlier  was  removed (15.88 μs)
+  Day03Runner.PartOne_CSharp: Default           -> 2 outliers were removed (142.64 μs, 142.72 μs)
+  Day03Runner.PartTwo_CSharp: Default           -> 1 outlier  was  removed (152.94 μs)
+  Day03Runner.PartTwo_CSharp_Optimized: Default -> 2 outliers were removed (20.50 μs, 20.56 μs)
