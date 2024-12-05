@@ -1,10 +1,16 @@
-﻿namespace AdventOfCode2024.Day05;
+﻿using BenchmarkDotNet.Attributes;
 
+namespace AdventOfCode2024.Day05;
+
+[MemoryDiagnoser]
 public class Day05
 {
     private readonly string[] _fileLines = File.ReadAllLines(Path.Combine("Day05", "input.txt"));
+
+    [BenchmarkRunner]
+    public void Run() => BenchmarkRunner.Run<Day05>();
     
-    [Fact]
+    [Fact, Benchmark]
     public void PartOne()
     {
         var (numbers, comparer) = ParseFile();
@@ -17,7 +23,7 @@ public class Day05
         Assert.Equal(5268, sum);
     }
     
-    [Fact]
+    [Fact, Benchmark]
     public void PartTwo()
     {
         var (numbers, comparer) = ParseFile();

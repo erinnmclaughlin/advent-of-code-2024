@@ -1,0 +1,17 @@
+
+BenchmarkDotNet v0.14.0, macOS Sonoma 14.7.1 (23H222) [Darwin 23.6.0]
+Apple M3 Max, 1 CPU, 14 logical and 14 physical cores
+.NET SDK 9.0.100
+  [Host]     : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
+  DefaultJob : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
+
+
+| Method  | Mean     | Error    | StdDev   | Gen0    | Allocated |
+|-------- |---------:|---------:|---------:|--------:|----------:|
+| PartOne | 15.05 ms | 0.054 ms | 0.048 ms | 46.8750 | 496.51 KB |
+| PartTwo | 25.58 ms | 0.218 ms | 0.194 ms | 62.5000 | 753.97 KB |
+
+// * Hints *
+Outliers
+  Day05.PartOne: Default -> 1 outlier  was  removed (15.40 ms)
+  Day05.PartTwo: Default -> 1 outlier  was  removed (26.22 ms)
