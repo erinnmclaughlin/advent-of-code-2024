@@ -2,26 +2,16 @@
 
 public class Day05
 {
-    private readonly Comparer<string> _comparer;
-    private readonly string[][] _numbers;
-
-    public Day05()
-    {
-        var lines = File.ReadLines(Path.Combine("Day05", "input.txt")).ToArray().AsSpan();
-        var splitIndex = lines.IndexOf("");
-        
-        _comparer = CreateComparer(lines[..splitIndex].ToArray());
-        _numbers = lines[(splitIndex + 1)..]
-            .ToArray()
-            .Select(x => x.Split(',').ToArray())
-            .ToArray();
-    }
-
+    private readonly string[] _fileLines = File.ReadAllLines(Path.Combine("Day05", "input.txt"));
+    
     [Fact]
     public void PartOne()
     {
-        var sum = _numbers
-            .Where(IsOrdered)
+        var (numbers, comparer) = ParseFile();
+        
+        var sum = numbers
+            .Select(x => x.Split(','))
+            .Where(x => IsOrdered(x, comparer))
             .Sum(x => int.Parse(x[x.Length / 2]));
         
         Assert.Equal(5268, sum);
@@ -30,16 +20,29 @@ public class Day05
     [Fact]
     public void PartTwo()
     {
-        var sum = _numbers
-            .Where(x => !IsOrdered(x))
-            .Select(x => x.Order(_comparer).ToArray())
+        var (numbers, comparer) = ParseFile();
+        
+        var sum = numbers
+            .Select(x => x.Split(','))
+            .Where(x => !IsOrdered(x, comparer))
+            .Select(x => x.Order(comparer).ToArray())
             .Sum(x => int.Parse(x[x.Length / 2]));
 
         Assert.Equal(5799, sum);
     }
 
-    private bool IsOrdered(string[] items) => items.SequenceEqual(items.Order(_comparer));
+    private (string[], Comparer<string>) ParseFile()
+    {
+        var lines = _fileLines.AsSpan();
+        var splitIndex = lines.IndexOf("");
+        var numbers = lines[(splitIndex + 1)..].ToArray();
+        var comparer = CreateComparer(lines[..splitIndex].ToArray());
+        return (numbers, comparer);
+    }
 
-    private static Comparer<string> CreateComparer(string[] rules) => Comparer<string>
-        .Create((x, y) => rules.AsSpan().Contains($"{x}|{y}") ? - 1 : 1);
+    private static bool IsOrdered(string[] items, Comparer<string> comparer)
+        => items.SequenceEqual(items.Order(comparer));
+
+    private static Comparer<string> CreateComparer(string[] rules)
+        => Comparer<string>.Create((x, y) => rules.AsSpan().Contains($"{x}|{y}") ? - 1 : 1);
 }
