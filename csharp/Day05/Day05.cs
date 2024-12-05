@@ -9,81 +9,67 @@ public class Day05(ITestOutputHelper? output)
     [Fact]
     public void PartOne()
     {
-        var rules = GetRules().ToList();
-        
-        var sum = 0;
+        var (rules, updates) = ParseFile();
 
-        foreach (var update in GetUpdates())
-        {
-            if (rules.All(r => r.Invoke(update)))
-                sum += update[update.Count / 2];
-        }
-        
+        var sum = updates
+            .Where(u => rules.All(r => r.Invoke(u)))
+            .Sum(u => u[u.Count / 2]);
+
         output?.WriteLine("{0}", sum);
+        Assert.Equal(5268, sum);
     }
     
     [Fact]
     public void PartTwo()
     {
-        var sum = 0;
+        var (rules, updates) = ParseFile();
 
-        foreach (var update in GetUpdates())
-        {
-            var sorted = DoOrdering(update);
-            
-            if (update.SequenceEqual(sorted))
-                continue;
-            
-            //output.WriteLine("{0}\n{1}\n\n", string.Join(',', update), string.Join(',', sorted));
-            
-            sum += sorted[sorted.Count / 2];
-        }
+        var sum = updates
+            .Select(u => new { Original = u, Updated = DoOrdering(u, rules) })
+            .Where(x => !x.Original.SequenceEqual(x.Updated))
+            .Sum(x => x.Updated[x.Updated.Count / 2]);
         
         output?.WriteLine("{0}", sum);
+        Assert.Equal(5799, sum);
     }
 
-    private IEnumerable<List<int>> GetUpdates()
+    private (List<Func<List<int>, bool>> Rules, List<List<int>> Updates) ParseFile()
     {
-        var skip = true;
+        var buildingRules = true;
+        var rules = new List<Func<List<int>, bool>>();
+        var updates = new List<List<int>>();
+        
         foreach (var line in _fileLines)
         {
             if (string.IsNullOrWhiteSpace(line))
-            {
-                skip = false;
-                continue;
-            }
-            
-            if (skip) continue;
-
-            yield return line.Split(',').Select(int.Parse).ToList();
+                buildingRules = false;
+            else if (buildingRules)
+                rules.Add(GetRule(line));
+            else
+                updates.Add(line.Split(',').Select(int.Parse).ToList());
         }
+
+        return (rules, updates);
+    }
+
+    private static Func<List<int>, bool> GetRule(string line)
+    {
+        var numbers = line.Split('|');
+        var n1 = int.Parse(numbers[0]);
+        var n2 = int.Parse(numbers[1]);
+
+        return arr =>
+        {
+            if (!arr.Contains(n1) || !arr.Contains(n2))
+                return true;
+                
+            return arr.IndexOf(n1) <= arr.IndexOf(n2);
+        };
     }
     
-    private IEnumerable<Func<List<int>, bool>> GetRules()
-    {
-        foreach (var line in _fileLines)
-        {
-            if (string.IsNullOrWhiteSpace(line))
-                yield break;
-
-            var numbers = line.Split('|');
-            var n1 = int.Parse(numbers[0]);
-            var n2 = int.Parse(numbers[1]);
-
-            yield return arr =>
-            {
-                if (!arr.Contains(n1) || !arr.Contains(n2))
-                    return true;
-                
-                return arr.IndexOf(n1) <= arr.IndexOf(n2);
-            };
-        }
-    }
-
-    private List<int> DoOrdering(List<int> list)
+    private List<int> DoOrdering(List<int> list, List<Func<List<int>, bool>> rules)
     {
         var arr = list.ToList();
-        var rules = GetRules().ToList();
 
         while (!rules.All(r => r.Invoke(arr)))
         {
@@ -92,6 +78,8 @@ public class Day05(ITestOutputHelper? output)
                 if (string.IsNullOrWhiteSpace(line))
                     break;
 
+                // todo: refactor this out to share with GetRule method
+                
                 var numbers = line.Split('|');
                 var n1 = int.Parse(numbers[0]);
                 var n2 = int.Parse(numbers[1]);
