@@ -3,7 +3,7 @@
 ### Day 1: Historian Hysteria
 * [C# Solution](csharp/Day01/Day01.cs)
 * [F# Solution](fsharp/day01.fs)
-* [Benchmarks](csharp.Day01/benchmarks.txt)
+* [Benchmarks](csharp/Day01/benchmarks.txt)
 
 ### Day 2: Red-Nosed Reports
 * [C# Solution](csharp/Day02/Day02.cs)
