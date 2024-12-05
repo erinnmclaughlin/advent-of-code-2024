@@ -2,7 +2,7 @@
 
 public class Day05
 {
-    private readonly IComparer<string> _comparer;
+    private readonly Comparer<string> _comparer;
     private readonly string[][] _numbers;
 
     public Day05()
@@ -40,6 +40,6 @@ public class Day05
 
     private bool IsOrdered(string[] items) => items.SequenceEqual(items.Order(_comparer));
 
-    private static IComparer<string> CreateComparer(string[] rules) => Comparer<string>
+    private static Comparer<string> CreateComparer(string[] rules) => Comparer<string>
         .Create((x, y) => rules.AsSpan().Contains($"{x}|{y}") ? - 1 : 1);
 }
