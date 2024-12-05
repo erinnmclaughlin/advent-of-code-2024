@@ -15,7 +15,7 @@ public static class Day01
     public static int PartTwo(string[] fileLines)
     {
         var (left, right) = ParseFile(fileLines);
-        return left.Select(l => l * right.Count(r => r == l)).Sum();
+        return left.Sum(l => l * right.Count(r => r == l));
     }
 
     private static (int[] Left, int[] Right) ParseFile(string[] lines)
