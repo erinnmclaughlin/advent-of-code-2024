@@ -25,8 +25,21 @@ public class Day05(ITestOutputHelper? output)
     [Fact]
     public void PartTwo()
     {
-        foreach (var line in _fileLines)
-            output?.WriteLine(line);
+        var sum = 0;
+
+        foreach (var update in GetUpdates())
+        {
+            var sorted = DoOrdering(update);
+            
+            if (update.SequenceEqual(sorted))
+                continue;
+            
+            //output.WriteLine("{0}\n{1}\n\n", string.Join(',', update), string.Join(',', sorted));
+            
+            sum += sorted[sorted.Count / 2];
+        }
+        
+        output?.WriteLine("{0}", sum);
     }
 
     private IEnumerable<List<int>> GetUpdates()
@@ -62,8 +75,42 @@ public class Day05(ITestOutputHelper? output)
                 if (!arr.Contains(n1) || !arr.Contains(n2))
                     return true;
                 
-                return arr.IndexOf(n1) < arr.IndexOf(n2);
+                return arr.IndexOf(n1) <= arr.IndexOf(n2);
             };
         }
+    }
+
+    private List<int> DoOrdering(List<int> list)
+    {
+        var arr = list.ToList();
+        var rules = GetRules().ToList();
+
+        while (!rules.All(r => r.Invoke(arr)))
+        {
+            foreach (var line in _fileLines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    break;
+
+                var numbers = line.Split('|');
+                var n1 = int.Parse(numbers[0]);
+                var n2 = int.Parse(numbers[1]);
+
+                if (!arr.Contains(n1) || !arr.Contains(n2))
+                    continue;
+
+                var i1 = arr.IndexOf(n1);
+                var i2 = arr.IndexOf(n2);
+
+                while (i1 > i2)
+                {
+                    arr[i1] = arr[i1 - 1];
+                    i1--;
+                    arr[i1] = n1;
+                }
+            }
+        }
+
+        return arr;
     }
 }
