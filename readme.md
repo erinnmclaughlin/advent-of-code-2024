@@ -2,6 +2,8 @@
 
 ### Day 1: Historian Hysteria
 * [C# Solution](csharp/Day01/Day01.cs)
+* [F# Solution](fsharp/day01.fs)
+* [Benchmarks](csharp.Day01/benchmarks.txt)
 
 ### Day 2: Red-Nosed Reports
 * [C# Solution](csharp/Day02/Day02.cs)
@@ -13,3 +15,6 @@
 ### Day 4: Ceres Search
 * [C# Solution](csharp/Day04/Day04.cs)
 * [C# Solution (Optimized)](csharp/Day04/Day04.Optimized.cs) & [Benchmarks](csharp/Day04/benchmarks.txt)
+
+### Day 5: Print Queue
+* [C# Solution](csharp/Day05/Day05.cs)
