@@ -24,3 +24,7 @@
 * [C# Solution](csharp/Day05.cs)
 * [C# Solution (Optimized)](csharp/Day05Optimized.cs)
 * [Benchmarks](results/AoC.Day05-report-github.md)
+
+### Day 6: Guard Gallivant
+* [C# Solution](csharp/Day06.cs)
+* [Benchmarks](results/AoC.Day06-report-github.md)
