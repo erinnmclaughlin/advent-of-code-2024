@@ -22,4 +22,5 @@
 
 ### Day 5: Print Queue
 * [C# Solution](csharp/Day05.cs)
+* [C# Solution (Optimized)](csharp/Day05Optimized.cs)
 * [Benchmarks](results/AoC.Day05-report-github.md)
