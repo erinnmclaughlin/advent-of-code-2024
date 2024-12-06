@@ -1,14 +1,15 @@
 ```
 
-BenchmarkDotNet v0.14.0, Windows 11 (10.0.22631.4541/23H2/2023Update/SunValley3)
-AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
+BenchmarkDotNet v0.14.0, macOS Sonoma 14.7.1 (23H222) [Darwin 23.6.0]
+Apple M3 Max, 1 CPU, 14 logical and 14 physical cores
 .NET SDK 9.0.100
-  [Host]     : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
-  DefaultJob : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
+  [Host]     : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
+  DefaultJob : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
 
 
 ```
-| Method         | Mean           | Error        | StdDev       | Gen0         | Gen1        | Gen2        | Allocated      |
-|--------------- |---------------:|-------------:|-------------:|-------------:|------------:|------------:|---------------:|
-| PartOne_CSharp |       599.2 μs |      7.19 μs |      6.01 μs |      83.0078 |     82.0313 |     41.0156 |      775.34 KB |
-| PartTwo_CSharp | 7,670,890.9 μs | 67,937.89 μs | 60,225.17 μs | 1150000.0000 | 887000.0000 | 496000.0000 | 10036405.78 KB |
+| Method                   | Mean            | Error        | StdDev       | Gen0         | Gen1        | Gen2        | Allocated      |
+|------------------------- |----------------:|-------------:|-------------:|-------------:|------------:|------------:|---------------:|
+| PartOne_CSharp           |       332.47 μs |     1.742 μs |     1.544 μs |      83.0078 |     41.5039 |     41.5039 |      775.35 KB |
+| PartOne_CSharp_Optimized |        59.26 μs |     0.624 μs |     0.584 μs |      41.6260 |     41.6260 |     41.6260 |      315.26 KB |
+| PartTwo_CSharp           | 4,502,830.63 μs | 6,021.202 μs | 5,632.236 μs | 1150000.0000 | 571000.0000 | 496000.0000 | 10036591.17 KB |

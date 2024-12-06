@@ -13,7 +13,7 @@ public static class Day06
         var map = fileLines.Select(c => c.ToCharArray()).ToArray();
         var loops = 0;
 
-        // for sake of time, bruce force this ish by looping over the whole map and placing a blocker in one cell at a time
+        // for sake of time, brute force this ish by looping over the whole map and placing a blocker in one cell at a time
         for (var i = 0; i < map.Length; i++)
         {
             for (var j = 0; j < map[i].Length; j++)
