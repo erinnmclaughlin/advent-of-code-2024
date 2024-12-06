@@ -27,6 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\inputs\*.txt" CopyToOutputDirectory="PreserveNewest"/>
+        <None Include="..\inputs\*.txt" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     </ItemGroup>
 </Project>
