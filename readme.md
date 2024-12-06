@@ -9,7 +9,7 @@
 * [C# Solution](csharp/Day02.cs)
 * [Benchmarks](results/AoC.Day02-report-github.md)
 
-### Day 3: Mull It Ove
+### Day 3: Mull It Over
 * [C# Solution](csharp/Day03.cs) 
 * [C# Solution (Optimized)](csharp/Day03Optimized.cs)
 * [Benchmarks](results/AoC.Day03-report-github.md)
