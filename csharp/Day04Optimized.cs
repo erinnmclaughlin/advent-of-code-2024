@@ -1,4 +1,4 @@
-namespace AdventOfCode2024.Day04;
+namespace AoC.CSharp;
 
 public static class Day04Optimized
 {

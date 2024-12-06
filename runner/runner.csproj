@@ -5,17 +5,17 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <RootNamespace>AoC</RootNamespace>
+        <GenerateProgramFile>false</GenerateProgramFile>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+        <PackageReference Include="BenchmarkDotNet.TestAdapter" Version="0.13.12" />
         <PackageReference Include="coverlet.collector" Version="6.0.2"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
         <PackageReference Include="xunit" Version="2.9.2"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -23,11 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\inputs\*.txt" CopyToOutputDirectory="PreserveNewest" />
+        <ProjectReference Include="..\csharp\csharp.csproj" />
+        <ProjectReference Include="..\fsharp\fsharp.fsproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\fsharp\fsharp.fsproj" />
+        <None Include="..\inputs\*.txt" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
-
 </Project>

@@ -1,25 +1,23 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 
-namespace AdventOfCode2024.Day01;
+namespace AoC;
 
-[MemoryDiagnoser]
-public class Runner
+[Orderer(SummaryOrderPolicy.Declared)]
+public class Day01
 {
     private readonly string[] _fileLines = File.ReadAllLines("day01.txt");
 
-    [BenchmarkRunner]
-    public void RunBenchmarks() => BenchmarkRunner.Run<Runner>();
-
-    [Fact, Benchmark]
-    public void PartOne_CSharp() => AssertPartOne(Solution.PartOne(_fileLines));
-
-    [Fact, Benchmark]
+    [Benchmark, Fact]
+    public void PartOne_CSharp() => AssertPartOne(CSharp.Day01.PartOne(_fileLines));
+    
+    [Benchmark, Fact]
     public void PartOne_FSharp() => AssertPartOne(fsharp.day01.part1(_fileLines));
-
-    [Fact, Benchmark]
-    public void PartTwo_CSharp() => AssertPartTwo(Solution.PartTwo(_fileLines));
-
-    [Fact, Benchmark]
+    
+    [Benchmark, Fact]
+    public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day01.PartTwo(_fileLines));
+    
+    [Benchmark, Fact]
     public void PartTwo_FSharp() => AssertPartTwo(fsharp.day01.part2(_fileLines));
     
     private static void AssertPartOne(int answer) => Assert.Equal(1879048, answer);

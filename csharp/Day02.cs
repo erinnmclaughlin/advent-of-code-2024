@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode2024.Day02;
+﻿namespace AoC.CSharp;
 
-public static class Solution
+public static class Day02
 {
     public static int PartOne(string[] fileLines) => fileLines
         .Select(l => l.Split(' ').Select(int.Parse).ToArray())

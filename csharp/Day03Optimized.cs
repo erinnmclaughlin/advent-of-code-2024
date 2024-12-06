@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode2024.Day03;
+﻿namespace AoC.CSharp;
 
-public static class SolutionOptimized
+public static class Day03Optimized
 {
     public static int PartOne(string fileText)
     {
@@ -10,7 +10,7 @@ public static class SolutionOptimized
         for (var i = 0; i < span.Length; i++)
         {
             if (span[i..].StartsWith("mul("))
-                GetProduct(ref span, ref i, ref sum);
+                CalculateProduct(ref span, ref i, ref sum);
         }
 
         return sum;
@@ -38,7 +38,7 @@ public static class SolutionOptimized
             {
                 if (enabled)
                 {
-                    GetProduct(ref span, ref i, ref sum);
+                    CalculateProduct(ref span, ref i, ref sum);
                 }
                 else
                 {
@@ -53,7 +53,7 @@ public static class SolutionOptimized
         return sum;
     }
 
-    private static void GetProduct(ref ReadOnlySpan<char> span, ref int i, ref int sum)
+    private static void CalculateProduct(ref ReadOnlySpan<char> span, ref int i, ref int sum)
     {
         // skip "mul("
         var end = i += 4;

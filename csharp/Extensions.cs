@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2024;
+﻿namespace AoC.CSharp;
 
 public static class Extensions
 {

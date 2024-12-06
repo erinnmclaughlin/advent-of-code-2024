@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode2024.Day04;
+﻿namespace AoC.CSharp;
 
-public static class Solution
+public static class Day04
 {
     public static int PartOne(string[] fileLines)
     {

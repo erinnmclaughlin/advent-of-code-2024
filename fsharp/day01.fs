@@ -1,4 +1,4 @@
-﻿module fsharp.day01
+﻿module AoC.fsharp.day01
 
 let parseFile(lines: string array) =
     let left  = Array.zeroCreate lines.Length
