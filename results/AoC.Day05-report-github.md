@@ -1,14 +1,15 @@
 ```
 
-BenchmarkDotNet v0.14.0, macOS Sonoma 14.7.1 (23H222) [Darwin 23.6.0]
-Apple M3 Max, 1 CPU, 14 logical and 14 physical cores
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.22631.4541/23H2/2023Update/SunValley3)
+AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 .NET SDK 9.0.100
-  [Host]     : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
-  DefaultJob : .NET 9.0.0 (9.0.24.52809), Arm64 RyuJIT AdvSIMD
+  [Host]     : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
+  DefaultJob : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
 
 
 ```
-| Method         | Mean     | Error    | StdDev   | Gen0    | Allocated |
-|--------------- |---------:|---------:|---------:|--------:|----------:|
-| PartOne_CSharp | 15.09 ms | 0.017 ms | 0.016 ms | 46.8750 | 496.51 KB |
-| PartTwo_CSharp | 25.48 ms | 0.050 ms | 0.044 ms | 62.5000 | 753.97 KB |
+| Method                   | Mean      | Error     | StdDev    | Gen0    | Allocated |
+|------------------------- |----------:|----------:|----------:|--------:|----------:|
+| PartOne_CSharp           | 20.385 ms | 0.1224 ms | 0.1145 ms | 31.2500 |  508428 B |
+| PartOne_CSharp_Optimized |  1.573 ms | 0.0109 ms | 0.0102 ms |       - |     185 B |
+| PartTwo_CSharp           | 33.375 ms | 0.6479 ms | 0.6364 ms | 62.5000 |  772065 B |

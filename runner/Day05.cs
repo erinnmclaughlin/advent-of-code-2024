@@ -10,6 +10,9 @@ public class Day05
 
     [Fact, Benchmark]
     public void PartOne_CSharp() => AssertPartOne(CSharp.Day05.PartOne(_fileLines));
+
+    [Fact, Benchmark]
+    public void PartOne_CSharp_Optimized() => AssertPartOne(CSharp.Day05Optimized.PartOne(_fileLines));
     
     [Fact, Benchmark]
     public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day05.PartTwo(_fileLines));
