@@ -28,9 +28,6 @@ public static class Day07
     
     private static IEnumerable<long> GetPossibleOutcomes(long maxValue, long[] values, bool allowConcat)
     {
-        if (values.Length == 0)
-            yield break;
-
         // we've exceeded the max value there's no need to keep going
         if (values[0] > maxValue)
             yield break;
