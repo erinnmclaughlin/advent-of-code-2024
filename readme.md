@@ -28,3 +28,6 @@
 ### Day 6: Guard Gallivant
 * [C# Solution](csharp/Day06.cs)
 * [Benchmarks](results/AoC.Day06-report-github.md)
+
+### Day 7: Bridge Repair
+* [C# Solution](csharp/Day07.cs)
