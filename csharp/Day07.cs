@@ -1,17 +1,15 @@
-using System.Numerics;
-
 namespace AoC.CSharp;
 
 public static class Day07
 {
-    public static BigInteger PartOne(string[] fileLines)
+    public static long PartOne(string[] fileLines)
     {
-        BigInteger sum = 0;
+        long sum = 0;
 
         foreach (var line in fileLines)
         {
             var parts = line.Split(':');
-            var expected = BigInteger.Parse(parts[0]);
+            var expected = long.Parse(parts[0]);
             var numberString = parts[1].Trim();
 
             foreach (var outcome in GetPossibleOutcomes(numberString))
@@ -27,14 +25,14 @@ public static class Day07
         return sum;
     }
 
-    public static BigInteger PartTwo(string[] fileLines)
+    public static long PartTwo(string[] fileLines)
     {
-        BigInteger sum = 0;
+        long sum = 0;
 
         foreach (var line in fileLines)
         {
             var parts = line.Split(':');
-            var expected = BigInteger.Parse(parts[0]);
+            var expected = long.Parse(parts[0]);
             var numberString = parts[1].Trim();
 
             foreach (var outcome in GetPossibleOutcomes(numberString, true))
@@ -50,9 +48,9 @@ public static class Day07
         return sum;
     }
     
-    private static IEnumerable<BigInteger> GetPossibleOutcomes(string numberString, bool allowConcat = false)
+    private static IEnumerable<long> GetPossibleOutcomes(string numberString, bool allowConcat = false)
     {
-        var numbers = numberString.Split(' ').Select(BigInteger.Parse).ToArray();
+        var numbers = numberString.Split(' ').Select(long.Parse).ToArray();
 
         if (numbers.Length == 1)
         {
@@ -65,13 +63,13 @@ public static class Day07
         }
     }
 
-    private static IEnumerable<BigInteger> GetPossibleOutcomes(BigInteger value, BigInteger[] nextValues, bool allowConcat = false)
+    private static IEnumerable<long> GetPossibleOutcomes(long value, long[] nextValues, bool allowConcat = false)
     {
         var nextValue = nextValues[0];
         
         var addResult = value + nextValue;
         var multiplyResult = value * nextValue;
-        var concatResult = BigInteger.Parse($"{value}{nextValue}");
+        var concatResult = long.Parse($"{value}{nextValue}");
         
         if (nextValues.Length == 1)
         {
