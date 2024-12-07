@@ -6,9 +6,7 @@ public static class Day07
         .AsParallel()
         .Sum(line =>
         {
-            var parts = line.Split(": ");
-            var expected = long.Parse(parts[0]);
-            var numbers = parts[1].Split(" ").Select(long.Parse).ToArray();
+            var (expected, numbers) = ParseLine(line);
             return GetPossibleOutcomes(expected, numbers, allowConcat: false).FirstOrDefault(o => o == expected);
         });
 
@@ -16,12 +14,18 @@ public static class Day07
         .AsParallel()
         .Sum(line =>
         {
-            var parts = line.Split(": ");
-            var expected = long.Parse(parts[0]);
-            var numbers = parts[1].Split(" ").Select(long.Parse).ToArray();
+            var (expected, numbers) = ParseLine(line);
             return GetPossibleOutcomes(expected, numbers, allowConcat: true).FirstOrDefault(o => o == expected);
         });
 
+    private static (long, long[]) ParseLine(string line)
+    {
+        var parts = line.Split(": ");
+        var expected = long.Parse(parts[0]);
+        var numbers = parts[1].Split(' ').Select(long.Parse).ToArray();
+        return (expected, numbers);
+    }
+    
     private static IEnumerable<long> GetPossibleOutcomes(long maxValue, long[] values, bool allowConcat)
     {
         if (values.Length == 0)
