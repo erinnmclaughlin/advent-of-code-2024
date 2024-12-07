@@ -8,18 +8,10 @@ public static class Day07
 
         foreach (var line in fileLines)
         {
-            var parts = line.Split(':');
+            var parts = line.Split(": ");
             var expected = long.Parse(parts[0]);
-            var numberString = parts[1].Trim();
-
-            foreach (var outcome in GetPossibleOutcomes(numberString))
-            {
-                if (outcome == expected)
-                {
-                    sum += outcome;
-                    break;
-                }
-            }
+            var numbers = parts[1].Split(" ").Select(long.Parse).ToArray();
+            sum += GetPossibleOutcomes(numbers, allowConcat: false).FirstOrDefault(o => o == expected);
         }
 
         return sum;
@@ -31,61 +23,42 @@ public static class Day07
 
         foreach (var line in fileLines)
         {
-            var parts = line.Split(':');
+            var parts = line.Split(": ");
             var expected = long.Parse(parts[0]);
-            var numberString = parts[1].Trim();
-
-            foreach (var outcome in GetPossibleOutcomes(numberString, true))
-            {
-                if (outcome == expected)
-                {
-                    sum += outcome;
-                    break;
-                }
-            }
+            var numbers = parts[1].Split(" ").Select(long.Parse).ToArray();
+            sum += GetPossibleOutcomes(numbers, allowConcat: true).FirstOrDefault(o => o == expected);
         }
 
         return sum;
     }
-    
-    private static IEnumerable<long> GetPossibleOutcomes(string numberString, bool allowConcat = false)
-    {
-        var numbers = numberString.Split(' ').Select(long.Parse).ToArray();
 
-        if (numbers.Length == 1)
-        {
-            yield return numbers[0];
-        }
-        else
-        {
-            foreach (var r in GetPossibleOutcomes(numbers[0], numbers[1..], allowConcat))
-                yield return r;
-        }
-    }
-
-    private static IEnumerable<long> GetPossibleOutcomes(long value, long[] nextValues, bool allowConcat = false)
+    private static IEnumerable<long> GetPossibleOutcomes(long[] values, bool allowConcat)
     {
-        var nextValue = nextValues[0];
-        
-        var addResult = value + nextValue;
-        var multiplyResult = value * nextValue;
-        var concatResult = long.Parse($"{value}{nextValue}");
-        
-        if (nextValues.Length == 1)
+        if (values.Length == 0)
+            yield break;
+
+        if (values.Length == 1)
         {
-            yield return addResult;
-            yield return multiplyResult;
-                
-            if (allowConcat)
-                yield return concatResult;
+            yield return values[0];
+            yield break;
         }
-        else
-        {
-            foreach (var r in GetPossibleOutcomes(addResult, nextValues[1..], allowConcat)) yield return r;
-            foreach (var r in GetPossibleOutcomes(multiplyResult, nextValues[1..], allowConcat)) yield return r;
-            
-            if (allowConcat)
-                foreach (var r in GetPossibleOutcomes(concatResult, nextValues[1..], allowConcat)) yield return r;
-        }
+
+        var (current, next) = (values[0], values[1]);
+        values = values[1..];
+        
+        // add
+        values[0] = current + next;
+        foreach (var r in GetPossibleOutcomes(values, allowConcat)) yield return r;
+        
+        // multiply
+        values[0] = current * next;
+        foreach (var r in GetPossibleOutcomes(values, allowConcat)) yield return r;
+        
+        // concat
+        if (!allowConcat)
+            yield break;
+
+        values[0] = long.Parse($"{current}{next}");
+        foreach (var r in GetPossibleOutcomes(values, allowConcat)) yield return r;
     }
 }
