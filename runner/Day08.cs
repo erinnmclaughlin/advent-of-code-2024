@@ -2,13 +2,10 @@
 
 namespace AoC;
 
-// an antinode occurs at any point that is perfectly in line with two antennas of the same frequency,
-// but only when one of the antennas is twice as far away as the other
 public class Day08(ITestOutputHelper output)
 {
-    private static string[] _fileLines = File.ReadAllLines("day08.txt");
+    private static readonly string[] _fileLines = File.ReadAllLines("day08.txt");
 
-    // 100 is wrong
     [Fact]
     public void PartOne()
     {
@@ -82,5 +79,95 @@ public class Day08(ITestOutputHelper output)
         {
             output.WriteLine(string.Join("", line));
         }
+    }
+
+    // 973 = nope
+    [Fact]
+    public void PartTwo()
+    {
+        var grid = new GridCell[_fileLines.Length][];
+        
+        for (var i = 0; i < _fileLines.Length; i++)
+        {
+            grid[i] = new GridCell[_fileLines[i].Length];
+            
+            for (var j = 0; j < _fileLines[i].Length; j++)
+            {
+                grid[i][j] = new GridCell(i, j, _fileLines[i][j]);
+            }
+        }
+
+        var cellsByType = grid
+            .SelectMany(x => x)
+            .GroupBy(x => x.Type)
+            .ToDictionary(x => x.Key, x => x.ToList());
+
+        foreach (var (type, matches) in cellsByType)
+        {
+            if (type == '.') continue;
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                for (var j = 0; j < matches.Count; j++)
+                {
+                    if (i == j) continue;
+
+                    var rowDiff = matches[j].Row - matches[i].Row;
+                    var colDiff = matches[j].Col - matches[i].Col;
+
+                    // top-left to bottom-right diagonal
+                    if ((rowDiff < 0 && colDiff < 0) || (rowDiff > 0 && colDiff > 0))
+                    {
+                        rowDiff = Math.Abs(rowDiff);
+                        colDiff = Math.Abs(colDiff);
+
+                        var cursor = (matches[i].Row, matches[i].Col);
+
+                        while (cursor.Row - rowDiff >= 0 && cursor.Col - colDiff >= 0)
+                        {
+                            cursor = (cursor.Row - rowDiff, cursor.Col - colDiff);
+                        }
+
+                        while (cursor.Row < grid.Length && cursor.Col < grid[0].Length)
+                        {
+                            grid[cursor.Row][cursor.Col].IsAntinode = true;
+                            cursor = (cursor.Row + rowDiff, cursor.Col + colDiff);
+                        }
+                    }
+                    
+                    // top-right to bottom-left diagonal
+                    else
+                    {
+                        rowDiff = Math.Abs(rowDiff);
+                        colDiff = Math.Abs(colDiff);
+                        
+                        var cursor = (matches[i].Row, matches[i].Col);
+                        while (cursor.Row - rowDiff >= 0 && cursor.Col + colDiff < grid[0].Length)
+                        {
+                            cursor = (cursor.Row - rowDiff, cursor.Col + colDiff);
+                        }
+
+                        while (cursor.Row < grid.Length && cursor.Col >= 0)
+                        {
+                            grid[cursor.Row][cursor.Col].IsAntinode = true;
+                            cursor = (cursor.Row + rowDiff, cursor.Col - colDiff);
+                        }
+                    }
+                }
+            }
+        }
+
+        output.WriteLine(grid.Sum(r => r.Count(g => g.IsAntinode)).ToString());
+        
+        foreach (var row in grid)
+        {
+            output.WriteLine(string.Join("", row.Select(r => r.IsAntinode && !r.IsAntenna ? '#' : r.Type)));
+        }
+    }
+
+    private record GridCell(int Row, int Col, char Type)
+    {
+        public bool IsAntenna => Type != '.';
+        public bool IsAntinode { get; set; }
     }
 }
