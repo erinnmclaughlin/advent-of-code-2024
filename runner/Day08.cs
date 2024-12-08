@@ -97,61 +97,37 @@ public class Day08(ITestOutputHelper output)
             }
         }
 
-        var cellsByType = grid
+        var antennaMap = grid
             .SelectMany(x => x)
+            .Where(x => x.IsAntenna)
             .GroupBy(x => x.Type)
             .ToDictionary(x => x.Key, x => x.ToList());
 
-        foreach (var (type, matches) in cellsByType)
+        foreach (var (_, antennae) in antennaMap)
         {
-            if (type == '.') continue;
-
-            for (var i = 0; i < matches.Count; i++)
+            for (var i = 0; i < antennae.Count; i++)
             {
-                for (var j = 0; j < matches.Count; j++)
+                for (var j = i + 1; j < antennae.Count; j++)
                 {
-                    if (i == j) continue;
+                    var rowDiff = antennae[j].Row - antennae[i].Row;
+                    var colDiff = antennae[j].Col - antennae[i].Col;
 
-                    var rowDiff = matches[j].Row - matches[i].Row;
-                    var colDiff = matches[j].Col - matches[i].Col;
+                    var cursor = (antennae[i].Row, antennae[i].Col);
 
-                    // top-left to bottom-right diagonal
-                    if ((rowDiff < 0 && colDiff < 0) || (rowDiff > 0 && colDiff > 0))
+                    var nextRow = cursor.Row - rowDiff;
+                    var nextCol = cursor.Col - colDiff;
+
+                    while (nextRow >= 0 && nextCol >= 0 && nextCol < grid[0].Length)
                     {
-                        rowDiff = Math.Abs(rowDiff);
-                        colDiff = Math.Abs(colDiff);
-
-                        var cursor = (matches[i].Row, matches[i].Col);
-
-                        while (cursor.Row - rowDiff >= 0 && cursor.Col - colDiff >= 0)
-                        {
-                            cursor = (cursor.Row - rowDiff, cursor.Col - colDiff);
-                        }
-
-                        while (cursor.Row < grid.Length && cursor.Col < grid[0].Length)
-                        {
-                            grid[cursor.Row][cursor.Col].IsAntinode = true;
-                            cursor = (cursor.Row + rowDiff, cursor.Col + colDiff);
-                        }
+                        cursor = (nextRow, nextCol);
+                        nextRow = cursor.Row - rowDiff;
+                        nextCol = cursor.Col - colDiff;
                     }
-                    
-                    // top-right to bottom-left diagonal
-                    else
-                    {
-                        rowDiff = Math.Abs(rowDiff);
-                        colDiff = Math.Abs(colDiff);
-                        
-                        var cursor = (matches[i].Row, matches[i].Col);
-                        while (cursor.Row - rowDiff >= 0 && cursor.Col + colDiff < grid[0].Length)
-                        {
-                            cursor = (cursor.Row - rowDiff, cursor.Col + colDiff);
-                        }
 
-                        while (cursor.Row < grid.Length && cursor.Col >= 0)
-                        {
-                            grid[cursor.Row][cursor.Col].IsAntinode = true;
-                            cursor = (cursor.Row + rowDiff, cursor.Col - colDiff);
-                        }
+                    while (cursor.Row < grid.Length && cursor.Col >= 0 && cursor.Col < grid[0].Length)
+                    {
+                        grid[cursor.Row][cursor.Col].IsAntinode = true;
+                        cursor = (cursor.Row + rowDiff, cursor.Col + colDiff);
                     }
                 }
             }
