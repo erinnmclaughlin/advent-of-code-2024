@@ -7,8 +7,14 @@ public class Day08
     private readonly string[] _fileLines = File.ReadAllLines("day08.txt");
 
     [Fact, Benchmark]
-    public void PartOne() => Assert.Equal(240, CSharp.Day08.PartOne(_fileLines));
+    public void PartOne_CSharp() => Assert.Equal(240, CSharp.Day08.PartOne(_fileLines));
 
     [Fact, Benchmark]
-    public void PartTwo() => Assert.Equal(955, CSharp.Day08.PartTwo(_fileLines));
+    public void PartOne_CSharp_Optimized() => Assert.Equal(240, CSharp.Day08Optimized.PartOne(_fileLines));
+    
+    [Fact, Benchmark]
+    public void PartTwo_CSharp() => Assert.Equal(955, CSharp.Day08.PartTwo(_fileLines));
+    
+    [Fact, Benchmark]
+    public void PartTwo_CSharp_Optimized() => Assert.Equal(955, CSharp.Day08Optimized.PartTwo(_fileLines));
 }

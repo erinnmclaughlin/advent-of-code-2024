@@ -8,7 +8,9 @@ AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 
 
 ```
-| Method  | Mean     | Error   | StdDev  | Median    | Gen0    | Gen1    | Allocated |
-|-------- |---------:|--------:|--------:|----------:|--------:|--------:|----------:|
-| PartOne | 100.4 μs | 1.99 μs | 3.98 μs |  98.22 μs | 26.2451 |  8.6670 | 215.63 KB |
-| PartTwo | 130.5 μs | 0.97 μs | 0.76 μs | 130.71 μs | 32.9590 | 10.7422 | 271.39 KB |
+| Method                   | Mean      | Error    | StdDev   | Gen0    | Gen1   | Allocated |
+|------------------------- |----------:|---------:|---------:|--------:|-------:|----------:|
+| PartOne_CSharp           |  89.27 μs | 0.917 μs | 0.857 μs | 17.5781 | 1.4648 | 143.99 KB |
+| PartOne_CSharp_Optimized |  28.55 μs | 0.144 μs | 0.135 μs |  1.5564 | 0.0305 |  12.92 KB |
+| PartTwo_CSharp           | 114.56 μs | 1.207 μs | 1.129 μs | 24.2920 | 4.7607 | 199.76 KB |
+| PartTwo_CSharp_Optimized |  46.04 μs | 0.132 μs | 0.117 μs |  7.0190 | 1.1597 |  57.56 KB |
