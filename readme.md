@@ -31,3 +31,8 @@
 
 ### Day 7: Bridge Repair
 * [C# Solution](csharp/Day07.cs)
+* [Benchmarks](results/AoC.Day07-report-github.md)
+
+### Day 8: Resonant Collinearity
+* [C# Solution](csharp/Day08.cs)
+* [Benchmarks](results/AoC.Day08-report-github.md)

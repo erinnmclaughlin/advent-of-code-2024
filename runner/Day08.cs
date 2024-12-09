@@ -10,11 +10,5 @@ public class Day08
     public void PartOne_CSharp() => Assert.Equal(240, CSharp.Day08.PartOne(_fileLines));
 
     [Fact, Benchmark]
-    public void PartOne_CSharp_Optimized() => Assert.Equal(240, CSharp.Day08Optimized.PartOne(_fileLines));
-    
-    [Fact, Benchmark]
     public void PartTwo_CSharp() => Assert.Equal(955, CSharp.Day08.PartTwo(_fileLines));
-    
-    [Fact, Benchmark]
-    public void PartTwo_CSharp_Optimized() => Assert.Equal(955, CSharp.Day08Optimized.PartTwo(_fileLines));
 }

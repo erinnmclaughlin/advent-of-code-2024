@@ -1,66 +1,65 @@
 ﻿namespace AoC.CSharp;
 
-using Cell = (int Row, int Col);
-
 public static class Day08
 {
-    public static int PartOne(string[] fileLines) => GetAntennaPairs(fileLines)
-        .Aggregate(new HashSet<Cell>(), (agg, x) =>
-        {
-            var (c1, c2) = x;
-            var (dX, dY) = (c2.Col - c1.Col, c2.Row - c1.Row);
-            
-            c1 = (c1.Row - dY, c1.Col - dX);
-            if (fileLines.IsInBounds(c1)) 
-                agg.Add(c1);
-
-            c2 = (c2.Row + dY, c2.Col + dX);
-            if (fileLines.IsInBounds(c2)) 
-                agg.Add(c2);
-
-            return agg;
-        })
-        .Count;
-
-    public static int PartTwo(string[] fileLines) => GetAntennaPairs(fileLines)
-        .Aggregate(new HashSet<Cell>(), (agg, x) =>
-        {
-            var (c1, c2) = x;
-            var (dX, dY) = (c2.Col - c1.Col, c2.Row - c1.Row);
-
-            while (fileLines.IsInBounds(c1))
-            {
-                agg.Add(c1);
-                c1 = (c1.Row - dY, c1.Col - dX);
-            }
-
-            while (fileLines.IsInBounds(c2))
-            {
-                agg.Add(c2);
-                c2 = (c2.Row + dY, c2.Col + dX);
-            }
-
-            return agg;
-        })
-        .Count;
-
-    private static IEnumerable<(Cell c1, Cell c2)> GetAntennaPairs(string[] grid)
+    public static int PartOne(in ReadOnlySpan<string> grid) => grid.CountAntiNodes((antiNodes, r1, c1, r2, c2, maxRow, maxCol) =>
     {
-        var antennaMap = grid
-            .SelectMany((l, i) => l.Select((c, j) => new { Cell = new Cell(i, j), Type = c }).ToArray())
-            .Where(x => x.Type != '.')
-            .GroupBy(x => x.Type)
-            .ToDictionary(x => x.Key, g => g.Select(x => x.Cell).ToArray());
+        var (dRow, dCol) = (r2 - r1, c2 - c1);
 
-        foreach (var (_, antennae) in antennaMap)
-            for (var i = 0; i < antennae.Length; i++)
-            for (var j = i + 1; j < antennae.Length; j++)
-                yield return ((antennae[i].Row, antennae[i].Col), (antennae[j].Row, antennae[j].Col));
+        if (IsInBounds(r1 -= dRow, c1 -= dCol, maxRow, maxCol))
+            antiNodes.Add(HashCode.Combine(r1, c1));
+
+        if (IsInBounds(r2 += dRow, c2 += dCol, maxRow, maxCol))
+            antiNodes.Add(HashCode.Combine(r2, c2));
+    });
+
+    public static int PartTwo(in ReadOnlySpan<string> grid) => grid.CountAntiNodes((antiNodes, r1, c1, r2, c2, maxRow, maxCol) =>
+    {
+        var (dRow, dCol) = (r2 - r1, c2 - c1);
+
+        while (IsInBounds(r1, c1, maxRow, maxCol))
+        {
+            antiNodes.Add(HashCode.Combine(r1, c1));
+            r1 -= dRow;
+            c1 -= dCol;
+        }
+
+        while (IsInBounds(r2, c2, maxRow, maxCol))
+        {
+            antiNodes.Add(HashCode.Combine(r2, c2));
+            r2 += dRow;
+            c2 += dCol;
+        }
+    });
+    
+    private static int CountAntiNodes(this in ReadOnlySpan<string> grid, in Action<HashSet<int>, int, int, int, int, int, int> handle)
+    {
+        var antiNodes = new HashSet<int>();
+        var (numRows, numCols) = (grid.Length, grid[0].Length);
+
+        for (var i = 0; i < grid.Length; i++)
+        {
+            var rowSpan = grid[i].AsSpan();
+            
+            var j = -1;
+            while (rowSpan[(j + 1)..].ContainsAnyExcept('.'))
+            {
+                j += rowSpan[(j + 1)..].IndexOfAnyExcept('.') + 1;
+
+                for (var k = grid.Length - 1; k > i; k--)
+                {
+                    var l = grid[k].AsSpan().IndexOf(rowSpan[j]);
+                    if (l != -1) handle(antiNodes, i, j, k, l, numRows, numCols);
+                }
+            }
+        }
+
+        return antiNodes.Count;
     }
     
-    private static bool IsInBounds(this string[] grid, Cell cell) =>
-        cell.Row >= 0 && 
-        cell.Row < grid.Length &&
-        cell.Col >= 0 && 
-        cell.Col < grid[0].Length;
+    private static bool IsInBounds(int row, int col, int numRows, int numCols) =>
+        row >= 0 && 
+        col >= 0 && 
+        row < numRows &&
+        col < numCols;
 }
