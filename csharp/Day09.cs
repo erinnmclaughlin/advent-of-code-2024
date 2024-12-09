@@ -30,34 +30,35 @@ public static class Day09
     private static long GetCheckSum(this Span<int> memory)
     {
         long checkSum = 0;
+        
         for (var i = 0; i < memory.Length; i++)
-        {
             if (memory[i] != -1)
                 checkSum += (long)i * memory[i];
-        }
+        
         return checkSum;
     }
     
     private static Span<int> SortFragmented(this Span<int> memory)
     {
-        while (memory.TrimEnd(-1).Contains(-1))
-        {
-            var fileIndex = memory.LastIndexOfAnyExcept(-1);
-            var storageIndex = memory.IndexOf(-1);
+        var fileIndex = memory.LastIndexOfAnyExcept(-1) + 1;
+        var storageIndex = memory.IndexOf(-1);
 
+        while (fileIndex-- > storageIndex)
+        {
             memory[storageIndex] = memory[fileIndex];
             memory[fileIndex] = -1;
+            storageIndex = memory.IndexOf(-1);
         }
-
+        
         return memory;
     }
     
     private static Span<int> SortUnfragmented(this Span<int> memory)
     {
-        var fileId = memory[^1];
+        var fileId = memory[^1] + 1;
         var lastSkippedFileId = -1;
             
-        while (fileId > -1)
+        while (fileId-- > -1)
         {
             var start = memory.IndexOf(fileId);
             var end = memory.LastIndexOf(fileId);
@@ -65,18 +66,18 @@ public static class Day09
 
             if (!memory.TryGetFreeMemory(fileSpan.Length, out var m) || memory.IndexOf(m) > memory.IndexOf(fileSpan))
             {
+                // bookmark this spot to try again next time
                 if (lastSkippedFileId == -1)
                     lastSkippedFileId = fileId;
 
-                fileId--;
                 continue;
             }
-                
+            
             fileSpan.CopyTo(m);
             fileSpan.Fill(-1);
             
             // we haven't finished processing all files in the current pass, so keep going:
-            if (fileId-- != -1)
+            if (fileId != 0)
                 continue;
 
             // if we've finished processing all files, and we didn't skip anything, we're done:
@@ -84,10 +85,10 @@ public static class Day09
                 break;
 
             // otherwise we need another pass, so go back to the last bookmarked file and go again:
-            fileId = lastSkippedFileId;
+            fileId = lastSkippedFileId + 1;
             lastSkippedFileId = -1;
         }
-            
+        
         return memory;
     }
     
