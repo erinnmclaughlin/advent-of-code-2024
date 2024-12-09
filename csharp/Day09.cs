@@ -9,7 +9,7 @@ public static class Day09
     {
         var totalSize = 0;
         for (var i = 1; i < 10; i++)
-            totalSize += i * input.Count($"{i}");
+            totalSize += i * input.Count((char)(i + 48));
 
         Span<int> memory = new int[totalSize];
 
@@ -19,7 +19,7 @@ public static class Day09
             var size = int.Parse(input[i].ToString());
 
             if (size == 0) continue;
-                
+            
             memory.Slice(index, size).Fill(i % 2 == 0 ? i / 2 : -1);
             index += size;
         }
@@ -38,7 +38,7 @@ public static class Day09
         return checkSum;
     }
     
-    public static Span<int> SortFragmented(this Span<int> memory)
+    private static Span<int> SortFragmented(this Span<int> memory)
     {
         while (memory.TrimEnd(-1).Contains(-1))
         {
@@ -57,7 +57,7 @@ public static class Day09
         var fileId = memory[^1];
         var lastSkippedFileId = -1;
             
-        while (true)
+        while (fileId > -1)
         {
             var start = memory.IndexOf(fileId);
             var end = memory.LastIndexOf(fileId);
@@ -67,22 +67,23 @@ public static class Day09
             {
                 if (lastSkippedFileId == -1)
                     lastSkippedFileId = fileId;
-                    
-                if (fileId-- == -1)
-                    break;
-                    
+
+                fileId--;
                 continue;
             }
                 
             fileSpan.CopyTo(m);
             fileSpan.Fill(-1);
-                
+            
+            // we haven't finished processing all files in the current pass, so keep going:
             if (fileId-- != -1)
                 continue;
 
+            // if we've finished processing all files, and we didn't skip anything, we're done:
             if (lastSkippedFileId != -1)
                 break;
 
+            // otherwise we need another pass, so go back to the last bookmarked file and go again:
             fileId = lastSkippedFileId;
             lastSkippedFileId = -1;
         }
@@ -92,8 +93,7 @@ public static class Day09
     
     private static bool TryGetFreeMemory(this Span<int> memory, int size, out Span<int> freeMemory)
     {
-        var searchValue = Enumerable.Repeat(-1, size).ToArray();
-        var start = memory.IndexOf(searchValue);
+        var start = memory.IndexOf(Enumerable.Repeat(-1, size).ToArray());
 
         if (start == -1)
         {
