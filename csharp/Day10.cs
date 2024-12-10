@@ -5,7 +5,8 @@ public static class Day10
 {
     public static int PartOne(string[] lines) => lines
         .EnumerateStartingCoords()
-        .Sum(x => lines.EnumeratePathEnds(x).Distinct().Count());
+        .SelectMany(x => lines.EnumeratePathEnds(x).Distinct())
+        .Count();
 
     public static int PartTwo(string[] lines) => lines
         .EnumerateStartingCoords()
