@@ -2,8 +2,8 @@ namespace AoC.CSharp;
 
 public static class Day09
 {
-    public static long PartOne(ReadOnlySpan<char> content) => content.BuildDisk().SortFragmented().GetCheckSum();
-    public static long PartTwo(ReadOnlySpan<char> content) => content.BuildDisk().SortUnfragmented().GetCheckSum();
+    public static long PartOne(string content) => content.BuildDisk().SortFragmented().GetCheckSum();
+    public static long PartTwo(string content) => content.BuildDisk().SortUnfragmented().GetCheckSum();
 
     private static ReadOnlySpan<int> SortFragmented(this Span<int> disk)
     {
@@ -13,7 +13,7 @@ public static class Day09
         {
             disk[storageIndex] = disk[fileIndex];
             disk[fileIndex] = -1;
-            storageIndex = disk.IndexOf(-1);
+            storageIndex += disk[storageIndex..].IndexOf(-1);
         }
         
         return disk;
@@ -58,13 +58,9 @@ public static class Day09
         return disk;
     }
     
-    private static Span<int> BuildDisk(this ReadOnlySpan<char> input)
+    private static Span<int> BuildDisk(this string input)
     {
-        var totalSize = 0;
-        for (var i = 1; i < 10; i++)
-            totalSize += i * input.Count((char)(i + 48));
-
-        Span<int> disk = new int[totalSize];
+        Span<int> disk = new int[input.Sum(i => i - 48)];
 
         var index = 0;
         for (var i = 0; i < input.Length; i++)
