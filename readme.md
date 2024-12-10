@@ -36,3 +36,11 @@
 ### Day 8: Resonant Collinearity
 * [C# Solution](csharp/Day08.cs)
 * [Benchmarks](results/AoC.Day08-report-github.md)
+
+### Day 9: Disk Fragmenter
+* [C# Solution](csharp/Day09.cs)
+* [Benchmarks](results/AoC.Day09-report-github.md)
+
+### Day 10: Hoof It
+* [C# Solution](csharp/Day10.cs)
+* [Benchmarks](results/AoC.Day10-report-github.md)
