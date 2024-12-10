@@ -16,10 +16,7 @@ public static class Day09
         var index = 0;
         for (var i = 0; i < input.Length; i++)
         {
-            var size = int.Parse(input[i].ToString());
-
-            if (size == 0) continue;
-            
+            var size = input[i] - 48;
             memory.Slice(index, size).Fill(i % 2 == 0 ? i / 2 : -1);
             index += size;
         }

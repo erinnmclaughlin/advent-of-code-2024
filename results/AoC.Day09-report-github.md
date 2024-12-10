@@ -10,5 +10,5 @@ Apple M3 Max, 1 CPU, 14 logical and 14 physical cores
 ```
 | Method  | Mean      | Error    | StdDev   | Allocated  |
 |-------- |----------:|---------:|---------:|-----------:|
-| PartOne |  77.69 ms | 0.328 ms | 0.306 ms |  839.04 KB |
-| PartTwo | 265.87 ms | 1.142 ms | 1.068 ms | 1602.49 KB |
+| PartOne |  77.52 ms | 0.412 ms | 0.386 ms |  370.31 KB |
+| PartTwo | 264.16 ms | 1.300 ms | 1.216 ms | 1133.44 KB |
