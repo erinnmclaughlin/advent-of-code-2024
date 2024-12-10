@@ -38,12 +38,12 @@ public static class Day10
         if (pos.Row > 0 && map[pos.Row - 1][pos.Col] == nextValue)
             yield return new Coord(pos.Row - 1, pos.Col);
         
+        if (pos.Row < map.Length - 1 && map[pos.Row + 1][pos.Col] == nextValue)
+            yield return new Coord(pos.Row + 1, pos.Col);
+
         if (pos.Col > 0 && map[pos.Row][pos.Col - 1] == nextValue)
             yield return new Coord(pos.Row, pos.Col - 1);
 
-        if (pos.Row < map.Length - 1 && map[pos.Row + 1][pos.Col] == nextValue)
-            yield return new Coord(pos.Row + 1, pos.Col);
-        
         if (pos.Col < map[0].Length - 1 && map[pos.Row][pos.Col + 1] == nextValue)
             yield return new Coord(pos.Row, pos.Col + 1);
     }
