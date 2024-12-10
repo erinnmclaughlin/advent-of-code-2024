@@ -40,10 +40,9 @@ public static class Day09
     
     private static Span<int> SortFragmented(this Span<int> memory)
     {
-        var fileIndex = memory.LastIndexOfAnyExcept(-1) + 1;
         var storageIndex = memory.IndexOf(-1);
 
-        while (fileIndex-- > storageIndex)
+        for (var fileIndex = memory.Length - 1; fileIndex > storageIndex; fileIndex--)
         {
             memory[storageIndex] = memory[fileIndex];
             memory[fileIndex] = -1;
@@ -55,10 +54,9 @@ public static class Day09
     
     private static Span<int> SortUnfragmented(this Span<int> memory)
     {
-        var fileId = memory[^1] + 1;
         var lastSkippedFileId = -1;
-            
-        while (fileId-- > -1)
+        
+        for (var fileId = memory[^1]; fileId > 0; fileId--)
         {
             var start = memory.IndexOf(fileId);
             var end = memory.LastIndexOf(fileId);
@@ -77,7 +75,7 @@ public static class Day09
             fileSpan.Fill(-1);
             
             // we haven't finished processing all files in the current pass, so keep going:
-            if (fileId != 0)
+            if (fileId != 1)
                 continue;
 
             // if we've finished processing all files, and we didn't skip anything, we're done:
