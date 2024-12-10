@@ -33,7 +33,7 @@ public static class Day09
         
         for (var i = 0; i < memory.Length; i++)
             if (memory[i] != -1)
-                checkSum += (long)i * memory[i];
+                checkSum += i * memory[i];
         
         return checkSum;
     }
