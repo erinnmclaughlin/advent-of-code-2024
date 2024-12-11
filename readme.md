@@ -2,7 +2,7 @@
 
 ### Day 1: Historian Hysteria
 * [C# Solution](csharp/Day01.cs)
-* [C# Solution (Optimized](csharp/Day01.cs)
+* [C# Solution (Optimized)](csharp/Day01Optimized.cs)
 * [F# Solution](fsharp/day01.fs)
 * [Benchmarks](results/AoC.Day01-report-github.md)
 
