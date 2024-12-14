@@ -57,6 +57,7 @@ public static class Day11
         public long Count { get; set; } = 1;
     }
     
+    // original solution; worked for part one but way too slow for part two
     public static long CountStonesSlow(ReadOnlySpan<char> span)
     {
         for (var i = 0; i < 25; i++)
