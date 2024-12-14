@@ -45,3 +45,12 @@
 ### Day 10: Hoof It
 * [C# Solution](csharp/Day10.cs)
 * [Benchmarks](results/AoC.Day10-report-github.md)
+
+### Day 11: Plutonian Pebbles
+* [C# Solution](csharp/Day11.cs)
+
+### Day 12: Garden Groups
+* Still working on part 2!
+
+### Day 13: Claw Contraption
+* [C# Solution](csharp/Day13.cs)
