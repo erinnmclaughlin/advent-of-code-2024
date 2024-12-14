@@ -6,7 +6,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsharp", "fsharp\fsharp.fsp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runner", "runner\runner.csproj", "{5E999372-2F12-4E50-AB8E-C3F398A0F306}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vizualizations", "vizualizations\vizualizations.csproj", "{FF5D9233-329E-4CC0-8775-5A43807DEC06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "web", "web\web.csproj", "{FF5D9233-329E-4CC0-8775-5A43807DEC06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

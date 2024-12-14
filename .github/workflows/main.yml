@@ -17,10 +17,10 @@ jobs:
     - name: Install .NET WASM Build Tools
       run: dotnet workload install wasm-tools
     - name: Publish .NET Core Project
-      run: dotnet publish ./vizualizations/vizualizations.csproj -c:Release -p:GHPages=true -o dist/vizualizations --nologo
+      run: dotnet publish ./web/web.csproj -c:Release -p:GHPages=true -o dist/web --nologo
     - name: Commit wwwroot to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         BRANCH: gh-pages
-        FOLDER: dist/vizualizations/wwwroot
+        FOLDER: dist/web/wwwroot
         
