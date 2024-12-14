@@ -1,15 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp", "csharp.csproj", "{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp", "csharp\csharp.csproj", "{FBA96869-1EAD-4081-9F5D-0DDFAAF74A83}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsharp", "..\fsharp\fsharp.fsproj", "{D79E48F4-714B-47B5-B53B-85AF325A47E8}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsharp", "fsharp\fsharp.fsproj", "{D79E48F4-714B-47B5-B53B-85AF325A47E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runner", "..\runner\runner.csproj", "{5E999372-2F12-4E50-AB8E-C3F398A0F306}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{0F186FF5-56C7-403D-8835-D19709875460}"
-	ProjectSection(SolutionItems) = preProject
-		..\readme.md = ..\readme.md
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runner", "runner\runner.csproj", "{5E999372-2F12-4E50-AB8E-C3F398A0F306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
