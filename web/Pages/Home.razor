@@ -2,7 +2,7 @@
 @using static AoC.CSharp.Day14
 @inject HttpClient HttpClient
 
-<div style="display: flex; gap: 1rem;">
+<div class="container">
     <div class="grid">
         @foreach (var robot in Robots)
         {
@@ -11,14 +11,13 @@
     </div>
     <div>
         <p>
-            <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds" /> seconds
-        </p>
-        <p>
-            <input type="range" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds" />
+            <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds"/> seconds
         </p>
         <p>
             <button type="button" @onclick="() => Seconds -= NumCols" disabled="@(Seconds < NumCols)">-1 cycle</button>
+            <button type="button" @onclick="() => Seconds--" disabled="@(Seconds <= MinSeconds)">-1 second</button>
             <button type="button" @onclick="() => Seconds = DefaultSeconds">Reset</button>
+            <button type="button" @onclick="() => Seconds++" disabled="@(Seconds >= MaxSeconds)">+1 second</button>
             <button type="button" @onclick="() => Seconds += NumCols" disabled="@(Seconds + NumCols > MaxSeconds)">+1 cycle</button>
         </p>
     </div>

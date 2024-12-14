@@ -1,12 +1,31 @@
+.container {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .grid {
     display: grid; 
-    grid-template-rows: repeat(103, 8px); 
-    grid-template-columns: repeat(101, 8px); 
-    border: 1px solid;
+    grid-template-rows: repeat(103, 4px); 
+    grid-template-columns: repeat(101, 4px); 
+    background: black;
+    width: fit-content;
 }
 
 .robot {
     height: 100%; 
     width: 100%; 
-    background-color: darkgreen;
+    background-color: green;
+}
+
+@media screen and (min-width: 1000px) {
+    .container {
+        flex-direction: row;
+    }
+    
+    .grid {
+        grid-template-rows: repeat(103, 8px);
+        grid-template-columns: repeat(101, 8px);
+    }
 }
