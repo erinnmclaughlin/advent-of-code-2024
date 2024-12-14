@@ -1,0 +1,13 @@
+/* /Pages/Home.razor.rz.scp.css */
+.grid[b-5fvc8lrbex] {
+    display: grid; 
+    grid-template-rows: repeat(103, 8px); 
+    grid-template-columns: repeat(101, 8px); 
+    border: 1px solid;
+}
+
+.robot[b-5fvc8lrbex] {
+    height: 100%; 
+    width: 100%; 
+    background-color: darkgreen;
+}
