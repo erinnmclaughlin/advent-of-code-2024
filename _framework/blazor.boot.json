@@ -1,9 +1,9 @@
 {
   "mainAssemblyName": "web",
   "resources": {
-    "hash": "sha256-s4lbtmA4AoxkLkJ3THjfidUUtW2vGHHCyrZz3MHvx08=",
+    "hash": "sha256-a/wShlKHgV+42cC2C0dNKaan9sFX6zDQrU+gL4MeihI=",
     "fingerprinting": {
-      "csharp.mljgl975ss.wasm": "csharp.wasm",
+      "csharp.v8efa5ujjv.wasm": "csharp.wasm",
       "Microsoft.AspNetCore.Components.ptryxwizoy.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.7yvofxhswa.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
       "Microsoft.AspNetCore.Components.WebAssembly.pq7fdyw1tb.wasm": "Microsoft.AspNetCore.Components.WebAssembly.wasm",
@@ -39,7 +39,7 @@
       "System.Text.RegularExpressions.eenvluogp9.wasm": "System.Text.RegularExpressions.wasm",
       "System.Threading.Tasks.Parallel.y5c1lf04dg.wasm": "System.Threading.Tasks.Parallel.wasm",
       "System.Threading.8e8xclhmd9.wasm": "System.Threading.wasm",
-      "web.g34e2el7ua.wasm": "web.wasm",
+      "web.t5ui8w1gdy.wasm": "web.wasm",
       "dotnet.native.ann9bewb11.js": "dotnet.native.js",
       "dotnet.native.68ocnwr1gn.wasm": "dotnet.native.wasm",
       "dotnet.js": "dotnet.js",
@@ -67,7 +67,7 @@
       "System.Runtime.InteropServices.JavaScript.3uvku0ibnu.wasm": "sha256-K5wa4QwWB8A0OrHM4yWK86Nl6ItEv9c3ctAASLMYLKo="
     },
     "assembly": {
-      "csharp.mljgl975ss.wasm": "sha256-xo8d0c/32CjxGFid93Ibm1Tr1nytlWD792gT5FGXI3I=",
+      "csharp.v8efa5ujjv.wasm": "sha256-3xMC9jbqZAVRB+9/19pbN0fOSa16dNqVXCYBXJILcBY=",
       "Microsoft.AspNetCore.Components.ptryxwizoy.wasm": "sha256-ox3zcDkAHfDe3u3RQyWgIriGWvJEH1H7FoYFdQCEw4k=",
       "Microsoft.AspNetCore.Components.Web.7yvofxhswa.wasm": "sha256-QaU3MCJZXUPpTg3z+sdNujuTSOqUW4O70/Rc6aQj1xU=",
       "Microsoft.AspNetCore.Components.WebAssembly.pq7fdyw1tb.wasm": "sha256-D/ZUWrvE7bqOtBfOWuLj+4RNqOvNZ0SnjD6QrBwUcb8=",
@@ -101,7 +101,7 @@
       "System.Text.RegularExpressions.eenvluogp9.wasm": "sha256-NnVqU6Y3EoQGnfUSxkh7RN+Pfz5nG4ZyhcbC9/1rKVM=",
       "System.Threading.Tasks.Parallel.y5c1lf04dg.wasm": "sha256-1sRwtL04jhM2QXEe3IsiFJ3j9LrNRKofaZl/iE4gmTU=",
       "System.Threading.8e8xclhmd9.wasm": "sha256-QMea5X3VW4Tfugfd3mDb0YxhRVOFPU7wOJZ6xL+vYm0=",
-      "web.g34e2el7ua.wasm": "sha256-xKmnyY8j5a3lVdP+1o07Qzo0fOpVrdlzV8CEge1blkM="
+      "web.t5ui8w1gdy.wasm": "sha256-MQGnzYovHjJ0ZQGkXk7fkqv2w6kKYH9my6x29Y+vDP8="
     }
   },
   "cacheBootResources": true,
