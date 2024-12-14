@@ -61,19 +61,19 @@ public static class Day13
 /*
     we know...
     a.Count * a.X + b.Count * b.X = t.X
-    a.Count = (tA.X - b.Count * b.X) / a.X
+    a.Count = (t.X - b.Count * b.X) / a.X
 
     and...
-    a.Count * a.Y + b.Count * b.Y = tA.Y
-    a.Count = (tA.Y - b.Count * b.Y) / a.Y
+    a.Count * a.Y + b.Count * b.Y = t.Y
+    a.Count = (t.Y - b.Count * b.Y) / a.Y
 
     so substitute & solve (in this case, solve for b.Count)...
-    (tA.X - b.Count * b.X) / a.X = (tA.Y - b.Count * b.Y) / a.Y
-    (tA.X - b.Count * b.X) * a.Y  = (tA.Y - b.Count * b.Y) * a.X
-    (tA.X * a.Y) - (b.Count * b.X * a.Y) = (tA.Y * a.X) - (b.Count * b.Y *  a.X)
-    (b.Count * b.Y *  a.X) - (b.Count * b.X * a.Y) = (tA.Y * a.X) - (tA.X * a.Y)
-    b.Count * ((b.Y * a.X) - (b.X * a.Y)) = (tA.Y * a.X) - (tA.X * a.Y)
-    b.Count = ((tA.Y * a.X) - (tA.X * a.Y)) / ((b.Y * a.X) - (b.X * a.Y))
+    (t.X - b.Count * b.X) / a.X = (t.Y - b.Count * b.Y) / a.Y
+    (t.X - b.Count * b.X) * a.Y  = (t.Y - b.Count * b.Y) * a.X
+    (t.X * a.Y) - (b.Count * b.X * a.Y) = (t.Y * a.X) - (b.Count * b.Y *  a.X)
+    (b.Count * b.Y *  a.X) - (b.Count * b.X * a.Y) = (t.Y * a.X) - (t.X * a.Y)
+    b.Count * ((b.Y * a.X) - (b.X * a.Y)) = (t.Y * a.X) - (t.X * a.Y)
+    b.Count = ((t.Y * a.X) - (t.X * a.Y)) / ((b.Y * a.X) - (b.X * a.Y))
  */
     private static (long A, long B)? GetCounts(ReadOnlySpan<string> input, long targetPadding = 0)
     {
