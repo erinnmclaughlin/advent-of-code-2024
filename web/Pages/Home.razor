@@ -11,46 +11,54 @@
     </div>
     <div>
         <p>
-            <input type="number" @bind="Seconds" @bind:event="onchange" @bind:after="Update"/> seconds
+            <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds" /> seconds
         </p>
         <p>
-            <input type="range" @bind="Seconds" @bind:event="onchange" @bind:after="Update" min="0" max="100000" />
+            <input type="range" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds" />
         </p>
         <p>
-            <button type="button" @onclick="Reset">Reset</button>
+            <button type="button" @onclick="() => Seconds -= NumCols" disabled="@(Seconds < NumCols)">-1 cycle</button>
+            <button type="button" @onclick="() => Seconds = DefaultSeconds">Reset</button>
+            <button type="button" @onclick="() => Seconds += NumCols" disabled="@(Seconds + NumCols > MaxSeconds)">+1 cycle</button>
         </p>
     </div>
 </div>
 
 @code {
-    private List<Robot> _robots = []; // original list
-
-    private List<Robot> Robots { get; set; } = [];
-    private int Seconds { get; set; } = 6888;
-    
     private const int NumCols = 101;
     private const int NumRows = 103;
-    
+    private const int MinSeconds = 0;
+    private const int MaxSeconds = 100_000;
+    private const int DefaultSeconds = 6888;
+
+    private List<Robot> _robots = []; // original list
+    private List<Robot> Robots { get; set; } = []; // updated list
+
+    private int _seconds;
+    private int Seconds
+    {
+        get => _seconds;
+        set
+        {
+            _seconds = Math.Clamp(value, MinSeconds, MaxSeconds);
+            Robots = GetUpdatedList();
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var file = await HttpClient.GetStringAsync("day14.txt");
         _robots = file.Split('\n').Select(Robot.Parse).ToList();
 
-        Update();
+        Seconds = DefaultSeconds;
+        Robots = GetUpdatedList();
     }
-
-    private void Reset()
-    {
-        Seconds = 6888;
-        Update();
-    }
-
-    private void Update() => Robots = _robots.Select(x =>
+   
+    private List<Robot> GetUpdatedList() => Robots = _robots.Select(x =>
     {
         var robot = new Robot { Position = x.Position, Velocity = x.Velocity };
         robot.Move(Seconds, NumRows, NumCols);
         return robot;
     })
     .ToList();
-   
 }
