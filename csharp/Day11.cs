@@ -4,14 +4,12 @@ namespace AoC.CSharp;
 
 public static class Day11
 {
-    public static long CountStones(string input, int numberOfRounds)
-    {
-        var stones = input.Split(' ').Select(n => new Stone { Number = n }).ToList();
-
-        for (var i = 0; i < numberOfRounds; i++)
-        {
-            stones = stones
-                .AsParallel()
+    public static long CountStones(string input, int numberOfRounds) =>  Enumerable
+        .Range(0, numberOfRounds)
+        .AsParallel()
+        .Aggregate(
+            input.Split(' ').Select(n => new Stone(n)).ToList(),
+            (current, _) => current
                 .SelectMany(Blink)
                 .GroupBy(s => s.Number)
                 .Select(s =>
@@ -20,28 +18,20 @@ public static class Day11
                     stone.Count += s.Skip(1).Sum(x => x.Count);
                     return stone;
                 })
-                .ToList();
-        }
-
-        return stones.Sum(s => s.Count);
-    }
-
+                .ToList()
+        )
+        .Sum(s => s.Count);
+    
     private static IEnumerable<Stone> Blink(Stone stone)
     {
-        if (stone.Number == "0")
+        if (stone.Number is "" or "0")
         {
             stone.Number = "1";
         }
         else if (stone.Number.Length % 2 == 0)
         {
-            yield return new Stone
-            {
-                Number = stone.Number[..(stone.Number.Length / 2)],
-                Count = stone.Count
-            };
-                
+            yield return new Stone(stone.Number[..(stone.Number.Length / 2)]) { Count = stone.Count };
             stone.Number = stone.Number[(stone.Number.Length / 2)..].TrimStart('0');
-            if (stone.Number.Length == 0) stone.Number = "0";
         }
         else
         {
@@ -51,16 +41,16 @@ public static class Day11
         yield return stone;
     }
     
-    public sealed class Stone
+    private sealed class Stone(string number)
     {
-        public required string Number { get; set; }
+        public string Number { get; set; } = number;
         public long Count { get; set; } = 1;
     }
     
     // original solution; worked for part one but way too slow for part two
-    public static long CountStonesSlow(ReadOnlySpan<char> span)
+    public static long CountStonesSlow(ReadOnlySpan<char> span, int numberOfRounds)
     {
-        for (var i = 0; i < 25; i++)
+        for (var i = 0; i < numberOfRounds; i++)
         {
             var newSpan = new StringBuilder();
             var split = span.Split(' ');
