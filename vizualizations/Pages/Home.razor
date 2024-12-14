@@ -3,7 +3,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<div style="display: flex;">
+<div style="display: flex; gap: 1rem;">
     <div class="grid">
         @foreach (var robot in Robots)
         {
@@ -11,8 +11,15 @@
         }
     </div>
     <div>
-        <p>@Seconds seconds</p>
-        <input type="number" @bind="Seconds" @bind:after="Update"/>
+        <p>
+            <input type="number" @bind="Seconds" @bind:event="onchange" @bind:after="Update"/> seconds
+        </p>
+        <p>
+            <input type="range" @bind="Seconds" @bind:event="onchange" @bind:after="Update" min="0" max="100000" />
+        </p>
+        <p>
+            <button type="button" @onclick="Reset">Reset</button>
+        </p>
     </div>
 </div>
 
@@ -24,13 +31,18 @@
     
     private const int NumCols = 101;
     private const int NumRows = 103;
-
-
+    
     protected override async Task OnInitializedAsync()
     {
         var file = await HttpClient.GetStringAsync("day14.txt");
         _robots = file.Split('\n').Select(Robot.Parse).ToList();
 
+        Update();
+    }
+
+    private void Reset()
+    {
+        Seconds = 6888;
         Update();
     }
 
