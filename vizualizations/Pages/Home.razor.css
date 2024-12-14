@@ -1,0 +1,12 @@
+.grid {
+    display: grid; 
+    grid-template-rows: repeat(103, 8px); 
+    grid-template-columns: repeat(101, 8px); 
+    border: 1px solid;
+}
+
+.robot {
+    height: 100%; 
+    width: 100%; 
+    background-color: darkgreen;
+}

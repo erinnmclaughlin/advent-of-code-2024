@@ -1,0 +1,77 @@
+﻿@page "/"
+@inject HttpClient HttpClient
+
+<PageTitle>Home</PageTitle>
+
+<div style="display: flex;">
+    <div class="grid">
+        @foreach (var robot in Robots)
+        {
+            <div class="robot" style="grid-row-start: @robot.Position.Y; grid-column-start: @robot.Position.X"></div>
+        }
+    </div>
+    <div>
+        <p>@Seconds seconds</p>
+        <input type="number" @bind="Seconds" @bind:after="Update"/>
+    </div>
+</div>
+
+@code {
+    private List<Robot> _robots = []; // original list
+
+    private List<Robot> Robots { get; set; } = [];
+    private int Seconds { get; set; } = 6888;
+    
+    private const int NumCols = 101;
+    private const int NumRows = 103;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var file = await HttpClient.GetStringAsync("day14.txt");
+        _robots = file.Split('\n').Select(Robot.Parse).ToList();
+
+        Update();
+    }
+
+    private void Update()
+    {
+        Robots = _robots
+            .Select(x =>
+            {
+                var robot = new Robot { Position = x.Position, Velocity = x.Velocity };
+                robot.Move(Seconds, NumRows, NumCols);
+                return robot;
+            })
+            .ToList();
+    }
+    
+    private sealed class Robot
+    {
+        public (int X, int Y) Position { get; set; }
+        public (int dX, int dY) Velocity { get; set; }
+
+        public void Move(int seconds, int numRows, int numCols)
+        {
+            var x = (Position.X + Velocity.dX * seconds) % numCols;
+            var y = (Position.Y + Velocity.dY * seconds) % numRows;
+
+            if (x < 0) x = numCols + x;
+            if (y < 0) y = numRows + y;
+            
+            Position = (x, y);
+        }
+        
+        public static Robot Parse(string input)
+        {
+            var splitIndex = input.IndexOf(' ');
+            var pos = input[2..splitIndex].Split(',');
+            var vel = input[(splitIndex + 3)..].Split(',');
+            return new Robot
+            {
+                Position = (int.Parse(pos[0]), int.Parse(pos[1])),
+                Velocity = (int.Parse(vel[0]), int.Parse(vel[1]))
+            };
+        }
+    }
+}
