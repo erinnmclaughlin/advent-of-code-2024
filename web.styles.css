@@ -1,23 +1,26 @@
 /* /Pages/Home.razor.rz.scp.css */
 .container[b-pmh1qnh7m9] {
     display: flex;
-    gap: 1rem;
     flex-direction: column;
     justify-content: center;
 }
 
 .grid[b-pmh1qnh7m9] {
     display: grid; 
-    grid-template-rows: repeat(103, 4px); 
-    grid-template-columns: repeat(101, 4px); 
+    grid-template-rows: repeat(103, calc(100vw / 101)); 
+    grid-template-columns: repeat(101, calc(100vw / 101)); 
     background: black;
-    width: fit-content;
+    width: 100vw;
+}
+
+.inputs[b-pmh1qnh7m9] {
+    padding: 0 1rem;
 }
 
 .robot[b-pmh1qnh7m9] {
     height: 100%; 
     width: 100%; 
-    background-color: green;
+    background-color: forestgreen;
 }
 
 @media screen and (min-width: 1000px) {
@@ -28,5 +31,6 @@
     .grid[b-pmh1qnh7m9] {
         grid-template-rows: repeat(103, 8px);
         grid-template-columns: repeat(101, 8px);
+        width: fit-content;
     }
 }
