@@ -13,12 +13,13 @@
         <p>
             <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds"/> seconds
         </p>
-        <p>
+        <p class="buttons">
             <button type="button" @onclick="() => Seconds -= NumCols" disabled="@(Seconds < NumCols)">-1 cycle</button>
             <button type="button" @onclick="() => Seconds--" disabled="@(Seconds <= MinSeconds)">-1 second</button>
-            <button type="button" @onclick="() => Seconds = DefaultSeconds">Reset</button>
+            <button type="button" @onclick="() => Seconds = 0" disabled="@(Seconds == 0)">Reset</button>
             <button type="button" @onclick="() => Seconds++" disabled="@(Seconds >= MaxSeconds)">+1 second</button>
             <button type="button" @onclick="() => Seconds += NumCols" disabled="@(Seconds + NumCols > MaxSeconds)">+1 cycle</button>
+            <button type="button" @onclick="() => Seconds = DefaultSeconds" style="background-color: darkred">Show Answer</button>
         </p>
     </div>
 </div>
@@ -49,7 +50,6 @@
         var file = await HttpClient.GetStringAsync("day14.txt");
         _robots = file.Split('\n').Select(Robot.Parse).ToList();
 
-        Seconds = DefaultSeconds;
         Robots = GetUpdatedList();
     }
    

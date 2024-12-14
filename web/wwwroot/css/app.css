@@ -1,5 +1,8 @@
 html, body {
     font-family: system-ui, sans-serif;
+    background: black;
+    color-scheme: dark;
+    height: 100%;
 }
 
 body {
@@ -9,6 +12,8 @@ body {
 #app {
     display: flex;
     justify-content: center;
+    height: 100%;
+    align-items: start;
 }
 
 h1:focus {
