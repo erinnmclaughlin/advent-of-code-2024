@@ -9,7 +9,7 @@
             <div class="robot" style="grid-row-start: @robot.Position.Y; grid-column-start: @robot.Position.X"></div>
         }
     </div>
-    <div>
+    <div class="inputs">
         <p>
             <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds"/> seconds
         </p>
