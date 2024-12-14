@@ -1,13 +1,32 @@
 /* /Pages/Home.razor.rz.scp.css */
+.container[b-pmh1qnh7m9] {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .grid[b-pmh1qnh7m9] {
     display: grid; 
-    grid-template-rows: repeat(103, 8px); 
-    grid-template-columns: repeat(101, 8px); 
-    border: 1px solid;
+    grid-template-rows: repeat(103, 4px); 
+    grid-template-columns: repeat(101, 4px); 
+    background: black;
+    width: fit-content;
 }
 
 .robot[b-pmh1qnh7m9] {
     height: 100%; 
     width: 100%; 
-    background-color: darkgreen;
+    background-color: green;
+}
+
+@media screen and (min-width: 1000px) {
+    .container[b-pmh1qnh7m9] {
+        flex-direction: row;
+    }
+    
+    .grid[b-pmh1qnh7m9] {
+        grid-template-rows: repeat(103, 8px);
+        grid-template-columns: repeat(101, 8px);
+    }
 }
