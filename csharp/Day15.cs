@@ -50,49 +50,41 @@ public static class Day15
     
     public sealed class World
     {
-        public int Height => GameObjects.Max(x => x.Position.Y + x.Height);
-        public int Width => GameObjects.Max(x => x.Position.X + x.Width);
-        
         public HashSet<GameObject> GameObjects { get; set; } = [];
         public Robot Robot { get; set; } = new();
 
-        public bool CanMove(GameObject target, Vector2D dir)
+        public bool TryMove(GameObject target, Vector2D dir) => TryMove(target, dir, []);
+        
+        public bool TryMove(GameObject target, Vector2D dir, List<GameObject> affected)
         {
             if (!target.Movable) return false;
             
             target.Position += dir;
+            affected.Add(target);
+            
             var collidingObjects = GameObjects.Where(x => x.CollidesWith(target)).ToList();
 
             var canMove = true;
+            
             foreach (var collidingObject in collidingObjects)
             {
-                if (!CanMove(collidingObject, dir))
+                if (!TryMove(collidingObject, dir, affected))
                 {
                     canMove = false;
                     break;
                 }
             }
-            target.Position -= dir;
-            return canMove;
-        }
-        
-        public bool TryMove(GameObject target, Vector2D dir)
-        {
-            if (!target.Movable) return false;
-            
-            target.Position += dir;
-            var collidingObjects = GameObjects.Where(x => x.CollidesWith(target));
 
-            foreach (var collidingObject in collidingObjects)
+            if (!canMove)
             {
-                if (!TryMove(collidingObject, dir))
+                for (var i = affected.Count - 1; i >= 0; i--)
                 {
-                    target.Position -= dir;
-                    return false;
+                    affected[i].Position -= dir;
+                    affected.RemoveAt(i);
                 }
             }
             
-            return true;
+            return canMove;
         }
 
         public long GetGpsLocation(GameObject target) => 100 * target.Position.Y + target.Position.X;

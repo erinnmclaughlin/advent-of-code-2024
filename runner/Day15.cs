@@ -33,8 +33,7 @@ public class Day15
         {
             foreach (var dir in span[i].Select(CSharp.Day15.ParseInstruction))
             {
-                if (world.CanMove(world.Robot, dir))
-                    world.TryMove(world.Robot, dir);
+                world.TryMove(world.Robot, dir);
             }
         }
 

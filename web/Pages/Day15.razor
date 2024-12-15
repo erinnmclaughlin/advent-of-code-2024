@@ -9,36 +9,28 @@
 else
 {
     <div class="container">
-
-        <div style="text-align: right">
-            @Index Steps
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(50, 16px);; justify-content: space-between; margin-bottom: 1rem;">
+        
+        <div class="history-grid">
             @for (var i = Index - 25; i < Index + 25; i++)
             {
-                var index = i;
-
-                if (index >= 0 && index < Instructions.Length)
+                var isValidIndex = i >= 0 && i < Instructions.Length;
+                var opacity = i == Index ? "1" : "0.5";
+                var color = (isValidIndex ? MoveResults[i]?.Count : -1) switch
                 {
-                    var opacity = index == Index ? "1" : "0.5";
-                    var color = MoveResults[index] switch
+                    0 => "red", // blocked
+                    > 1 => "green", // boxes were pushed
+                    _ => "darkslategray" // other
+                };
+                
+                <span style="background-color: @color; opacity: @opacity">
+                    @if (isValidIndex)
                     {
-                        false => "red", // blocked
-                        true => "green", // boxes were pushed
-                        _ => "darkslategray" // other
-                    };
-                    
-                    <span style="background-color: @color; display: flex; justify-content: center; align-items: center; height: 16px; opacity: @opacity">
-                        <small>@Instructions[index]</small>
-                    </span>
-                }
-                else
-                {
-                    <span style="background-color: darkslategray; opacity: 0.25"></span>
-                }
+                        @Instructions[i]
+                    }
+                </span>
             }
         </div>
-        
+
         <div class="grid">
             @if (Index > 0)
             {
@@ -48,9 +40,24 @@ else
             {
                 <div class="robot" style="opacity: 0.5; @GetGridCss(World.Robot.Position - ParseInstruction(Instructions[Index]), 1)"></div>
             }
-            <div class="robot" style="@GetGridCss(World.Robot);@(MoveResults.GetValueOrDefault(Index) ?? true ? "" : "background-color: red;")"></div>
+            <div class="robot" style="@GetGridCss(World.Robot);@(MoveResults.GetValueOrDefault(Index)?.Count == 0 ? "background-color: red;" : "")"></div>
             @foreach (var thing in World.GameObjects)
             {
+                var recentnessCss = "";
+
+                if (MoveResults.GetValueOrDefault(Index)?.Contains(thing) ?? false)
+                    recentnessCss = "filter: brightness(2.5)";
+                else if (MoveResults.GetValueOrDefault(Index - 1)?.Contains(thing) ?? false)
+                    recentnessCss = "filter: brightness(2.25)";
+                else if (MoveResults.GetValueOrDefault(Index - 2)?.Contains(thing) ?? false)
+                    recentnessCss = "filter: brightness(2)";
+                else if (MoveResults.GetValueOrDefault(Index - 3)?.Contains(thing) ?? false)
+                    recentnessCss = "filter: brightness(1.75)";
+                else if (MoveResults.GetValueOrDefault(Index - 4)?.Contains(thing) ?? false)
+                    recentnessCss = "filter: brightness(1.5)";
+                else if (MoveResults.GetValueOrDefault(Index - 5)?.Contains(thing) ?? false)
+                    recentnessCss = "filter: brightness(1.25)";
+                
                 var cssClass = thing switch
                 {
                     Box => "box",
@@ -58,20 +65,20 @@ else
                     _ => "unknown"
                 };
 
-                <div class="@cssClass" style="@GetGridCss(thing)"></div>
+                <div class="@cssClass" style="@GetGridCss(thing); @recentnessCss"></div>
             }
         </div>
 
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between">
+        <div class="buttons">
             @if (_cts is null || _cts.IsCancellationRequested)
             {
-                <button class="btn btn-primary" style="cursor: pointer;" @onclick="Play">Autoplay</button>
+                <button style="cursor: pointer;" @onclick="AutoPlay">Autoplay</button>
             }
             else
             {
-                <button class="btn btn-primary" style="cursor: pointer;" @onclick="Stop">Stop</button>
+                <button style="cursor: pointer;" @onclick="Stop">Stop</button>
             }
-            <button class="btn btn-primary" style="cursor: pointer;" @onclick="GoForward">Next</button>
+            <button style="cursor: pointer;" @onclick="GoForward">Next</button>
         </div>
     </div>
 }
@@ -84,41 +91,25 @@ else
     private World World { get; set; } = new();
     private char[] Instructions { get; set; } = [];
     private int Index { get; set; } = -1;
-    private Dictionary<int, bool?> MoveResults { get; set; } = [];
+    private Dictionary<int, HashSet<GameObject>?> MoveResults { get; set; } = [];
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        IsLoading = true;
-        StateHasChanged();
         
         var file = await HttpClient.GetStringAsync("day15.txt");
         var lines = file.Split("\r\n").ToArray().AsSpan();
         var splitIndex = lines.IndexOf(string.Empty);
-
-        for (var y = 0; y < splitIndex; y++)
-        {
-            var line = lines[y].AsSpan();
-            for (var x = 0; x < line.Length; x++)
-            {
-                if (line[x] == '#')
-                    World.GameObjects.Add(new Wall { Position = new Vector2D(x * 2, y), Width = 2 });
-
-                else if (line[x] == 'O')
-                    World.GameObjects.Add(new Box { Position = new Vector2D(x * 2, y), Width = 2 });
-
-                else if (line[x] == '@')
-                    World.Robot.Position = new Vector2D(x * 2, y);
-            }
-        }
-
+        
+        World = CreatePartTwoWorld(lines[..splitIndex]);
         Instructions = lines[(splitIndex + 1)..].ToArray().SelectMany(x => x.ToArray()).ToArray();
-        MoveResults = Instructions.Index().Select(x => x.Index).ToDictionary(x => x, _ => (bool?)null);
+        MoveResults = Instructions.Index().Select(x => x.Index).ToDictionary(x => x, HashSet<GameObject>? (_) => null);
+        
         IsLoading = false;
         StateHasChanged();
     }
 
-    private async Task Play()
+    private async Task AutoPlay()
     {
         if (_cts is not null)
         {
@@ -152,13 +143,9 @@ else
     private void GoForward()
     {
         Index++;
-
         var dir = ParseInstruction(Instructions[Index]);
-        var canMove = World.CanMove(World.Robot, dir);
-        MoveResults[Index] = canMove;
-        
-        if (canMove)
-            World.TryMove(World.Robot, dir);
+        var results = new List<GameObject>();
+        MoveResults[Index] = World.TryMove(World.Robot, dir, results) ? results.ToHashSet() : [];
     }
 
     private static string GetGridCss(GameObject obj)

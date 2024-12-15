@@ -3,18 +3,36 @@
     flex-direction: column;
     justify-content: center;
     margin: auto;
+    gap: 1rem;
+    
+    --cell-size: min(calc(95vw/100), 16px);
+}
+
+.history-grid {
+    display: grid;
+    grid-template-rows: calc(2 * var(--cell-size));
+    grid-template-columns: repeat(50, calc(2 * var(--cell-size)));
+    justify-content: space-between;
+}
+
+.history-grid > * {
+    font-size: 0.65rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .grid {
     display: grid;
-    grid-template-rows: repeat(50, 8px);
-    grid-template-columns: repeat(100, 8px);
-    gap: 2px;
+    grid-template-rows: repeat(50, var(--cell-size));
+    grid-template-columns: repeat(100, var(--cell-size));
 }
 
 .grid > * {
     height: 100%;
     width: 100%;
+    border: 1px solid black;
+    box-sizing: border-box;
 }
 
 .box {
@@ -31,9 +49,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 900;
 }
 
 .unknown {
     background-color: red;
+}
+
+.buttons {
+    display: flex; 
+    justify-content: space-between
 }
