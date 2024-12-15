@@ -1,7 +1,11 @@
-﻿namespace AoC;
+﻿using System.Text;
+using Xunit.Abstractions;
 
-public class Day15
+namespace AoC;
+
+public class Day15(ITestOutputHelper output)
 {
+    private readonly string[] _exampleFileLines = File.ReadAllLines("day15.example.txt");
     private readonly string[] _fileLines = File.ReadAllLines("day15.txt");
 
     [Fact]
@@ -9,65 +13,185 @@ public class Day15
     {
         var span = _fileLines.AsSpan();
         var splitIndex = span.IndexOf(string.Empty);
-        var world = World.Parse(span[..splitIndex]);
-        var instructions = span[(splitIndex + 1)..];
+        var world = new World();
+        
+        for (var y = 0; y < splitIndex; y++)
+        {
+            var line = _fileLines[y].AsSpan();
+            for (var x = 0; x < line.Length; x++)
+            {
+                if (line[x] == '#')
+                    world.GameObjects.Add(new Wall { Position = new Vector2D(x, y) });
+                if (line[x] == 'O')
+                    world.GameObjects.Add(new Box { Position = new Vector2D(x, y) });
+                if (line[x] == '@')
+                    world.Robot.Position = new Vector2D(x, y);
+            }
+        }
 
-        foreach (var line in instructions)
-        foreach (var dir in line.Select(ParseInstruction))
-            world.TryMove(world.Robot, dir);
+        for (var i = splitIndex; i < _fileLines.Length; i++)
+            foreach (var dir in _fileLines[i].Select(ParseInstruction))
+                world.TryMove(world.Robot, dir);
 
         var answer = world
             .GameObjects
             .OfType<Box>()
             .Sum(b => 100 * b.Position.Y + b.Position.X);
         
-        Assert.Equal(10092, answer);
+        Assert.Equal(1438161, answer);
     }
-    
+
+    // 1437004 is too low??
+    [Fact]
+    public void PartTwo()
+    {
+        var span = _exampleFileLines.AsSpan();
+        var splitIndex = span.IndexOf(string.Empty);
+        var world = new World();
+        
+        for (var y = 0; y < splitIndex; y++)
+        {
+            var line = span[y].AsSpan();
+            for (var x = 0; x < line.Length; x++)
+            {
+                if (line[x] == '#')
+                    world.GameObjects.Add(new Wall { Position = new Vector2D(x * 2, y), Width = 2 });
+
+                else if (line[x] == 'O')
+                    world.GameObjects.Add(new Box { Position = new Vector2D(x * 2, y), Width = 2 });
+
+                else if (line[x] == '@')
+                    world.Robot.Position = new Vector2D(x * 2, y);
+            }
+        }
+        
+        //Assert.Equal(20, world.Width);
+        //Assert.Equal(10, world.Height);
+        
+        output.WriteLine(world.ToStringMap());
+        
+        for (var i = splitIndex; i < span.Length; i++)
+            foreach (var dir in span[i].Select(ParseInstruction))
+                world.TryMove(world.Robot, dir);
+
+        output.WriteLine(world.ToStringMap());
+
+        var answer = world
+            .GameObjects
+            .OfType<Box>()
+            .Sum(b => 100 * b.Position.Y + b.Position.X);
+            /*.Sum(b => 100 
+                      * (b.Position.Y < world.Height / 2 ? b.Position.Y : world.Height - b.Position.Y - 1)
+                      + (b.Position.X < world.Width / 2 ? b.Position.X : world.Width - b.Width)
+            );*/
+     
+        Assert.Equal(9021, answer);
+    }
+
     private sealed class World
     {
+        public int Height => GameObjects.Max(x => x.Position.Y + x.Height);
+        public int Width => GameObjects.Max(x => x.Position.X + x.Width);
+        
         public HashSet<GameObject> GameObjects { get; set; } = [];
         public Robot Robot { get; set; } = new();
 
         public bool TryMove(GameObject target, Vector2D dir)
         {
-            var collidingObject = GameObjects.FirstOrDefault(x => x.Position == target.Position + dir);
-
-            if (collidingObject is null || collidingObject.Movable && TryMove(collidingObject, dir))
-            {
-                target.Position += dir;
-                return true;
-            }
-
-            return false;
-        }
-        
-        public static World Parse(ReadOnlySpan<string> map)
-        {
-            var world = new World();
+            if (!target.Movable) return false;
             
-            for (var y = 0; y < map.Length; y++)
+            target.Position += dir;
+            var collidingObjects = GameObjects.Where(x => x.CollidesWith(target));
+
+            foreach (var collidingObject in collidingObjects)
             {
-                var line = map[y].AsSpan();
-                for (var x = 0; x < line.Length; x++)
+                if (!TryMove(collidingObject, dir))
                 {
-                    if (line[x] == '#')
-                        world.GameObjects.Add(new Wall { Position = new Vector2D(x, y) });
-                    if (line[x] == 'O')
-                        world.GameObjects.Add(new Box { Position = new Vector2D(x, y) });
-                    if (line[x] == '@')
-                        world.Robot.Position = new Vector2D(x, y);
+                    target.Position -= dir;
+                    return false;
                 }
             }
+            
+            return true;
+        }
+        
+        public string ToStringMap()
+        {
+            var sb = new StringBuilder();
+            for (var y = 0; y < Height; y++)
+            {
+                for (var x = 0; x < Width; x++)
+                {
+                    if (Robot.Position.X == x && Robot.Position.Y == y)
+                    {
+                        sb.Append('@');
+                        continue;
+                    }
+                    
+                    var obj = GameObjects.FirstOrDefault(o => o.CollidesWith(new Vector2D(x, y)));
 
-            return world;
+                    if (obj is Box { Width: 2 })
+                    {
+                        sb.Append("[]");
+                        x++;
+                        continue;
+                    }
+                    
+                    sb.Append(obj switch
+                    {
+                        Wall => '#',
+                        Box => 'O',
+                        Day15.Robot => '@',
+                        _ => '.'
+                    });
+                }
+
+                foreach (var box in GameObjects.OfType<Box>().Where(x => x.Position.Y == y))
+                {
+                    //sb.Append($" top: {box.Position.Y};");
+                    //sb.Append($" lft: {box.Position.X};");
+                    
+                    if (box.Position.Y < Height / 2)
+                    {
+                        sb.Append($" top: {box.Position.Y};");
+                    }
+                    else
+                    {
+                        sb.Append($" bot: {Height - box.Position.Y - 1};");
+                    }
+
+                    if (box.Position.X < Width / 2)
+                    {
+                        sb.Append($" lft: {box.Position.X};");
+                    }
+                    else
+                    {
+                        sb.Append($" rgt: {Width - box.Position.X - box.Width}");
+                    }
+
+                    sb.Append(" //");
+                }
+
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
     }
     
     private abstract class GameObject
     {
+        public int Height { get; set; } = 1;
+        public int Width { get; set; } = 1;
         public Vector2D Position { get; set; } = Vector2D.Zero;
         public virtual bool Movable { get; set; } = true;
+
+        private IEnumerable<Vector2D> EnumerateCoordinates => Enumerable
+            .Range(Position.Y, Height)
+            .SelectMany(y => Enumerable.Range(Position.X, Width).Select(x => new Vector2D(x, y)));
+        
+        public bool CollidesWith(GameObject other) => other != this && EnumerateCoordinates.Any(other.CollidesWith);
+        public bool CollidesWith(Vector2D point) => EnumerateCoordinates.Contains(point);
     }
 
     private class Box : GameObject;
