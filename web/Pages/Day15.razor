@@ -11,7 +11,7 @@ else
     <div class="container">
         
         <div class="history-grid">
-            @for (var i = Index - 25; i < Index + 25; i++)
+            @for (var i = Index - 4; i < Index + 5; i++)
             {
                 var isValidIndex = i >= 0 && i < Instructions.Length;
                 var opacity = i == Index ? "1" : "0.5";
@@ -120,7 +120,7 @@ else
         
         _cts = new CancellationTokenSource();
         
-        for (var i = Index; i < Instructions.Length; i++)
+        for (var i = Index; i < Instructions.Length - 1; i++)
         {
             GoForward();
             StateHasChanged();
@@ -128,7 +128,7 @@ else
             if (_cts?.IsCancellationRequested ?? true)
                 break;
             
-            await Task.Delay(30);
+            await Task.Delay(50);
             
             if (_cts?.IsCancellationRequested ?? true)
                 break;
