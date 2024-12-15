@@ -1,38 +1,38 @@
-/* /Pages/Home.razor.rz.scp.css */
-.container[b-pmh1qnh7m9] {
+/* /Pages/Day14.razor.rz.scp.css */
+.container[b-urlsgz44z5] {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.grid[b-pmh1qnh7m9] {
-    display: grid; 
-    grid-template-rows: repeat(103, calc(100vw / 101)); 
-    grid-template-columns: repeat(101, calc(100vw / 101)); 
+.grid[b-urlsgz44z5] {
+    display: grid;
+    grid-template-rows: repeat(103, calc(100vw / 101));
+    grid-template-columns: repeat(101, calc(100vw / 101));
     background: royalblue;
     width: 100vw;
     height: 100%;
 }
 
-.inputs[b-pmh1qnh7m9] {
+.inputs[b-urlsgz44z5] {
     padding: 0 1rem;
     flex-grow: 1;
     touch-action: manipulation;
 }
 
-.robot[b-pmh1qnh7m9] {
-    height: 100%; 
-    width: 100%; 
+.robot[b-urlsgz44z5] {
+    height: 100%;
+    width: 100%;
     background-color: lightskyblue;
 }
 
-.buttons[b-pmh1qnh7m9] {
+.buttons[b-urlsgz44z5] {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.buttons button[b-pmh1qnh7m9] {
+.buttons button[b-urlsgz44z5] {
     padding: 0.75rem;
     width: 100%;
     background: green;
@@ -42,22 +42,63 @@
     border-radius: 0.5rem;
 }
 
-.buttons button:disabled[b-pmh1qnh7m9] {
+.buttons button:disabled[b-urlsgz44z5] {
     opacity: 0.5;
 }
 
-button:not(:disabled)[b-pmh1qnh7m9] {
+button:not(:disabled)[b-urlsgz44z5] {
     cursor: pointer;
 }
 
 @media screen and (min-width: 1000px) {
-    .container[b-pmh1qnh7m9] {
+    .container[b-urlsgz44z5] {
         flex-direction: row;
     }
-    
-    .grid[b-pmh1qnh7m9] {
+
+    .grid[b-urlsgz44z5] {
         grid-template-rows: repeat(103, 8px);
         grid-template-columns: repeat(101, 8px);
         width: fit-content;
     }
 }
+/* /Pages/Day15.razor.rz.scp.css */
+.container[b-91xau5ipbv] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+}
+
+.grid[b-91xau5ipbv] {
+    display: grid;
+    grid-template-rows: repeat(50, 8px);
+    grid-template-columns: repeat(100, 8px);
+    gap: 2px;
+}
+
+.grid > *[b-91xau5ipbv] {
+    height: 100%;
+    width: 100%;
+}
+
+.box[b-91xau5ipbv] {
+    background-color: saddlebrown;
+}
+
+.wall[b-91xau5ipbv] {
+    background-color: darkslategray;
+}
+
+.robot[b-91xau5ipbv] {
+    background: gold;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+}
+
+.unknown[b-91xau5ipbv] {
+    background-color: red;
+}
+/* /Pages/Home.razor.rz.scp.css */
