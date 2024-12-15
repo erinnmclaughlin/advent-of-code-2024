@@ -68,28 +68,27 @@ button:not(:disabled)[b-urlsgz44z5] {
     justify-content: center;
     margin: auto;
     gap: 1rem;
-    
-    --cell-size: min(calc(95vw/100), 16px);
 }
 
 .history-grid[b-91xau5ipbv] {
     display: grid;
-    grid-template-rows: calc(2 * var(--cell-size));
-    grid-template-columns: repeat(50, calc(2 * var(--cell-size)));
+    grid-template-rows: 32px;
+    grid-template-columns: repeat(9, 32px);
     justify-content: space-between;
 }
 
 .history-grid > *[b-91xau5ipbv] {
-    font-size: 0.65rem; 
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 1;
+    font-weight: bold;
 }
 
 .grid[b-91xau5ipbv] {
     display: grid;
-    grid-template-rows: repeat(50, var(--cell-size));
-    grid-template-columns: repeat(100, var(--cell-size));
+    grid-template-rows: repeat(10, 16px);
+    grid-template-columns: repeat(20, 16px);
 }
 
 .grid > *[b-91xau5ipbv] {
