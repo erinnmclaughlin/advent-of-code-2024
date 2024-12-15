@@ -1,0 +1,174 @@
+﻿@page "/2024/day15"
+@using static AoC.CSharp.Day15
+@inject HttpClient HttpClient
+
+@if (IsLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+
+        <div style="text-align: right">
+            @Index Steps
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(50, 16px);; justify-content: space-between; margin-bottom: 1rem;">
+            @for (var i = Index - 25; i < Index + 25; i++)
+            {
+                var index = i;
+
+                if (index >= 0 && index < Instructions.Length)
+                {
+                    var opacity = index == Index ? "1" : "0.5";
+                    var color = MoveResults[index] switch
+                    {
+                        false => "red", // blocked
+                        true => "green", // boxes were pushed
+                        _ => "darkslategray" // other
+                    };
+                    
+                    <span style="background-color: @color; display: flex; justify-content: center; align-items: center; height: 16px; opacity: @opacity">
+                        <small>@Instructions[index]</small>
+                    </span>
+                }
+                else
+                {
+                    <span style="background-color: darkslategray; opacity: 0.25"></span>
+                }
+            }
+        </div>
+        
+        <div class="grid">
+            @if (Index > 0)
+            {
+                <div class="robot" style="opacity: 0.25; @GetGridCss(World.Robot.Position - ParseInstruction(Instructions[Index]) - ParseInstruction(Instructions[Index - 1]), 1)"></div>
+            }
+            @if (Index > -1)
+            {
+                <div class="robot" style="opacity: 0.5; @GetGridCss(World.Robot.Position - ParseInstruction(Instructions[Index]), 1)"></div>
+            }
+            <div class="robot" style="@GetGridCss(World.Robot);@(MoveResults.GetValueOrDefault(Index) ?? true ? "" : "background-color: red;")"></div>
+            @foreach (var thing in World.GameObjects)
+            {
+                var cssClass = thing switch
+                {
+                    Box => "box",
+                    Wall => "wall",
+                    _ => "unknown"
+                };
+
+                <div class="@cssClass" style="@GetGridCss(thing)"></div>
+            }
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between">
+            @if (_cts is null || _cts.IsCancellationRequested)
+            {
+                <button class="btn btn-primary" style="cursor: pointer;" @onclick="Play">Autoplay</button>
+            }
+            else
+            {
+                <button class="btn btn-primary" style="cursor: pointer;" @onclick="Stop">Stop</button>
+            }
+            <button class="btn btn-primary" style="cursor: pointer;" @onclick="GoForward">Next</button>
+        </div>
+    </div>
+}
+
+@code {
+
+    private CancellationTokenSource? _cts;
+    
+    private bool IsLoading { get; set; } = true;
+    private World World { get; set; } = new();
+    private char[] Instructions { get; set; } = [];
+    private int Index { get; set; } = -1;
+    private Dictionary<int, bool?> MoveResults { get; set; } = [];
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        IsLoading = true;
+        StateHasChanged();
+        
+        var file = await HttpClient.GetStringAsync("day15.txt");
+        var lines = file.Split("\r\n").ToArray().AsSpan();
+        var splitIndex = lines.IndexOf(string.Empty);
+
+        for (var y = 0; y < splitIndex; y++)
+        {
+            var line = lines[y].AsSpan();
+            for (var x = 0; x < line.Length; x++)
+            {
+                if (line[x] == '#')
+                    World.GameObjects.Add(new Wall { Position = new Vector2D(x * 2, y), Width = 2 });
+
+                else if (line[x] == 'O')
+                    World.GameObjects.Add(new Box { Position = new Vector2D(x * 2, y), Width = 2 });
+
+                else if (line[x] == '@')
+                    World.Robot.Position = new Vector2D(x * 2, y);
+            }
+        }
+
+        Instructions = lines[(splitIndex + 1)..].ToArray().SelectMany(x => x.ToArray()).ToArray();
+        MoveResults = Instructions.Index().Select(x => x.Index).ToDictionary(x => x, _ => (bool?)null);
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task Play()
+    {
+        if (_cts is not null)
+        {
+            await _cts.CancelAsync();
+            _cts.Dispose();
+            _cts = null;
+        }
+        
+        _cts = new CancellationTokenSource();
+        
+        for (var i = Index; i < Instructions.Length; i++)
+        {
+            GoForward();
+            StateHasChanged();
+            
+            if (_cts?.IsCancellationRequested ?? true)
+                break;
+            
+            await Task.Delay(30);
+            
+            if (_cts?.IsCancellationRequested ?? true)
+                break;
+        }
+    }
+
+    private void Stop()
+    {
+        _cts?.Cancel();
+    }
+
+    private void GoForward()
+    {
+        Index++;
+
+        var dir = ParseInstruction(Instructions[Index]);
+        var canMove = World.CanMove(World.Robot, dir);
+        MoveResults[Index] = canMove;
+        
+        if (canMove)
+            World.TryMove(World.Robot, dir);
+    }
+
+    private static string GetGridCss(GameObject obj)
+    {
+        return GetGridCss(obj.Position, obj.Width);
+    }
+
+    private static string GetGridCss(Vector2D pos, int width)
+    {
+        var (x, y) = (pos.X, pos.Y);
+        return $"grid-column-start: {x + 1}; grid-column-end: {x + 1 + width}; grid-row-start: {y + 1}";
+    }
+}

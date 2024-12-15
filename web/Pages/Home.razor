@@ -1,63 +1,10 @@
 ﻿@page "/"
-@using static AoC.CSharp.Day14
-@inject HttpClient HttpClient
 
-<div class="container">
-    <div class="grid">
-        @foreach (var robot in Robots)
-        {
-            <div class="robot" style="grid-row-start: @robot.Position.Y; grid-column-start: @robot.Position.X"></div>
-        }
-    </div>
-    <div class="inputs">
-        <p>
-            <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds"/> seconds
-        </p>
-        <p class="buttons">
-            <button type="button" @onclick="() => Seconds -= NumCols" disabled="@(Seconds < NumCols)">-1 cycle</button>
-            <button type="button" @onclick="() => Seconds--" disabled="@(Seconds <= MinSeconds)">-1 second</button>
-            <button type="button" @onclick="() => Seconds = 0" disabled="@(Seconds == 0)">Reset</button>
-            <button type="button" @onclick="() => Seconds++" disabled="@(Seconds >= MaxSeconds)">+1 second</button>
-            <button type="button" @onclick="() => Seconds += NumCols" disabled="@(Seconds + NumCols > MaxSeconds)">+1 cycle</button>
-            <button type="button" @onclick="() => Seconds = DefaultSeconds" style="background-color: darkred">Show Answer</button>
-        </p>
-    </div>
+<div>
+    <h1>Advent of Code 2024</h1>
+
+    <ul>
+        <li><a href="2024/day14">Day 14: Restroom Redoubt</a></li>
+        <li><a href="2024/day15">Day 15: Warehouse Woes</a></li>
+    </ul>
 </div>
-
-@code {
-    private const int NumCols = 101;
-    private const int NumRows = 103;
-    private const int MinSeconds = 0;
-    private const int MaxSeconds = 100_000;
-    private const int DefaultSeconds = 6888;
-
-    private List<Robot> _robots = []; // original list
-    private List<Robot> Robots { get; set; } = []; // updated list
-
-    private int _seconds;
-    private int Seconds
-    {
-        get => _seconds;
-        set
-        {
-            _seconds = Math.Clamp(value, MinSeconds, MaxSeconds);
-            Robots = GetUpdatedList();
-        }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var file = await HttpClient.GetStringAsync("day14.txt");
-        _robots = file.Split('\n').Select(Robot.Parse).ToList();
-
-        Robots = GetUpdatedList();
-    }
-   
-    private List<Robot> GetUpdatedList() => Robots = _robots.Select(x =>
-    {
-        var robot = new Robot { Position = x.Position, Velocity = x.Velocity };
-        robot.Move(Seconds, NumRows, NumCols);
-        return robot;
-    })
-    .ToList();
-}
