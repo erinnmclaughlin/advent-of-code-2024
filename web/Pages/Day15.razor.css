@@ -36,10 +36,12 @@
 
 .box {
     background-color: saddlebrown;
+    z-index: 2;
 }
 
 .wall {
     background-color: darkslategray;
+    z-index: 2;
 }
 
 .robot {
@@ -50,11 +52,21 @@
     justify-content: center;
 }
 
-.unknown {
-    background-color: red;
-}
-
 .buttons {
     display: flex; 
-    justify-content: space-between
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.buttons button {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 0;
+    border-radius: 0.25rem;
+    background: darkslategray;
+}
+
+.buttons button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }

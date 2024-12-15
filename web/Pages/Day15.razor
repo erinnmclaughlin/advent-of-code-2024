@@ -17,8 +17,8 @@ else
                 var opacity = i == Index ? "1" : "0.5";
                 var color = (isValidIndex ? MoveResults[i]?.Count : -1) switch
                 {
-                    0 => "red", // blocked
-                    > 1 => "green", // boxes were pushed
+                    0 => "darkred", // blocked
+                    > 1 => "darkgreen", // boxes were pushed
                     _ => "darkslategray" // other
                 };
                 
@@ -40,22 +40,20 @@ else
             {
                 <div class="robot" style="opacity: 0.5; @GetGridCss(World.Robot.Position - ParseInstruction(Instructions[Index]), 1)"></div>
             }
-            <div class="robot" style="@GetGridCss(World.Robot);@(MoveResults.GetValueOrDefault(Index)?.Count == 0 ? "background-color: red;" : "")"></div>
+            <div class="robot" style="@GetGridCss(World.Robot);@(MoveResults.GetValueOrDefault(Index)?.Count == 0 ? "background-color: darkred;" : "")"></div>
             @foreach (var thing in World.GameObjects)
             {
                 var recentnessCss = "";
 
                 if (MoveResults.GetValueOrDefault(Index)?.Contains(thing) ?? false)
-                    recentnessCss = "filter: brightness(2.5)";
-                else if (MoveResults.GetValueOrDefault(Index - 1)?.Contains(thing) ?? false)
                     recentnessCss = "filter: brightness(2.25)";
-                else if (MoveResults.GetValueOrDefault(Index - 2)?.Contains(thing) ?? false)
+                else if (MoveResults.GetValueOrDefault(Index - 1)?.Contains(thing) ?? false)
                     recentnessCss = "filter: brightness(2)";
-                else if (MoveResults.GetValueOrDefault(Index - 3)?.Contains(thing) ?? false)
+                else if (MoveResults.GetValueOrDefault(Index - 2)?.Contains(thing) ?? false)
                     recentnessCss = "filter: brightness(1.75)";
-                else if (MoveResults.GetValueOrDefault(Index - 4)?.Contains(thing) ?? false)
+                else if (MoveResults.GetValueOrDefault(Index - 3)?.Contains(thing) ?? false)
                     recentnessCss = "filter: brightness(1.5)";
-                else if (MoveResults.GetValueOrDefault(Index - 5)?.Contains(thing) ?? false)
+                else if (MoveResults.GetValueOrDefault(Index - 4)?.Contains(thing) ?? false)
                     recentnessCss = "filter: brightness(1.25)";
                 
                 var cssClass = thing switch
@@ -70,15 +68,18 @@ else
         </div>
 
         <div class="buttons">
-            @if (_cts is null || _cts.IsCancellationRequested)
-            {
-                <button style="cursor: pointer;" @onclick="AutoPlay">Autoplay</button>
+            @{
+                var isPaused = _cts is null || _cts.IsCancellationRequested;
+                @if (isPaused)
+                {
+                    <button style="background-color: darkgreen" disabled="@(Index == Instructions.Length - 1)" @onclick="AutoPlay">Autoplay</button>
+                }
+                else
+                {
+                    <button style="background-color: darkred" @onclick="Stop">Stop</button>
+                }
             }
-            else
-            {
-                <button style="cursor: pointer;" @onclick="Stop">Stop</button>
-            }
-            <button style="cursor: pointer;" @onclick="GoForward">Next</button>
+            <button disabled="@(Index == Instructions.Length - 1 || !isPaused)" @onclick="GoForward">Move 1</button>
         </div>
     </div>
 }
@@ -133,6 +134,15 @@ else
             if (_cts?.IsCancellationRequested ?? true)
                 break;
         }
+
+        if (_cts is not null)
+        {
+            await _cts.CancelAsync();
+            _cts.Dispose();
+            _cts = null;
+        }
+        
+        StateHasChanged();
     }
 
     private void Stop()
