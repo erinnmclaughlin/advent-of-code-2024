@@ -100,10 +100,12 @@ button:not(:disabled)[b-urlsgz44z5] {
 
 .box[b-91xau5ipbv] {
     background-color: saddlebrown;
+    z-index: 2;
 }
 
 .wall[b-91xau5ipbv] {
     background-color: darkslategray;
+    z-index: 2;
 }
 
 .robot[b-91xau5ipbv] {
@@ -114,12 +116,22 @@ button:not(:disabled)[b-urlsgz44z5] {
     justify-content: center;
 }
 
-.unknown[b-91xau5ipbv] {
-    background-color: red;
-}
-
 .buttons[b-91xau5ipbv] {
     display: flex; 
-    justify-content: space-between
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.buttons button[b-91xau5ipbv] {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 0;
+    border-radius: 0.25rem;
+    background: darkslategray;
+}
+
+.buttons button:disabled[b-91xau5ipbv] {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 /* /Pages/Home.razor.rz.scp.css */
