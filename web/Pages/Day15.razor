@@ -94,10 +94,8 @@ else
     private int Index { get; set; } = -1;
     private Dictionary<int, HashSet<GameObject>?> MoveResults { get; set; } = [];
     
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (!firstRender) return;
-        
         var file = await HttpClient.GetStringAsync("day15.txt");
         var lines = file.Split("\r\n").ToArray().AsSpan();
         var splitIndex = lines.IndexOf(string.Empty);
@@ -105,9 +103,7 @@ else
         World = CreatePartTwoWorld(lines[..splitIndex]);
         Instructions = lines[(splitIndex + 1)..].ToArray().SelectMany(x => x.ToArray()).ToArray();
         MoveResults = Instructions.Index().Select(x => x.Index).ToDictionary(x => x, HashSet<GameObject>? (_) => null);
-        
         IsLoading = false;
-        StateHasChanged();
     }
 
     private async Task AutoPlay()
