@@ -183,6 +183,7 @@ button:not(:disabled)[b-urlsgz44z5] {
     border: 0;
     border-radius: 0.25rem;
     background: darkslategray;
+    color: white;
 }
 
 .buttons button:disabled[b-91xau5ipbv] {
