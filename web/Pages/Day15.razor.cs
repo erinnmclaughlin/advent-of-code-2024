@@ -12,14 +12,19 @@ public partial class Day15
     protected override void OnInitialized()
     {
         //var file = await HttpClient.GetStringAsync("day15.txt");
-        var lines = ExampleInput.Split("\r\n").ToArray().AsSpan();
+        var lines = ExampleInput.Split(Environment.NewLine).ToArray().AsSpan();
 
+        var splitIndex = -1;
         for (var i = 0; i < lines.Length; i++)
         {
             Console.WriteLine($"{lines[i]} ({lines[i].Length})");
+
+            if (lines[i].Length <= 1)
+            {
+                splitIndex = i;
+                break;
+            }
         }
-        
-        var splitIndex = lines.IndexOf(string.Empty);
         
         World = CSharp.Day15.CreatePartTwoWorld(lines[..splitIndex]);
         Instructions = lines[(splitIndex + 1)..].ToArray().SelectMany(x => x.ToArray()).ToArray();
