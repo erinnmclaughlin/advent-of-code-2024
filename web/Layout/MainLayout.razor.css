@@ -1,0 +1,28 @@
+﻿.page {
+    display: flex; 
+    flex-direction: column;
+    height: 100%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.title {
+    color: white;
+    font-family: monospace;
+    font-size:  1.25rem;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.1s ease-out;
+}
+
+.title:hover {
+    color: lawngreen;
+}
+
+@media screen and (min-width: 800px) {
+    .title {
+        text-align: start;
+        font-size:  1.5rem;
+    }
+}

@@ -4,23 +4,23 @@
 
 <div class="container">
     <div class="grid">
+        <div class="seconds-tracker">
+            @Seconds seconds
+        </div>
         @foreach (var robot in Robots)
         {
-            <div class="robot" style="grid-row-start: @robot.Position.Y; grid-column-start: @robot.Position.X"></div>
+            <div class="robot" style="grid-row-start: @(robot.Position.Y + 1); grid-column-start: @(robot.Position.X + 1)"></div>
         }
     </div>
     <div class="inputs">
-        <p>
-            <input type="number" @bind="Seconds" @bind:event="onchange" min="@MinSeconds" max="@MaxSeconds"/> seconds
-        </p>
-        <p class="buttons">
-            <button type="button" @onclick="() => Seconds -= NumCols" disabled="@(Seconds < NumCols)">-1 cycle</button>
-            <button type="button" @onclick="() => Seconds--" disabled="@(Seconds <= MinSeconds)">-1 second</button>
-            <button type="button" @onclick="() => Seconds = 0" disabled="@(Seconds == 0)">Reset</button>
-            <button type="button" @onclick="() => Seconds++" disabled="@(Seconds >= MaxSeconds)">+1 second</button>
-            <button type="button" @onclick="() => Seconds += NumCols" disabled="@(Seconds + NumCols > MaxSeconds)">+1 cycle</button>
-            <button type="button" @onclick="() => Seconds = DefaultSeconds" style="background-color: darkred">Show Answer</button>
-        </p>
+        <div class="time-controls">
+            <button type="button" @onclick="() => Seconds -= NumCols" disabled="@(Seconds < NumCols)">@("<<")</button>
+            <button type="button" @onclick="() => Seconds--" disabled="@(Seconds <= MinSeconds)">@("<")</button>
+            <button type="button" @onclick="() => Seconds++" disabled="@(Seconds >= MaxSeconds)">@(">")</button>
+            <button type="button" @onclick="() => Seconds += NumCols" disabled="@(Seconds + NumCols > MaxSeconds)">@(">>")</button>
+        </div>
+        <button type="button" @onclick="() => Seconds = 0" disabled="@(Seconds == 0)" style="background-color: darkslategrey">Reset</button>
+        <button type="button" @onclick="() => Seconds = DefaultSeconds" style="background-color: darkred">Show Answer</button>
     </div>
 </div>
 

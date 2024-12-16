@@ -1,3 +1,9 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html, body {
     font-family: system-ui, sans-serif;
     background: black;
@@ -5,15 +11,8 @@ html, body {
     height: 100%;
 }
 
-body {
-    margin: 0;
-}
-
 #app {
-    display: flex;
-    justify-content: center;
     height: 100%;
-    align-items: start;
 }
 
 h1:focus {

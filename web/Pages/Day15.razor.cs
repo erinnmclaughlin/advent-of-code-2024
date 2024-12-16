@@ -12,13 +12,11 @@ public partial class Day15
     protected override void OnInitialized()
     {
         //var file = await HttpClient.GetStringAsync("day15.txt");
-        var lines = ExampleInput.Split(Environment.NewLine).ToArray().AsSpan();
+        var lines = ExampleInput.Split('\n').Select(x => x.Trim()).ToArray().AsSpan();
 
         var splitIndex = -1;
         for (var i = 0; i < lines.Length; i++)
         {
-            Console.WriteLine($"{lines[i]} ({lines[i].Length})");
-
             if (lines[i].Length <= 1)
             {
                 splitIndex = i;

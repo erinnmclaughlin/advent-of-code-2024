@@ -1,0 +1,24 @@
+ul, li {
+    list-style: none;
+}
+
+li a {
+    display: block;
+    padding: 1rem;
+    color: white;
+    text-decoration-color: darkred;
+    font-family: monospace;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+li a:hover {
+    color: lawngreen;
+}
+
+@media screen and (min-width: 800px) {
+    li a {
+        text-align: start;
+        width: fit-content;
+    }
+}
