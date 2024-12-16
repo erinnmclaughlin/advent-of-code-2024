@@ -14,6 +14,7 @@ public partial class Day15
         //var file = await HttpClient.GetStringAsync("day15.txt");
         var lines = ExampleInput.Split("\r\n").ToArray().AsSpan();
         var splitIndex = lines.IndexOf(string.Empty);
+        Console.WriteLine($"split: {splitIndex}");
 
         World = CSharp.Day15.CreatePartTwoWorld(lines[..splitIndex]);
         Instructions = lines[(splitIndex + 1)..].ToArray().SelectMany(x => x.ToArray()).ToArray();

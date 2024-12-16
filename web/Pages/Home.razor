@@ -3,8 +3,27 @@
 <div>
     <h1>Advent of Code 2024</h1>
 
-    <ul>
-        <li><a href="2024/day14">Day 14: Restroom Redoubt</a></li>
-        <li><a href="2024/day15">Day 15: Warehouse Woes</a></li>
-    </ul>
+    @if (Puzzle == "202414")
+    {
+        <Day14 />
+    }
+    else if (Puzzle == "202415")
+    {
+        <Day15 />
+    }
+    else
+    {
+        <ul>
+            <li><a href="?puzzle=202414">Day 14: Restroom Redoubt</a></li>
+            <li><a href="?puzzle=202415">Day 15: Warehouse Woes</a></li>
+        </ul>
+    }
+    
 </div>
+
+@code {
+
+    [SupplyParameterFromQuery]
+    public string? Puzzle { get; set; }
+
+}
