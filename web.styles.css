@@ -1,8 +1,41 @@
+/* /Layout/MainLayout.razor.rz.scp.css */
+.page[b-brlyrg4vb8] {
+    display: flex; 
+    flex-direction: column;
+    height: 100%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.title[b-brlyrg4vb8] {
+    color: white;
+    font-family: monospace;
+    font-size:  1.25rem;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.1s ease-out;
+}
+
+.title:hover[b-brlyrg4vb8] {
+    color: lawngreen;
+}
+
+@media screen and (min-width: 800px) {
+    .title[b-brlyrg4vb8] {
+        text-align: start;
+        font-size:  1.5rem;
+    }
+}
 /* /Pages/Day14.razor.rz.scp.css */
 .container[b-urlsgz44z5] {
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
+    width: min(100vw, 808px);
+    margin: auto;
+    height: 100%;
 }
 
 .grid[b-urlsgz44z5] {
@@ -10,14 +43,31 @@
     grid-template-rows: repeat(103, calc(100vw / 101));
     grid-template-columns: repeat(101, calc(100vw / 101));
     background: royalblue;
-    width: 100vw;
-    height: 100%;
+    position: relative;
+}
+
+.seconds-tracker[b-urlsgz44z5] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-bottom-left-radius: 3px;
+    background-color: darkred;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    line-height: 1;
 }
 
 .inputs[b-urlsgz44z5] {
-    padding: 0 1rem;
+    padding: 0 1rem 1.25rem;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     touch-action: manipulation;
+    width: 100%;
+    justify-content: center;
 }
 
 .robot[b-urlsgz44z5] {
@@ -26,13 +76,12 @@
     background-color: lightskyblue;
 }
 
-.buttons[b-urlsgz44z5] {
+.time-controls[b-urlsgz44z5] {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
-.buttons button[b-urlsgz44z5] {
+.inputs button[b-urlsgz44z5] {
     padding: 0.75rem;
     width: 100%;
     background: green;
@@ -42,7 +91,7 @@
     border-radius: 0.5rem;
 }
 
-.buttons button:disabled[b-urlsgz44z5] {
+.inputs button:disabled[b-urlsgz44z5] {
     opacity: 0.5;
 }
 
@@ -51,14 +100,13 @@ button:not(:disabled)[b-urlsgz44z5] {
 }
 
 @media screen and (min-width: 1000px) {
-    .container[b-urlsgz44z5] {
-        flex-direction: row;
-    }
-
     .grid[b-urlsgz44z5] {
         grid-template-rows: repeat(103, 8px);
         grid-template-columns: repeat(101, 8px);
-        width: fit-content;
+    }
+    
+    .inputs[b-urlsgz44z5] {
+        padding: 1rem 0;
     }
 }
 /* /Pages/Day15.razor.rz.scp.css */
@@ -67,18 +115,24 @@ button:not(:disabled)[b-urlsgz44z5] {
     flex-direction: column;
     justify-content: center;
     margin: auto;
-    gap: 1rem;
+    gap: 2rem;
+    align-items: center;
+    height: 100%;
+    --cell-size: 14px;
+    width: fit-content;
 }
 
 .history-grid[b-91xau5ipbv] {
     display: grid;
-    grid-template-rows: 32px;
-    grid-template-columns: repeat(9, 32px);
+    grid-template-rows: calc(2 * var(--cell-size));
+    grid-template-columns: repeat(9, calc(2 * var(--cell-size)));
+    width: 100%;
     justify-content: space-between;
 }
 
 .history-grid > *[b-91xau5ipbv] {
     display: flex;
+    font-family: monospace;
     justify-content: center;
     align-items: center;
     line-height: 1;
@@ -87,15 +141,16 @@ button:not(:disabled)[b-urlsgz44z5] {
 
 .grid[b-91xau5ipbv] {
     display: grid;
-    grid-template-rows: repeat(10, 16px);
-    grid-template-columns: repeat(20, 16px);
+    grid-template-rows: repeat(10, var(--cell-size));
+    grid-template-columns: repeat(20, var(--cell-size));
+    gap: 2px;
+    width: 100%;
+    justify-content: center;
 }
 
+.history-grid > *[b-91xau5ipbv],
 .grid > *[b-91xau5ipbv] {
-    height: 100%;
-    width: 100%;
-    border: 1px solid black;
-    box-sizing: border-box;
+    border-radius: 2px;
 }
 
 .box[b-91xau5ipbv] {
@@ -104,19 +159,19 @@ button:not(:disabled)[b-urlsgz44z5] {
 }
 
 .wall[b-91xau5ipbv] {
-    background-color: darkslategray;
+    background-color: dimgray;
     z-index: 2;
 }
 
 .robot[b-91xau5ipbv] {
     background: gold;
-    color: black;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .buttons[b-91xau5ipbv] {
+    width: 100%;
     display: flex; 
     flex-direction: column;
     gap: 0.5rem;
@@ -124,7 +179,7 @@ button:not(:disabled)[b-urlsgz44z5] {
 
 .buttons button[b-91xau5ipbv] {
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.75rem;
     border: 0;
     border-radius: 0.25rem;
     background: darkslategray;
@@ -134,4 +189,34 @@ button:not(:disabled)[b-urlsgz44z5] {
     cursor: not-allowed;
     opacity: 0.5;
 }
+
+@media screen and (min-width: 800px) {
+    .container[b-91xau5ipbv] {
+        padding: 0;
+    }
+}
 /* /Pages/Home.razor.rz.scp.css */
+ul[b-pmh1qnh7m9], li[b-pmh1qnh7m9] {
+    list-style: none;
+}
+
+li a[b-pmh1qnh7m9] {
+    display: block;
+    padding: 1rem;
+    color: white;
+    text-decoration-color: darkred;
+    font-family: monospace;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+li a:hover[b-pmh1qnh7m9] {
+    color: lawngreen;
+}
+
+@media screen and (min-width: 800px) {
+    li a[b-pmh1qnh7m9] {
+        text-align: start;
+        width: fit-content;
+    }
+}
