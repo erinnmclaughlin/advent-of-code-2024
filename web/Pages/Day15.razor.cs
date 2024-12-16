@@ -1,4 +1,6 @@
-﻿namespace AoC.Web.Pages;
+﻿using AoC.CSharp.Common;
+
+namespace AoC.Web.Pages;
 
 public partial class Day15
 {
@@ -84,7 +86,7 @@ public partial class Day15
         return GetGridCss(obj.Position, obj.Width);
     }
 
-    private static string GetGridCss(CSharp.Day15.Vector2D pos, int width)
+    private static string GetGridCss(Vector2D pos, int width)
     {
         var (x, y) = (pos.X, pos.Y);
         return $"grid-column-start: {x + 1}; grid-column-end: {x + 1 + width}; grid-row-start: {y + 1}";

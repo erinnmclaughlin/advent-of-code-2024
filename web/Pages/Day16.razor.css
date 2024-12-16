@@ -1,0 +1,33 @@
+﻿.container {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    max-width: min(100%, 600px);
+    padding: 1rem 2rem;
+    container: maze / inline-size;
+    height: 100%;
+}
+
+.grid {
+    display: grid;
+    max-width: 100%;
+}
+
+.grid > * {
+    border: 1px solid black;
+    background-color: darkslategray;
+}
+
+.runner, .target {
+    border-radius: 50%;
+    margin: 0.1rem;
+}
+
+.runner {
+    background-color: gold;
+}
+
+.target {
+    background-color: green;
+}

@@ -1,0 +1,35 @@
+﻿@page "/2024/day16"
+
+<div class="container">
+    @if (Maze is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="grid" style="@CreateGridTemplateCss(Maze)">
+
+            <div class="runner" style="@CreateGridCellCss(Maze.MazeRunner.Position)"></div>
+            <div class="target" style="@CreateGridCellCss(Maze.Target)"></div>
+
+            @foreach (var (position, _) in Maze.Walls)
+            {
+                <div style="@CreateGridCellCss(position)"></div>
+            }
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private static string CreateGridTemplateCss(MazeState maze)
+    {
+        return $"grid-template-columns: repeat({maze.Width}, calc(100cqw / {maze.Width})); grid-template-rows: repeat({maze.Height}, calc(100cqw / {maze.Width}));";
+    }
+
+    private static string CreateGridCellCss(Vector2D position)
+    {
+        return $"grid-row-start: {position.Y + 1}; grid-column-start: {position.X + 1};";
+    }
+}
