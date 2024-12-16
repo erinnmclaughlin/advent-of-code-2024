@@ -19,7 +19,7 @@ public class Day15
             }
         }
         
-        Assert.Equal(1438161, world.GameObjects.OfType<CSharp.Day15.Box>().Sum(world.GetGpsLocation));
+        Assert.Equal(1438161, world.MapObjects.OfType<CSharp.Day15.Box>().Sum(CSharp.Day15.World.GetGpsLocation));
     }
 
     [Fact]
@@ -37,6 +37,6 @@ public class Day15
             }
         }
 
-        Assert.Equal(1437981, world.GameObjects.OfType<CSharp.Day15.Box>().Sum(world.GetGpsLocation));
+        Assert.Equal(1437981, world.MapObjects.OfType<CSharp.Day15.Box>().Sum(CSharp.Day15.World.GetGpsLocation));
     }
 }

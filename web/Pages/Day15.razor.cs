@@ -7,7 +7,7 @@ public partial class Day15
     private CSharp.Day15.World World { get; set; } = new();
     private char[] Instructions { get; set; } = [];
     private int Index { get; set; } = -1;
-    private Dictionary<int, HashSet<CSharp.Day15.GameObject>?> MoveResults { get; set; } = [];
+    private Dictionary<int, HashSet<CSharp.Day15.MapObject>?> MoveResults { get; set; } = [];
 
     protected override void OnInitialized()
     {
@@ -27,7 +27,7 @@ public partial class Day15
         World = CSharp.Day15.CreatePartTwoWorld(lines[..splitIndex]);
         Instructions = lines[(splitIndex + 1)..].ToArray().SelectMany(x => x.ToArray()).ToArray();
         MoveResults = Instructions.Index().Select(x => x.Index)
-            .ToDictionary(x => x, HashSet<CSharp.Day15.GameObject>? (_) => null);
+            .ToDictionary(x => x, HashSet<CSharp.Day15.MapObject>? (_) => null);
         IsLoading = false;
     }
 
@@ -75,11 +75,11 @@ public partial class Day15
     {
         Index++;
         var dir = CSharp.Day15.ParseInstruction(Instructions[Index]);
-        var results = new List<CSharp.Day15.GameObject>();
+        var results = new List<CSharp.Day15.MapObject>();
         MoveResults[Index] = World.TryMove(World.Robot, dir, results) ? results.ToHashSet() : [];
     }
 
-    private static string GetGridCss(CSharp.Day15.GameObject obj)
+    private static string GetGridCss(CSharp.Day15.MapObject obj)
     {
         return GetGridCss(obj.Position, obj.Width);
     }

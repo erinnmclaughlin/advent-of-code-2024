@@ -40,7 +40,7 @@ else
                 <div class="robot" style="opacity: 0.5; @GetGridCss(World.Robot.Position - ParseInstruction(Instructions[Index]), 1)"></div>
             }
             <div class="robot" style="@GetGridCss(World.Robot);"></div>
-            @foreach (var thing in World.GameObjects)
+            @foreach (var thing in World.MapObjects)
             {
                 var recentnessCss = "";
 
