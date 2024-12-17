@@ -1,48 +1,62 @@
 ﻿using System.Collections.Immutable;
-using AoC.CSharp;
 using AoC.CSharp.Common;
+using Xunit.Abstractions;
 
-namespace AoC.Web.Pages;
+namespace AoC;
 
-public partial class Day16
+public class Day16(ITestOutputHelper output)
 {
-    private MazeModel? Maze { get; set; }
-    private MazeRunner? SelectedRunner { get; set; }
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    //private readonly string[] _fileLines = File.ReadAllLines("day16.txt");
+
+    // 155528 is too high
+    // 155528
+    [Theory]
+    [InlineData("day16.example1.txt", 7036)]
+    [InlineData("day16.example2.txt", 11048)]
+    [InlineData("day16.txt", 0)]
+    public void PartOne(string path, int expected)
     {
-        if (firstRender)
+        var maze = CreateMaze(File.ReadAllLines(path));
+
+        while (true)
         {
-            await InvokeAsync(() =>
-            {
-                Maze = CreateMaze();
-                StateHasChanged();
-            });
+            foreach (var group in maze.Runners.GroupBy(x => (x.Position, x.Facing)))
+            foreach (var runner in group.OrderBy(x => x.Score).Skip(1))
+                runner.IsDead = true;
+        
+            maze.Runners.RemoveWhere(x => x.IsDead);
+        
+            var runners = maze.Runners.ToList();
+
+            foreach (var runner in runners)
+                runner.Move();
+        
+            maze.Runners.RemoveWhere(x => x.IsDead);
+            
+            if (maze.Runners.All(x => x.Position == maze.Target))
+                break;
+            /*
+            maze.Runners.RemoveWhere(x => x.IsDead);
+            
+            if (maze.Runners.All(x => x.Position == maze.Target))
+                break;
+            
+            var runners = maze.Runners.ToList();
+
+            foreach (var runner in runners)
+                runner.Move();*/
         }
-    }
 
-    private void Move()
-    {
-        if (Maze is null) return;
-
-        foreach (var group in Maze.Runners.GroupBy(x => (x.Position, x.Facing)))
-        foreach (var runner in group.OrderBy(x => x.Score).Skip(1))
-            runner.IsDead = true;
+        foreach (var runner in maze.Runners)
+        {
+            output.WriteLine("Runner {0}: Score: {1}", runner.Id, runner.Score);
+        }
         
-        Maze.Runners.RemoveWhere(x => x.IsDead);
-        
-        var runners = Maze.Runners.ToList();
-
-        foreach (var runner in runners)
-            runner.Move();
-        
-        Maze.Runners.RemoveWhere(x => x.IsDead);
+        Assert.Equal(expected, maze.Runners.Min(x => x.Score));
     }
     
-    private static MazeModel CreateMaze()
+    private static MazeModel CreateMaze(ReadOnlySpan<string> lines)
     {
-        var lines = ExampleInput.Contains("\r\n") ? ExampleInput.Split("\r\n") : ExampleInput.Split("\n");
-
         var (start, target) = (Vector2D.Zero, Vector2D.Zero);
         var walls = new Dictionary<Vector2D, GridObject>();
         
@@ -77,18 +91,6 @@ public partial class Day16
         _ = maze.SpawnRunner(start);
 
         return maze;
-    }
-
-    private void Select(MazeRunner runner)
-    {
-        if (SelectedRunner == runner)
-        {
-            SelectedRunner = null;
-        }
-        else
-        {
-            SelectedRunner = runner;
-        }
     }
     
     private class MazeModel
@@ -130,7 +132,7 @@ public partial class Day16
         public Vector2D Facing { get; private set; } = Vector2D.Right;
         public int Score { get; private set; }
         public bool IsDead { get; set; }
-        public HashSet<Vector2D> Visited { get; set; } = [];
+        //public HashSet<Vector2D> Visited { get; set; } = [];
 
         public IEnumerable<Vector2D> EnumeratePossibleNextSteps() => _maze
             .EnumerateAdjacentPaths(Position)
@@ -141,7 +143,7 @@ public partial class Day16
             if (IsDead || Position == _maze.Target)
                 return;
             
-            Visited.Add(Position);
+            //Visited.Add(Position);
 
             var possibilities = EnumeratePossibleNextSteps().ToHashSet();
 
@@ -156,7 +158,7 @@ public partial class Day16
                 var clone = _maze.SpawnRunner(Position);
                 clone.Facing = other - Position;
                 clone.Score = Score + 1000;
-                clone.Visited = Visited.ToHashSet();
+                //clone.Visited = Visited.ToHashSet();
             }
             
             if (possibilities.Contains(Position + Facing))
@@ -166,22 +168,4 @@ public partial class Day16
             }
         }
     }
-
-    private const string ExampleInput = """
-    ###############
-    #.......#....E#
-    #.#.###.#.###.#
-    #.....#.#...#.#
-    #.###.#####.#.#
-    #.#.#.......#.#
-    #.#.#####.###.#
-    #...........#.#
-    ###.#.#####.#.#
-    #...#.....#.#.#
-    #.#.#.###.#.#.#
-    #.....#...#.#.#
-    #.###.#.#.#.#.#
-    #S..#.....#...#
-    ###############
-    """;
 }
