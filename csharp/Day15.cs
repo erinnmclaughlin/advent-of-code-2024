@@ -109,12 +109,6 @@ public static class Day15
         public override bool Movable { get; set; } = false;
     }
     
-    public sealed record Vector2D(int X, int Y)
-    {
-        public static Vector2D operator +(Vector2D a, Vector2D b) => new(a.X + b.X, a.Y + b.Y);
-        public static Vector2D operator -(Vector2D a, Vector2D b) => new(a.X - b.X, a.Y - b.Y);
-    }
-    
     public static Vector2D ParseInstruction(char c) => c switch
     {
         '>' => new Vector2D(+1,+0),
