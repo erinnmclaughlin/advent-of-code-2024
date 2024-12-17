@@ -196,6 +196,246 @@ button:not(:disabled)[b-urlsgz44z5] {
         padding: 0;
     }
 }
+/* /Pages/Day16.razor.rz.scp.css */
+.container[b-8wwkuyccou] {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    max-width: min(100%, 1000px);
+    padding: 1rem 2rem;
+    container: maze / inline-size;
+    height: 100%;
+}
+
+.grid[b-8wwkuyccou] {
+    display: grid;
+    max-width: 100%;
+}
+
+.grid > *[b-8wwkuyccou] {
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.target[b-8wwkuyccou] {
+    border-radius: 50%;
+    margin: 0.1rem;
+}
+
+.runner[b-8wwkuyccou] {
+    background-color: gold;
+    position: relative;
+}
+
+.runner.backtracking[b-8wwkuyccou] {
+    background-color: blue;
+}
+
+.runner.dead[b-8wwkuyccou],
+.runner.blocked[b-8wwkuyccou] {
+    background-color: darkred;
+}
+
+.runner .eye[b-8wwkuyccou] {
+    height: 60%;
+    width: 50%;
+    background-color: white;
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid black;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.runner .eye.facingNorth[b-8wwkuyccou] {
+    top: 0;
+    left: calc(50% - 1px);
+}
+
+.runner .eye.facingSouth[b-8wwkuyccou] {
+    bottom: 0;
+    left: calc(50% - 1px);
+}
+
+.runner .eye.facingEast[b-8wwkuyccou] {
+    right: -10%;
+    top: 15%;
+}
+
+.runner .eye.facingWest[b-8wwkuyccou] {
+    left: -10%;
+    top: 15%;
+}
+
+.runner .eye[b-8wwkuyccou]::after {
+    content: '';
+    height: 55%;
+    width: 45%;
+    background-color: black;
+    border-radius: 50%;
+    margin-right: 1px;
+}
+
+.target[b-8wwkuyccou] {
+    background-color: green;
+}
+
+.score[b-8wwkuyccou] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 1.25rem;
+    opacity: 0.4;
+    z-index: -1;
+}
+
+.wall[b-8wwkuyccou] {
+    background-color: darkslategray;
+}
+
+.good[b-8wwkuyccou] {
+    background-color: lawngreen;
+    opacity: 0.5;
+}
+
+.ok[b-8wwkuyccou] {
+    background-color: lawngreen;
+    opacity: 0.25;
+}
+
+.button[b-8wwkuyccou] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+/* /Pages/Day16Old.razor.rz.scp.css */
+.container[b-wn2dthpzb1] {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    max-width: min(100%, 600px);
+    padding: 1rem 2rem;
+    container: maze / inline-size;
+    height: 100%;
+}
+
+.grid[b-wn2dthpzb1] {
+    display: grid;
+    max-width: 100%;
+}
+
+.grid > *[b-wn2dthpzb1] {
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.runner[b-wn2dthpzb1], .target[b-wn2dthpzb1] {
+    border-radius: 50%;
+    margin: 0.1rem;
+}
+
+.runner[b-wn2dthpzb1] {
+    background-color: gold;
+    position: relative;
+}
+
+.runner.backtracking[b-wn2dthpzb1] {
+    background-color: blue;
+}
+
+.runner.blocked[b-wn2dthpzb1] {
+    background-color: darkred;
+}
+
+.runner .eye[b-wn2dthpzb1] {
+    height: 60%;
+    width: 50%;
+    background-color: white;
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid black;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.runner .eye.facingNorth[b-wn2dthpzb1] {
+    top: 0;
+    left: calc(50% - 1px);
+}
+
+.runner .eye.facingSouth[b-wn2dthpzb1] {
+    bottom: 0;
+    left: calc(50% - 1px);
+}
+
+.runner .eye.facingEast[b-wn2dthpzb1] {
+    right: -10%;
+    top: 15%;
+}
+
+.runner .eye.facingWest[b-wn2dthpzb1] {
+    left: -10%;
+    top: 15%;
+}
+
+.runner .eye[b-wn2dthpzb1]::after {
+    content: '';
+    height: 55%;
+    width: 45%;
+    background-color: black;
+    border-radius: 50%;
+    margin-right: 1px;
+}
+
+.target[b-wn2dthpzb1] {
+    background-color: green;
+}
+
+.score[b-wn2dthpzb1] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 1.25rem;
+    opacity: 0.4;
+    z-index: -1;
+}
+
+.wall[b-wn2dthpzb1] {
+    background-color: darkslategray;
+}
+
+.good[b-wn2dthpzb1] {
+    background-color: lawngreen;
+    opacity: 0.5;
+}
+
+.ok[b-wn2dthpzb1] {
+    background-color: lawngreen;
+    opacity: 0.25;
+}
+
+.button[b-wn2dthpzb1] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
 /* /Pages/Home.razor.rz.scp.css */
 ul[b-pmh1qnh7m9], li[b-pmh1qnh7m9] {
     list-style: none;
