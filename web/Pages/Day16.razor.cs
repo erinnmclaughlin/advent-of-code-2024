@@ -98,7 +98,7 @@ public partial class Day16
         public required Vector2D Target { get; init; }
         public HashSet<MazeRunner> Runners { get; } = [];
         public HashSet<Vector2D> BadPositions { get; } = [];
-        public Dictionary<Vector2D, HashSet<MazeRunner>> Visited { get; private set; } = [];
+        public Dictionary<Vector2D, HashSet<(MazeRunner Runner, Vector2D Direction, int ScoreAtPosition)>> Visited { get; private set; } = [];
         public required ImmutableDictionary<Vector2D, GridObject> Walls { get; init; }
 
         public MazeRunner CreateRunner(Vector2D position)
@@ -141,55 +141,55 @@ public partial class Day16
         public Vector2D Facing { get; private set; } = Vector2D.Right;
         public int Score { get; private set; }
         public bool IsDead { get; set; }
-        public Stack<Vector2D> Visited { get; set; } = new();
+        public Dictionary<Vector2D, int> Visited { get; set; } = new();
 
         public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumeratePossibleNextSteps() => _maze
-            .EnumerateOpenAdjacentPaths(Position, Facing);
+            .EnumerateOpenAdjacentPaths(Position, Facing)
+            .Where(x => !Visited.ContainsKey(x.Position));
 
         public bool Move()
         {
             if (IsDead || Position == _maze.Target)
                 return false;
-            
-            if (Visited.Count == 0 || Visited.Peek() != Position)
-                Visited.Push(Position);
 
-            var possibilities = EnumeratePossibleNextSteps().ToDictionary(x => x.Direction, x => x.Position);
+            _ = Visited.TryGetValue(Position, out var score);
+            Visited[Position] = score + 1;
+
+            var possibilities = EnumeratePossibleNextSteps()
+                .ToDictionary(x => x.Direction, x => x.Position);
 
             if (possibilities.Count == 0)
             {
                 IsDead = true;
-
-                while (Visited.Count > 0 && Clones.All(c => c.Position != Visited.Peek()))
-                {
-                    _maze.BadPositions.Add(Visited.Pop());
-                }
-                
                 return false;
             }
 
             if (_maze.Visited.TryGetValue(Position, out var previousStates))
             {
-                var existing = previousStates.FirstOrDefault(x => x.Facing == Facing);
-
-                if (existing is null)
+                if (!previousStates.Any(x => x.Direction == Facing))
                 {
-                    previousStates.Add(CreateClone());
-                }
-                else if (existing.Score > Score)
-                {
-                    previousStates.Remove(existing);
-                    previousStates.Add(CreateClone());
+                    previousStates.Add((this, Facing, Score));
                 }
                 else
                 {
-                    IsDead = true;
-                    return false;
+                    var existing = previousStates.First(x => x.Direction == Facing);
+
+                    if (existing.ScoreAtPosition > Score)
+                    {
+                        existing.Runner.IsDead = true;
+                        previousStates.Remove(existing);
+                        previousStates.Add((this, Facing, Score));
+                    }
+                    else
+                    {
+                        IsDead = true;
+                        return false;
+                    }
                 }
             }
             else
             {
-                _maze.Visited[Position] = [CreateClone()];
+                _maze.Visited[Position] = [(this, Facing, Score)];
             }
 
             foreach (var (dir, pos) in possibilities.Where(p => p.Key != Facing))
@@ -217,12 +217,7 @@ public partial class Day16
             var clone = _maze.CreateRunner(Position);
             clone.Facing = Facing;
             clone.Score = Score;
-
-            foreach (var pos in Visited.Reverse())
-            {
-                clone.Visited.Push(pos);
-            }
-            
+            clone.Visited = Visited.ToDictionary();
             return clone;
         }
     }

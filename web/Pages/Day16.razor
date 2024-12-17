@@ -39,7 +39,7 @@ else
             {
                 for (var i = 0; i < SelectedRunner.Visited.Count; i++)
                 {
-                    <div style="@CreateGridCellCss(SelectedRunner.Visited.ElementAt(i)); background-color: deeppink; opacity: 0.5"></div>
+                    <div style="@CreateGridCellCss(SelectedRunner.Visited.ElementAt(i).Key); background-color: deeppink; opacity: 0.5"></div>
                 }
             }
             
