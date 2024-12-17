@@ -1,29 +1,63 @@
 ﻿@page "/2024/day16"
 
 <div class="container">
-    @if (Maze is null)
+    @if (Runner is null)
     {
         <p>Loading...</p>
     }
     else
     {
-        <div class="grid" style="@CreateGridTemplateCss(Maze)">
+        <div class="grid" style="@CreateGridTemplateCss(Runner.Maze)">
 
-            <div class="runner" style="@CreateGridCellCss(Maze.MazeRunner.Position)"></div>
-            <div class="target" style="@CreateGridCellCss(Maze.Target)"></div>
+            <div class="runner @(Runner.IsBlocked ? "blocked" : "") @(Runner.IsBacktracking ? "backtracking" : "")" style="@CreateGridCellCss(Runner.Position)">
+                <span class="eye facing@(GetDirectionDescription(Runner.Facing))"></span>
+            </div>
 
-            @foreach (var (position, _) in Maze.Walls)
+            @if (Runner.CurrentChildRunner is { } childRunner)
             {
-                <div style="@CreateGridCellCss(position)"></div>
+                <div class="runner @(childRunner.IsBlocked ? "blocked" : "") @(childRunner.IsBacktracking ? "backtracking" : "")" style="@CreateGridCellCss(childRunner.Position)">
+                    <span class="eye facing@(GetDirectionDescription(childRunner.Facing))"></span>
+                </div>
+            }
+            
+            <div class="target" style="@CreateGridCellCss(Runner.Target)"></div>
+
+            @foreach (var (position, _) in Runner.Maze.Walls)
+            {
+                <div class="wall" style="@CreateGridCellCss(position)"></div>
+            }
+            
+            @foreach (var badPosition in Runner.BadPositions)
+            {
+                <div style="@CreateGridCellCss(badPosition); background: transparent;">💩</div>
+            }
+            
+            @foreach (var maybe in Runner.EnumeratePossibleNextSteps().Concat(Runner.CurrentChildRunner?.EnumeratePossibleNextSteps() ?? []))
+            {
+                var goodness = Runner.Position + Runner.Facing == maybe ? "good" : "ok";
+                <div class="@goodness" style="@CreateGridCellCss(maybe)"></div>
+            }
+            
+            @foreach (var point in Runner.DecisionPoints)
+            {
+                <div style="@CreateGridCellCss(point)">🍞</div>
+            }
+
+            @foreach (var point in Runner.Visited.Concat(Runner.CurrentChildRunner?.Visited ?? []).Except(Runner.DecisionPoints))
+            {
+                var child = Runner.CurrentChildRunner?.Visited.Contains(point);
+                <div style="@CreateGridCellCss(point); @(child ?? false ? "background-color: blue" : "")">👣</div>
             }
         </div>
+        
+        <button type="button" class="button" @onclick="Runner.Move">Move</button>
     }
-
+    
 </div>
 
 @code {
 
-    private static string CreateGridTemplateCss(MazeState maze)
+    private static string CreateGridTemplateCss(Maze maze)
     {
         return $"grid-template-columns: repeat({maze.Width}, calc(100cqw / {maze.Width})); grid-template-rows: repeat({maze.Height}, calc(100cqw / {maze.Width}));";
     }
@@ -31,5 +65,14 @@
     private static string CreateGridCellCss(Vector2D position)
     {
         return $"grid-row-start: {position.Y + 1}; grid-column-start: {position.X + 1};";
+    }
+
+    private static string GetDirectionDescription(Vector2D facing)
+    {
+        if (facing == Vector2D.Up) return "North";
+        if (facing == Vector2D.Down) return "South";
+        if (facing == Vector2D.Left) return "West";
+        if (facing == Vector2D.Right) return "East";
+        return string.Empty;
     }
 }
