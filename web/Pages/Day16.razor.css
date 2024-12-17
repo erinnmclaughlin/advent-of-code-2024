@@ -23,11 +23,11 @@
     align-items: center;
 }
 
-/*
-.runner, .target {
+
+.target {
     border-radius: 50%;
     margin: 0.1rem;
-}*/
+}
 
 .runner {
     background-color: gold;
@@ -38,6 +38,7 @@
     background-color: blue;
 }
 
+.runner.dead,
 .runner.blocked {
     background-color: darkred;
 }

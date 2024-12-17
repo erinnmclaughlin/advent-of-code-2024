@@ -25,18 +25,18 @@ public partial class Day16
     {
         if (Maze is null) return;
 
-        foreach (var group in Maze.Runners.GroupBy(x => (x.Position, x.Facing)))
-        foreach (var runner in group.OrderBy(x => x.Score).Skip(1))
-            runner.IsDead = true;
-        
-        Maze.Runners.RemoveWhere(x => x.IsDead);
-        
-        var runners = Maze.Runners.ToList();
+        var runners = Maze.Runners.Where(x => !x.IsDead).ToList();
 
         foreach (var runner in runners)
-            runner.Move();
-        
-        Maze.Runners.RemoveWhere(x => x.IsDead);
+        {
+            if (runner.Move()) continue;
+            
+            foreach (var clone in runner.Clones)
+                Maze.Runners.Add(clone);
+
+            if (runner.IsDead)
+                Maze.Runners.Remove(runner);
+        }
     }
     
     private static MazeModel CreateMaze()
@@ -74,7 +74,7 @@ public partial class Day16
             Walls = walls.ToImmutableDictionary()
         };
 
-        _ = maze.SpawnRunner(start);
+        maze.Runners.Add(maze.CreateRunner(start));
 
         return maze;
     }
@@ -98,27 +98,37 @@ public partial class Day16
         public required Vector2D Target { get; init; }
         public HashSet<MazeRunner> Runners { get; } = [];
         public HashSet<Vector2D> BadPositions { get; } = [];
-        public HashSet<(Vector2D Position, Vector2D Facing)> Visited { get; private set; } = [];
+        public Dictionary<Vector2D, HashSet<MazeRunner>> Visited { get; private set; } = [];
         public required ImmutableDictionary<Vector2D, GridObject> Walls { get; init; }
 
-        public MazeRunner SpawnRunner(Vector2D position)
+        public MazeRunner CreateRunner(Vector2D position)
         {
-            var runner = new MazeRunner(Runners.Count + 1, this, position);
-            Runners.Add(runner);
-            return runner;
+            return new MazeRunner(Runners.Count + 1, this, position);
         }
         
-        public IEnumerable<Vector2D> EnumerateAdjacentPaths(Vector2D position)
+        public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumerateOpenAdjacentPaths(Vector2D position, Vector2D dir)
         {
-            return EnumerateAllAdjacentDirections(position).Where(p => !BadPositions.Contains(p) && !Walls.ContainsKey(p));
+            foreach (var possibleDirection in EnumerateDirections(dir))
+            {
+                var result = position + possibleDirection;
+
+                if (result.X < 0 || result.X >= Width) continue;
+                if (result.Y < 0 || result.Y >= Height) continue;
+                
+                if (Walls.ContainsKey(result)) continue;
+                if (BadPositions.Contains(result)) continue;
+                //if (Visited.TryGetValue(result, out var visited) && visited.Any(x => x.Facing == possibleDirection)) continue;
+                //if (BadPositions.Contains(result)) continue;
+                
+                yield return (result, possibleDirection);
+            }
         }
 
-        private static IEnumerable<Vector2D> EnumerateAllAdjacentDirections(Vector2D position)
+        private static IEnumerable<Vector2D> EnumerateDirections(Vector2D dir)
         {
-            yield return position + Vector2D.Up;
-            yield return position + Vector2D.Right;
-            yield return position + Vector2D.Down;
-            yield return position + Vector2D.Left;
+            yield return dir;
+            yield return new Vector2D(dir.Y, -dir.X);
+            yield return new Vector2D(-dir.Y, dir.X);
         }
     }
 
@@ -127,43 +137,93 @@ public partial class Day16
         private readonly MazeModel _maze = maze;
 
         public int Id { get; } = id;
+        public HashSet<MazeRunner> Clones { get; set; } = [];
         public Vector2D Facing { get; private set; } = Vector2D.Right;
         public int Score { get; private set; }
         public bool IsDead { get; set; }
-        public HashSet<Vector2D> Visited { get; set; } = [];
+        public Stack<Vector2D> Visited { get; set; } = new();
 
-        public IEnumerable<Vector2D> EnumeratePossibleNextSteps() => _maze
-            .EnumerateAdjacentPaths(Position)
-            .Where(position => !_maze.Visited.Contains((position, Position - position)));
+        public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumeratePossibleNextSteps() => _maze
+            .EnumerateOpenAdjacentPaths(Position, Facing);
 
-        public void Move()
+        public bool Move()
         {
             if (IsDead || Position == _maze.Target)
-                return;
+                return false;
             
-            Visited.Add(Position);
+            if (Visited.Count == 0 || Visited.Peek() != Position)
+                Visited.Push(Position);
 
-            var possibilities = EnumeratePossibleNextSteps().ToHashSet();
+            var possibilities = EnumeratePossibleNextSteps().ToDictionary(x => x.Direction, x => x.Position);
 
-            if (possibilities.Count == 0 || !_maze.Visited.Add((Position, Facing)))
+            if (possibilities.Count == 0)
             {
                 IsDead = true;
-                return;
+
+                while (Visited.Count > 0 && Clones.All(c => c.Position != Visited.Peek()))
+                {
+                    _maze.BadPositions.Add(Visited.Pop());
+                }
+                
+                return false;
             }
 
-            foreach (var other in possibilities.Where(p => p != Position + Facing))
+            if (_maze.Visited.TryGetValue(Position, out var previousStates))
             {
-                var clone = _maze.SpawnRunner(Position);
-                clone.Facing = other - Position;
-                clone.Score = Score + 1000;
-                clone.Visited = Visited.ToHashSet();
+                var existing = previousStates.FirstOrDefault(x => x.Facing == Facing);
+
+                if (existing is null)
+                {
+                    previousStates.Add(CreateClone());
+                }
+                else if (existing.Score > Score)
+                {
+                    previousStates.Remove(existing);
+                    previousStates.Add(CreateClone());
+                }
+                else
+                {
+                    IsDead = true;
+                    return false;
+                }
+            }
+            else
+            {
+                _maze.Visited[Position] = [CreateClone()];
+            }
+
+            foreach (var (dir, pos) in possibilities.Where(p => p.Key != Facing))
+            {
+                //var clone = _maze.CreateRunner(pos);
+                var clone = CreateClone();
+                //clone.Position = pos;
+                clone.Facing = dir;
+                clone.Score += 1000;
+                Clones.Add(clone);
             }
             
-            if (possibilities.Contains(Position + Facing))
+            if (possibilities.ContainsKey(Facing))
             {
                 Score++;
                 Position += Facing;
+                return true;
             }
+
+            return false;
+        }
+        
+        private MazeRunner CreateClone()
+        {
+            var clone = _maze.CreateRunner(Position);
+            clone.Facing = Facing;
+            clone.Score = Score;
+
+            foreach (var pos in Visited.Reverse())
+            {
+                clone.Visited.Push(pos);
+            }
+            
+            return clone;
         }
     }
 

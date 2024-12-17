@@ -88,7 +88,7 @@ public class Day16(ITestOutputHelper output)
             Walls = walls.ToImmutableDictionary()
         };
 
-        _ = maze.SpawnRunner(start);
+        maze.Runners.Add(maze.CreateRunner(start));
 
         return maze;
     }
@@ -103,11 +103,9 @@ public class Day16(ITestOutputHelper output)
         public HashSet<(Vector2D Position, Vector2D Facing)> Visited { get; private set; } = [];
         public required ImmutableDictionary<Vector2D, GridObject> Walls { get; init; }
 
-        public MazeRunner SpawnRunner(Vector2D position)
+        public MazeRunner CreateRunner(Vector2D position)
         {
-            var runner = new MazeRunner(Runners.Count + 1, this, position);
-            Runners.Add(runner);
-            return runner;
+            return new MazeRunner(Runners.Count + 1, this, position);
         }
         
         public IEnumerable<Vector2D> EnumerateAdjacentPaths(Vector2D position)
@@ -138,10 +136,10 @@ public class Day16(ITestOutputHelper output)
             .EnumerateAdjacentPaths(Position)
             .Where(position => !_maze.Visited.Contains((position, Position - position)));
 
-        public void Move()
+        public IEnumerable<MazeRunner> Move()
         {
             if (IsDead || Position == _maze.Target)
-                return;
+                yield break;
             
             //Visited.Add(Position);
 
@@ -150,14 +148,15 @@ public class Day16(ITestOutputHelper output)
             if (possibilities.Count == 0 || !_maze.Visited.Add((Position, Facing)))
             {
                 IsDead = true;
-                return;
+                yield break;
             }
 
             foreach (var other in possibilities.Where(p => p != Position + Facing))
             {
-                var clone = _maze.SpawnRunner(Position);
+                var clone = _maze.CreateRunner(Position);
                 clone.Facing = other - Position;
                 clone.Score = Score + 1000;
+                yield return clone;
                 //clone.Visited = Visited.ToHashSet();
             }
             
@@ -165,6 +164,7 @@ public class Day16(ITestOutputHelper output)
             {
                 Score++;
                 Position += Facing;
+                yield return this;
             }
         }
     }

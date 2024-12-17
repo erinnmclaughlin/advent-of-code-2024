@@ -22,29 +22,24 @@ else
 
             @foreach (var runner in Maze.Runners)
             {
-                <div class="runner" style="@CreateGridCellCss(runner.Position)" @onclick="() => Select(runner)">
+                <div class="runner @(runner.IsDead ? "dead" : "")" style="@CreateGridCellCss(runner.Position)" @onclick="() => Select(runner)">
                     @*<span class="eye facing@(GetDirectionDescription(runner.Facing))"></span>*@
                 </div>
 
-                foreach (var maybe in runner.EnumeratePossibleNextSteps())
+                foreach (var (maybe, direction) in runner.EnumeratePossibleNextSteps())
                 {
                     var goodness = runner.Position + runner.Facing == maybe ? "good" : "ok";
-                    <div class="@goodness" style="@CreateGridCellCss(maybe)"></div>
+                    <div class="@goodness" style="@CreateGridCellCss(maybe); pointer-events: none">
+                        @GetDirectionDescription(direction)
+                    </div>
                 }
             }
 
             @if (SelectedRunner is not null)
             {
-                for (var i = 1; i < SelectedRunner.Visited.Count; i++)
+                for (var i = 0; i < SelectedRunner.Visited.Count; i++)
                 {
-                    /*var dir = SelectedRunner.Visited.ElementAt(i) - SelectedRunner.Visited.ElementAt(i - 1);
-                    var deg = dir.X switch
-                    {
-                        0 => dir.Y == -1 ? 0 : 180,
-                        -1 => 270,
-                        _ => 90
-                    };*/
-                    <div style="@CreateGridCellCss(SelectedRunner.Visited.ElementAt(i - 1)); background-color: deeppink; opacity: 0.5"></div>
+                    <div style="@CreateGridCellCss(SelectedRunner.Visited.ElementAt(i)); background-color: deeppink; opacity: 0.5"></div>
                 }
             }
             
@@ -54,7 +49,7 @@ else
             {
                 <div class="wall" style="@CreateGridCellCss(position)"></div>
             }
-
+            
             @foreach (var badPosition in Maze.BadPositions)
             {
                 <div style="@CreateGridCellCss(badPosition); background: transparent;">💩</div>
@@ -80,10 +75,10 @@ else
 
     private static string GetDirectionDescription(Vector2D facing)
     {
-        if (facing == Vector2D.Up) return "North";
-        if (facing == Vector2D.Down) return "South";
-        if (facing == Vector2D.Left) return "West";
-        if (facing == Vector2D.Right) return "East";
+        if (facing == Vector2D.Up) return "N";
+        if (facing == Vector2D.Down) return "S";
+        if (facing == Vector2D.Left) return "W";
+        if (facing == Vector2D.Right) return "E";
         return string.Empty;
     }
 }
