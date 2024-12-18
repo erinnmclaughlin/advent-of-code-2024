@@ -13,7 +13,7 @@ else
             <ol>
                 @foreach (var runner in Maze.Runners.Where(x => x.Position == Maze.Target).OrderBy(x => x.Id))
                 {
-                    <li>@runner.Score</li>
+                    <li @onclick="() => Select(runner)" style="@(SelectedRunner == runner ? "background: hotpink;" : "")">@runner.Score</li>
                 }
             </ol>
         </div>
@@ -28,7 +28,7 @@ else
 
                 foreach (var (maybe, direction) in runner.EnumeratePossibleNextSteps())
                 {
-                    var goodness = runner.Position + runner.Facing == maybe ? "good" : "ok";
+                    var goodness = runner.Position + runner.Direction == maybe ? "good" : "ok";
                     <div class="@goodness" style="@CreateGridCellCss(maybe); pointer-events: none">
                         @GetDirectionDescription(direction)
                     </div>
@@ -50,10 +50,10 @@ else
                 <div class="wall" style="@CreateGridCellCss(position)"></div>
             }
             
-            @foreach (var badPosition in Maze.BadPositions)
+            @*@foreach (var badPosition in Maze.BadPositions)
             {
                 <div style="@CreateGridCellCss(badPosition); background: transparent;">💩</div>
-            }
+            }*@
         </div>
 
         <button class="button" @onclick="Move">Move</button>

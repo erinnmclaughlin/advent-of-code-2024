@@ -22,7 +22,10 @@ public sealed partial class Day16
     {
         if (Maze is null) return;
 
-        var runners = Maze.Runners.Where(x => !x.IsDead).ToList();
+        Maze.Runners.RemoveWhere(x => x.IsDead);
+        
+        var runners = Maze.Runners.ToList();
+        Maze.Runners.RemoveWhere(x => runners.Any(r => r.Position == Maze.Target && r.Score < x.Score));
 
         foreach (var runner in runners)
         {
@@ -31,10 +34,9 @@ public sealed partial class Day16
             
             foreach (var clone in runner.Clones)
                 Maze.Runners.Add(clone);
-
-            if (runner.IsDead)
-                Maze.Runners.Remove(runner);
         }
+        
+        Maze.Runners.RemoveWhere(x => x.IsDead);
     }
     
     private void Select(CSharp.Day16.MazeRunner runner)

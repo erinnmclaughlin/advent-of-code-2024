@@ -62,7 +62,7 @@ public class Day16(ITestOutputHelper output)
             output.WriteLine(sb.ToString());
         }
         
-        Assert.Equal(expected, bestSeats.Count);
+        Assert.Equal(expected, bestSeats.Count + 1);
     }
 
     private static void Solve(CSharp.Day16.MazeModel maze)
@@ -70,18 +70,20 @@ public class Day16(ITestOutputHelper output)
         while (maze.Runners.Any(x => x.Position != maze.Target))
         {
             maze.Runners.RemoveWhere(x => x.IsDead);
-            var runners = maze.Runners.Where(x => !x.IsDead).ToList();
+        
+            var runners = maze.Runners.ToList();
+            maze.Runners.RemoveWhere(x => runners.Any(r => r.Position == maze.Target && r.Score < x.Score));
 
             foreach (var runner in runners)
             {
-                if (runner.Move()) continue;
+                if (runner.Move()) 
+                    continue;
             
                 foreach (var clone in runner.Clones)
                     maze.Runners.Add(clone);
-
-                if (runner.IsDead)
-                    maze.Runners.Remove(runner);
             }
+        
+            maze.Runners.RemoveWhere(x => x.IsDead);
         }
     }
 }

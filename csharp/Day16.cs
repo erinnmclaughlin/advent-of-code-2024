@@ -10,13 +10,14 @@ public static class Day16
         public required int Width { get; init; }
         public required Vector2D Target { get; init; }
         public HashSet<MazeRunner> Runners { get; } = [];
-        public HashSet<Vector2D> BadPositions { get; } = [];
-        public Dictionary<Vector2D, HashSet<(MazeRunner Runner, Vector2D Direction, int ScoreAtPosition)>> Visited { get; private set; } = [];
+        //public HashSet<Vector2D> BadPositions { get; } = [];
+        public Dictionary<Vector2D, HashSet<MazeRunner>> Visited { get; private set; } = [];
         public required ImmutableDictionary<Vector2D, GridObject> Walls { get; init; }
 
         public static MazeModel Parse(ReadOnlySpan<string> text)
         {
             var (start, target) = (Vector2D.Zero, Vector2D.Zero);
+            var paths = new HashSet<Vector2D>();
             var walls = new Dictionary<Vector2D, GridObject>();
         
             for (var y = 0; y < text.Length; y++)
@@ -25,16 +26,14 @@ public static class Day16
             
                 for (var x = 0; x < line.Length; x++)
                 {
-                    if (line[x] == '.')
-                        continue;
-
                     var position = new Vector2D(x, y);
-                
+
                     switch (line[x])
                     {
                         case '#': walls.Add(position, new GridObject(position)); break;
-                        case 'S': start = position; break;
-                        case 'E': target = position; break;
+                        case 'S': start = position; paths.Add(position); break;
+                        case 'E': target = position; paths.Add(position); break;
+                        default: paths.Add(position); break;
                     }
                 }
             }
@@ -48,6 +47,7 @@ public static class Day16
             };
 
             maze.Runners.Add(maze.CreateRunner(start));
+            maze.Visited = paths.ToDictionary(x => x, _ => new HashSet<MazeRunner>());
 
             return maze;
         }
@@ -67,9 +67,8 @@ public static class Day16
                 if (result.Y < 0 || result.Y >= Height) continue;
                 
                 if (Walls.ContainsKey(result)) continue;
-                if (BadPositions.Contains(result)) continue;
-                //if (Visited.TryGetValue(result, out var visited) && visited.Any(x => x.Facing == possibleDirection)) continue;
                 //if (BadPositions.Contains(result)) continue;
+                //if (Visited.TryGetValue(result, out var visited) && visited.Any(x => x.Facing == possibleDirection)) continue;
                 
                 yield return (result, possibleDirection);
             }
@@ -89,13 +88,13 @@ public static class Day16
 
         public int Id { get; } = id;
         public HashSet<MazeRunner> Clones { get; set; } = [];
-        public Vector2D Facing { get; private set; } = Vector2D.Right;
+        public Vector2D Direction { get; private set; } = Vector2D.Right;
         public int Score { get; private set; }
         public bool IsDead { get; set; }
-        public Dictionary<Vector2D, int> Visited { get; set; } = new();
+        public Dictionary<Vector2D, HashSet<Vector2D>> Visited { get; set; } = new();
 
         public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumeratePossibleNextSteps() => _maze
-            .EnumerateOpenAdjacentPaths(Position, Facing)
+            .EnumerateOpenAdjacentPaths(Position, Direction)
             .Where(x => !Visited.ContainsKey(x.Position));
 
         public bool Move()
@@ -103,8 +102,38 @@ public static class Day16
             if (IsDead || Position == _maze.Target)
                 return false;
 
-            _ = Visited.TryGetValue(Position, out var score);
-            Visited[Position] = score + 1;
+            _ = Visited.TryAdd(Position, []);
+            Visited[Position].Add(Direction);
+
+            if (!_maze.Visited[Position].Add(this))
+            {
+                IsDead = true;
+                return false;
+            }
+
+            if (_maze.Visited[Position] is { Count: > 0 } runnersWithSharedPosition)
+            {
+                var current = this;
+                var possibleDuplicates = runnersWithSharedPosition.Where(x => x != current && x.Visited[Position].Contains(Direction));
+                
+                var isDuplicate = false;
+
+                foreach (var possibleDuplicate in possibleDuplicates)
+                {
+                    if (Visited.All(x => possibleDuplicate.Visited.Contains(x)))
+                    {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (isDuplicate)
+                {
+                    Clones.Clear();
+                    IsDead = true;
+                    return false;
+                }
+            }
 
             var possibilities = EnumeratePossibleNextSteps()
                 .ToDictionary(x => x.Direction, x => x.Position);
@@ -115,48 +144,20 @@ public static class Day16
                 return false;
             }
 
-            if (_maze.Visited.TryGetValue(Position, out var previousStates))
-            {
-                if (!previousStates.Any(x => x.Direction == Facing))
-                {
-                    previousStates.Add((this, Facing, Score));
-                }
-                else
-                {
-                    var existing = previousStates.First(x => x.Direction == Facing);
-
-                    if (existing.ScoreAtPosition > Score)
-                    {
-                        existing.Runner.IsDead = true;
-                        previousStates.Remove(existing);
-                        previousStates.Add((this, Facing, Score));
-                    }
-                    else
-                    {
-                        IsDead = true;
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                _maze.Visited[Position] = [(this, Facing, Score)];
-            }
-
-            foreach (var (dir, pos) in possibilities.Where(p => p.Key != Facing))
+            foreach (var (dir, pos) in possibilities.Where(p => p.Key != Direction))
             {
                 //var clone = _maze.CreateRunner(pos);
                 var clone = CreateClone();
-                //clone.Position = pos;
-                clone.Facing = dir;
-                clone.Score += 1000;
+                clone.Position = pos;
+                clone.Direction = dir;
+                clone.Score += 1001;
                 Clones.Add(clone);
             }
             
-            if (possibilities.ContainsKey(Facing))
+            if (possibilities.ContainsKey(Direction))
             {
                 Score++;
-                Position += Facing;
+                Position += Direction;
                 return true;
             }
 
@@ -166,7 +167,7 @@ public static class Day16
         private MazeRunner CreateClone()
         {
             var clone = _maze.CreateRunner(Position);
-            clone.Facing = Facing;
+            clone.Direction = Direction;
             clone.Score = Score;
             clone.Visited = Visited.ToDictionary();
             return clone;
