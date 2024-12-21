@@ -45,9 +45,9 @@ else
             
             <div class="target" style="@CreateGridCellCss(Maze.Target)"></div>
 
-            @foreach (var position in Maze.Maze.Walls)
+            @foreach (var rect in Maze.Maze.Walls)
             {
-                <div class="wall" style="@CreateGridCellCss(position)"></div>
+                <div class="wall" style="@CreateGridCellCss(rect)"></div>
             }
             
             @*@foreach (var badPosition in Maze.BadPositions)
@@ -66,6 +66,14 @@ else
     private static string CreateGridTemplateCss(Maze2D maze)
     {
         return $"grid-template-columns: repeat({maze.Width}, calc(100cqw / {maze.Width})); grid-template-rows: repeat({maze.Height}, calc(100cqw / {maze.Width}));";
+    }
+    
+    private static string CreateGridCellCss(Rectangle2D rect)
+    {
+        return $"grid-row-start: {rect.Position.Y + 1}; " +
+               $"grid-row-end: { rect.Position.Y + rect.Height};" +
+               $"grid-column-start: {rect.Position.X + 1};" +
+               $"grid-column-end: { rect.Position.X + rect.Width};";
     }
 
     private static string CreateGridCellCss(Vector2D position)

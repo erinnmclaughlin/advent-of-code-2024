@@ -27,7 +27,6 @@ public class Day16(ITestOutputHelper output)
     
     // 628 is too low
     
-    [Theory]
     [InlineData("day16.example1.txt", 45)]
     [InlineData("day16.example2.txt", 64)]
     [InlineData("day16.txt", 0, Skip = "Too long to run.")]
@@ -51,7 +50,7 @@ public class Day16(ITestOutputHelper output)
             {
                 var pos = new Vector2D(x, y);
 
-                if (maze.Maze.Walls.Contains(pos))
+                if (maze.Maze.Walls.Any(r => r.Contains(pos)))
                     sb.Append('#');
                 else if (bestSeats.Contains(pos))
                     sb.Append('O');

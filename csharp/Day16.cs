@@ -27,7 +27,7 @@ public static class Day16
                     switch (line[x])
                     {
                         case '#': 
-                            model.Maze.Walls.Add(position);
+                            model.Maze.Walls.Add(Rectangle2D.Create(position, 1, 1));
                             break;
                         case 'S':
                             model.Runners.Add(model.CreateRunner(position));
