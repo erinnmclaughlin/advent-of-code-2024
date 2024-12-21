@@ -23,4 +23,13 @@ public static class Directions
             };
         }
     }
+
+    public static Direction GetOpposite(this Direction dir) => dir switch
+    {
+        Direction.Up => Direction.Down,
+        Direction.Down => Direction.Up,
+        Direction.Left => Direction.Right,
+        Direction.Right => Direction.Left,
+        _ => throw new UnreachableException()
+    };
 }

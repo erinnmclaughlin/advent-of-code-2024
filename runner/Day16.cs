@@ -51,7 +51,7 @@ public class Day16(ITestOutputHelper output)
             {
                 var pos = new Vector2D(x, y);
 
-                if (maze.Maze.Walls.Any(r => r.Contains(pos)))
+                if (maze.Maze.Walls.Contains(pos))
                     sb.Append('#');
                 else if (bestSeats.Contains(pos))
                     sb.Append('O');

@@ -7,57 +7,59 @@
 else
 {
     <div class="container">
-        
-        <div>
-            <p>Winners:</p>
-            <ol>
-                @foreach (var runner in Maze.Runners.Where(x => x.Position == Maze.Target).OrderBy(x => x.Id))
-                {
-                    <li @onclick="() => Select(runner)" style="@(SelectedRunner == runner ? "background: hotpink;" : "")">@runner.Score</li>
-                }
-            </ol>
-        </div>
-        
-        <div class="grid" style="@CreateGridTemplateCss(Maze.Maze)">
+        <div class="grid" style="@CreateGridTemplateCss(Maze)">
 
-            @foreach (var runner in Maze.Runners)
-            {
-                <div class="runner @(runner.IsDead ? "dead" : "")" style="@CreateGridCellCss(runner.Position)" @onclick="() => Select(runner)">
-                    @*<span class="eye facing@(GetDirectionDescription(runner.Facing))"></span>*@
-                </div>
-
-                foreach (var (maybe, direction) in runner.EnumeratePossibleNextSteps())
-                {
-                    var goodness = runner.Position + runner.Direction == maybe ? "good" : "ok";
-                    <div class="@goodness" style="@CreateGridCellCss(maybe); pointer-events: none">
-                        @direction.ToString()[0]
-                    </div>
-                }
-            }
-
-            @if (SelectedRunner is not null)
-            {
-                for (var i = 0; i < SelectedRunner.Visited.Count; i++)
-                {
-                    <div style="@CreateGridCellCss(SelectedRunner.Visited.ElementAt(i).Key); background-color: deeppink; opacity: 0.5"></div>
-                }
-            }
+            <div class="start" style="@CreateGridCellCss(Start)">
+                
+            </div>
             
-            <div class="target" style="@CreateGridCellCss(Maze.Target)"></div>
+            <div class="current" style="@CreateGridCellCss(Current)">
+                👟
+            </div>
+            
+            <div class="target" style="@CreateGridCellCss(Target)">
+                🏁
+            </div>
 
-            @foreach (var rect in Maze.Maze.Walls)
+            @foreach (var rect in Maze.Walls)
             {
                 <div class="wall" style="@CreateGridCellCss(rect)"></div>
             }
             
-            @*@foreach (var badPosition in Maze.BadPositions)
+            @foreach (var (pos, cost) in GetScoresAtPoints(Current, Direction))
             {
-                <div style="@CreateGridCellCss(badPosition); background: transparent;">💩</div>
+                <div class="next" style="@CreateGridCellCss(pos)">@cost</div>
+            }
+            
+            @*
+            @foreach (var (next, dir, cost) in GetNextDecisionPoints())
+            {
+                <div class="next" style="@CreateGridCellCss(next)">
+                    @cost
+                </div>
+
+                foreach (var (next2, dir2, cost2) in GetNextDecisionPoints(next, dir))
+                {
+                    <div class="next2" style="@CreateGridCellCss(next2)">
+                        @(cost + cost2)
+                    </div>
+                    
+                    foreach (var (next3, dir3, cost3) in GetNextDecisionPoints(next2, dir2))
+                    {
+                        <div class="next3" style="@CreateGridCellCss(next3)">
+                            @(cost + cost2 + cost3)
+                        </div>
+                    }
+                }
+            }*@
+            
+            @*@foreach (var dir in Maze.EnumerateOpenDirections(Current))
+            {
+                <div class="next" style="@CreateGridCellCss(Current + dir)">
+                    @CalculateUnitCost(dir)
+                </div>
             }*@
         </div>
-
-        <button class="button" @onclick="Move">Move</button>
-
     </div>
 }
 
@@ -67,7 +69,7 @@ else
     {
         return $"grid-template-columns: repeat({maze.Width}, calc(100cqw / {maze.Width})); grid-template-rows: repeat({maze.Height}, calc(100cqw / {maze.Width}));";
     }
-    
+
     private static string CreateGridCellCss(Rectangle2D rect)
     {
         return $"grid-row-start: {rect.Position.Y + 1}; " +

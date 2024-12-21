@@ -1,0 +1,83 @@
+﻿@page "/2024/day16old"
+
+@if (Maze is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+        
+        <div>
+            <p>Winners:</p>
+            <ol>
+                @foreach (var runner in Maze.Runners.Where(x => x.Position == Maze.Target).OrderBy(x => x.Id))
+                {
+                    <li @onclick="() => Select(runner)" style="@(SelectedRunner == runner ? "background: hotpink;" : "")">@runner.Score</li>
+                }
+            </ol>
+        </div>
+        
+        <div class="grid" style="@CreateGridTemplateCss(Maze.Maze)">
+
+            @foreach (var runner in Maze.Runners)
+            {
+                <div class="runner @(runner.IsDead ? "dead" : "")" style="@CreateGridCellCss(runner.Position)" @onclick="() => Select(runner)">
+                    @*<span class="eye facing@(GetDirectionDescription(runner.Facing))"></span>*@
+                </div>
+
+                foreach (var (maybe, direction) in runner.EnumeratePossibleNextSteps())
+                {
+                    var goodness = runner.Position + runner.Direction == maybe ? "good" : "ok";
+                    <div class="@goodness" style="@CreateGridCellCss(maybe); pointer-events: none">
+                        @direction.ToString()[0]
+                    </div>
+                }
+            }
+
+            @if (SelectedRunner is not null)
+            {
+                for (var i = 0; i < SelectedRunner.Visited.Count; i++)
+                {
+                    <div style="@CreateGridCellCss(SelectedRunner.Visited.ElementAt(i).Key); background-color: deeppink; opacity: 0.5"></div>
+                }
+            }
+            
+            <div class="target" style="@CreateGridCellCss(Maze.Target)"></div>
+
+            @foreach (var rect in Maze.Maze.Walls)
+            {
+                <div class="wall" style="@CreateGridCellCss(rect)"></div>
+            }
+            
+            @*@foreach (var badPosition in Maze.BadPositions)
+            {
+                <div style="@CreateGridCellCss(badPosition); background: transparent;">💩</div>
+            }*@
+        </div>
+
+        <button class="button" @onclick="Move">Move</button>
+
+    </div>
+}
+
+@code {
+
+    private static string CreateGridTemplateCss(Maze2D maze)
+    {
+        return $"grid-template-columns: repeat({maze.Width}, calc(100cqw / {maze.Width})); grid-template-rows: repeat({maze.Height}, calc(100cqw / {maze.Width}));";
+    }
+    
+    private static string CreateGridCellCss(Rectangle2D rect)
+    {
+        return $"grid-row-start: {rect.Position.Y + 1}; " +
+               $"grid-row-end: { rect.Position.Y + rect.Height};" +
+               $"grid-column-start: {rect.Position.X + 1};" +
+               $"grid-column-end: { rect.Position.X + rect.Width};";
+    }
+
+    private static string CreateGridCellCss(Vector2D position)
+    {
+        return $"grid-row-start: {position.Y + 1}; grid-column-start: {position.X + 1};";
+    }
+}
