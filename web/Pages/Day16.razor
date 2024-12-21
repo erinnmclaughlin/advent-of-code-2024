@@ -30,7 +30,7 @@ else
                 {
                     var goodness = runner.Position + runner.Direction == maybe ? "good" : "ok";
                     <div class="@goodness" style="@CreateGridCellCss(maybe); pointer-events: none">
-                        @GetDirectionDescription(direction)
+                        @direction.ToString()[0]
                     </div>
                 }
             }
@@ -79,14 +79,5 @@ else
     private static string CreateGridCellCss(Vector2D position)
     {
         return $"grid-row-start: {position.Y + 1}; grid-column-start: {position.X + 1};";
-    }
-
-    private static string GetDirectionDescription(Vector2D facing)
-    {
-        if (facing == Vector2D.Up) return "N";
-        if (facing == Vector2D.Down) return "S";
-        if (facing == Vector2D.Left) return "W";
-        if (facing == Vector2D.Right) return "E";
-        return string.Empty;
     }
 }

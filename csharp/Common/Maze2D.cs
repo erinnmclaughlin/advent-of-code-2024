@@ -63,9 +63,9 @@ public class Maze2D(int height, int width)
         return sb.ToString();
     }
 
-    public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumerateOpenAdjacentPaths(Vector2D position)
+    public IEnumerable<(Vector2D Position, Direction Direction)> EnumerateOpenAdjacentPaths(Vector2D position)
     {
-        foreach (var possibleDirection in EnumerateDirections())
+        foreach (var possibleDirection in Directions.EnumerateClockwise())
         {
             var result = position + possibleDirection;
 
@@ -75,13 +75,5 @@ public class Maze2D(int height, int width)
             
             yield return (result, possibleDirection);
         }
-    }
-
-    private static IEnumerable<Vector2D> EnumerateDirections()
-    {
-        yield return Vector2D.Up;
-        yield return Vector2D.Right;
-        yield return Vector2D.Down;
-        yield return Vector2D.Left;
     }
 }

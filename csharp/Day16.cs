@@ -60,13 +60,13 @@ public static class Day16
 
         public int Id { get; } = id;
         public HashSet<MazeRunner> Clones { get; set; } = [];
-        public Vector2D Direction { get; set; } = Vector2D.Right;
+        public Direction Direction { get; set; } = Direction.Right;
         public Vector2D Position { get; set; } = position;
         public int Score { get; private set; }
         public bool IsDead { get; set; }
         public Dictionary<Vector2D, HashSet<Vector2D>> Visited { get; set; } = new();
 
-        public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumeratePossibleNextSteps() => _maze
+        public IEnumerable<(Vector2D Position, Direction Direction)> EnumeratePossibleNextSteps() => _maze
             .Maze
             .EnumerateOpenAdjacentPaths(Position)
             .Where(x => !Visited.ContainsKey(x.Position));
@@ -120,7 +120,6 @@ public static class Day16
 
             foreach (var (dir, pos) in possibilities.Where(p => p.Key != Direction))
             {
-                //var clone = _maze.CreateRunner(pos);
                 var clone = CreateClone();
                 clone.Position = pos;
                 clone.Direction = dir;
