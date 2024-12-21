@@ -1,20 +1,20 @@
 namespace AoC;
 
-public class Day13
+public sealed class Day13
 {
-    private readonly string[] _fileLines = File.ReadAllLines("day13.txt");
-
-    [Fact]
-    public void PartOne()
+    [Theory]
+    [InlineData("day13.txt", 36954)]
+    public void PartOne(string filePath, int expected)
     {
-        var sum = CSharp.Day13.PartOne(_fileLines);
-        Assert.Equal(36954, sum);
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day13.PartOne(fileLines).Should().Be(expected);
     }
 
-    [Fact]
-    public void PartTwo()
+    [Theory]
+    [InlineData("day13.txt", 79352015273424)]
+    public void PartTwo(string filePath, long expected)
     {
-        var sum = CSharp.Day13.PartTwo(_fileLines);
-        Assert.Equal(79352015273424, sum);
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day13.PartTwo(fileLines).Should().Be(expected);
     }
 }

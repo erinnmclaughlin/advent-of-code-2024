@@ -2,14 +2,14 @@ namespace AoC.CSharp;
 
 public static class Day14
 {
-    public static long PartOne(string[] input) => input
+    public static long PartOne(string[] input, int seconds, int height, int width) => input
         .Select(l =>
         {
             var robot = Robot.Parse(l);
-            robot.Move(100, 103, 101);
+            robot.Move(seconds, height, width);
             return robot;
         })
-        .GetQuadrantScore(103, 101);
+        .GetQuadrantScore(height, width);
     
     public static long GetQuadrantScore(this IEnumerable<Robot> robots, int numRows, int numCols)
     {

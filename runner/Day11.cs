@@ -1,18 +1,14 @@
-using BenchmarkDotNet.Attributes;
-
 namespace AoC;
 
-public class Day11
+public sealed class Day11
 {
-    private readonly string _fileText = File.ReadAllText("day11.txt");
-
-    [Fact]
-    public void PartOne() => Assert.Equal(198089, CSharp.Day11.CountStones(_fileText, 25));
-
-    [Fact]
-    public void PartTwo() => Assert.Equal(236302670835517, CSharp.Day11.CountStones(_fileText, 75));
-    
-    [Params(1, 10, 25)] public int NumRounds { get; set; }
-    [Benchmark] public long PartOneFast() => CSharp.Day11.CountStones(_fileText, NumRounds);
-    [Benchmark] public long PartOneSlow() => CSharp.Day11.CountStonesSlow(_fileText, NumRounds);
+    [Theory]
+    [InlineData("day11.example.txt", 6, 22)]
+    [InlineData("day11.txt", 25, 198089)]
+    [InlineData("day11.txt", 75, 236302670835517)]
+    public void PartOne(string filePath, int blinkCount, long expected)
+    {
+        var fileText = File.ReadAllText(filePath);
+        CSharp.Day11.CountStones(fileText, blinkCount).Should().Be(expected);
+    }
 }

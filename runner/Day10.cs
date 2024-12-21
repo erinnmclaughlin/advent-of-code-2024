@@ -1,14 +1,22 @@
-using BenchmarkDotNet.Attributes;
-
 namespace AoC;
 
-public class Day10
+public sealed class Day10
 {
-    private readonly string[] _fileLines = File.ReadAllLines("day10.txt");
-
-    [Fact, Benchmark]
-    public void PartOne() => Assert.Equal(512, CSharp.Day10.PartOne(_fileLines));
+    [Theory]
+    [InlineData("day10.example.txt", 36)]
+    [InlineData("day10.txt", 512)]
+    public void PartOne(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day10.PartOne(fileLines).Should().Be(expected);
+    }
     
-    [Fact, Benchmark]
-    public void PartTwo() => Assert.Equal(1045, CSharp.Day10.PartTwo(_fileLines));
+    [Theory]
+    [InlineData("day10.example.txt", 81)]
+    [InlineData("day10.txt", 1045)]
+    public void PartTwo(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day10.PartTwo(fileLines).Should().Be(expected);
+    }
 }

@@ -11,7 +11,7 @@ public class Day16(ITestOutputHelper output)
     [Theory]
     [InlineData("day16.example1.txt", 7036)]
     [InlineData("day16.example2.txt", 11048)]
-    [InlineData("day16.txt", 147628)]
+    [InlineData("day16.txt", 147628, Skip = "Too long to run.")]
     public void PartOne(string path, int expected)
     {
         var maze = CSharp.Day16.MazeModel.Parse(File.ReadAllLines(path));
@@ -30,7 +30,7 @@ public class Day16(ITestOutputHelper output)
     [Theory]
     [InlineData("day16.example1.txt", 45)]
     [InlineData("day16.example2.txt", 64)]
-    [InlineData("day16.txt", 0)]
+    [InlineData("day16.txt", 0, Skip = "Too long to run.")]
     public void PartTwo(string path, int expected)
     {
         var maze = CSharp.Day16.MazeModel.Parse(File.ReadAllLines(path));

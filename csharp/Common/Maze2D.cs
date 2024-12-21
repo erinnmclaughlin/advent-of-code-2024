@@ -15,9 +15,9 @@ public class Maze2D(int height, int width)
 
             if (result.X < 0 || result.X >= Width) continue;
             if (result.Y < 0 || result.Y >= Height) continue;
-                
-            if (!Walls.Contains(result))
-                yield return (result, possibleDirection);
+            if (Walls.Contains(result)) continue;
+            
+            yield return (result, possibleDirection);
         }
     }
 

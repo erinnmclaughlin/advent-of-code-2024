@@ -1,12 +1,22 @@
 namespace AoC;
 
-public class Day12
+public sealed class Day12
 {
-    private readonly string[] _input = File.ReadAllLines("day12.txt");
+    [Theory]
+    [InlineData("day12.example.txt", 1930)]
+    [InlineData("day12.txt", 1465968)]
+    public void PartOne(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day12.PartOne(fileLines).Should().Be(expected);
+    }
 
-    [Fact]
-    public void PartOne() => Assert.Equal(1465968, CSharp.Day12.PartOne(_input.AsSpan()));
-
-    [Fact]
-    public void PartTwo() => Assert.Equal(897702, CSharp.Day12.PartTwo(_input));
+    [Theory]
+    [InlineData("day12.example.txt", 1206)]
+    [InlineData("day12.txt", 897702)]
+    public void PartTwo(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day12.PartTwo(fileLines).Should().Be(expected);
+    }
 }

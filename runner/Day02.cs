@@ -1,19 +1,22 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
-
 namespace AoC;
 
-[Orderer(SummaryOrderPolicy.Declared)]
-public class Day02
+public sealed class Day02
 {
-    private readonly string[] _fileLines = File.ReadAllLines("day02.txt");
+    [Theory]
+    [InlineData("day02.example.txt", 2)]
+    [InlineData("day02.txt", 407)]
+    public void PartOne(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day02.PartOne(fileLines).Should().Be(expected);
+    }
 
-    [Fact, Benchmark]
-    public void PartOne_CSharp() => AssertPartOne(CSharp.Day02.PartOne(_fileLines));
-    
-    [Fact, Benchmark]
-    public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day02.PartTwo(_fileLines));
-
-    private static void AssertPartOne(int answer) => Assert.Equal(407, answer);
-    private static void AssertPartTwo(int answer) => Assert.Equal(459, answer);
+    [Theory]
+    [InlineData("day02.example.txt", 4)]
+    [InlineData("day02.txt", 459)]
+    public void PartTwo(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day02.PartTwo(fileLines).Should().Be(expected);
+    }
 }

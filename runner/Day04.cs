@@ -1,25 +1,40 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
-
 namespace AoC;
 
-[Orderer(SummaryOrderPolicy.Declared)]
-public class Day04
+public sealed class Day04
 {
-    private readonly string[] _fileLines = File.ReadAllLines("day04.txt");
-
-    [Fact, Benchmark]
-    public void PartOne_CSharp() => AssertPartOne(CSharp.Day04.PartOne(_fileLines));
+    [Theory]
+    [InlineData("day04.example.txt", 18)]
+    [InlineData("day04.txt", 2500)]
+    public void PartOne(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day04.PartOne(fileLines).Should().Be(expected);
+    }
     
-    [Fact, Benchmark]
-    public void PartOne_CSharp_Optimized() => AssertPartOne(CSharp.Day04Optimized.PartOne(_fileLines));
+    [Theory]
+    [InlineData("day04.example.txt", 18)]
+    [InlineData("day04.txt", 2500)]
+    public void PartOne_Optimized(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day04Optimized.PartOne(fileLines).Should().Be(expected);
+    }
     
-    [Fact, Benchmark]
-    public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day04.PartTwo(_fileLines));
+    [Theory]
+    [InlineData("day04.example.txt", 9)]
+    [InlineData("day04.txt", 1933)]
+    public void PartTwo(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day04.PartTwo(fileLines).Should().Be(expected);
+    }
     
-    [Fact, Benchmark]
-    public void PartTwo_CSharp_Optimized() => AssertPartTwo(CSharp.Day04Optimized.PartTwo(_fileLines));
-    
-    private static void AssertPartOne(int answer) => Assert.Equal(2500, answer);
-    private static void AssertPartTwo(int answer) => Assert.Equal(1933, answer);
+    [Theory]
+    [InlineData("day04.example.txt", 9)]
+    [InlineData("day04.txt", 1933)]
+    public void PartTwo_Optimized(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day04Optimized.PartTwo(fileLines).Should().Be(expected);
+    }
 }

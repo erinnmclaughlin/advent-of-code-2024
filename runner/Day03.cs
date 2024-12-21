@@ -1,25 +1,40 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
-
 namespace AoC;
 
-[Orderer(SummaryOrderPolicy.Declared)]
-public class Day03
+public sealed class Day03
 {
-    private readonly string _fileText = File.ReadAllText("day03.txt");
+    [Theory]
+    [InlineData("day03.example1.txt", 161)]
+    [InlineData("day03.txt", 161085926)]
+    public void PartOne(string filePath, int expected)
+    {
+        var fileText = File.ReadAllText(filePath);
+        CSharp.Day03.PartOne(fileText).Should().Be(expected);
+    }
 
-    [Fact, Benchmark]
-    public void PartOne_CSharp() => AssertPartOne(CSharp.Day03.PartOne(_fileText));
+    [Theory]
+    [InlineData("day03.example1.txt", 161)]
+    [InlineData("day03.txt", 161085926)]
+    public void PartOne_Optimized(string filePath, int expected)
+    {
+        var fileText = File.ReadAllText(filePath);
+        CSharp.Day03Optimized.PartOne(fileText).Should().Be(expected);
+    }
     
-    [Fact, Benchmark]
-    public void PartOne_CSharp_Optimized() => AssertPartOne(CSharp.Day03Optimized.PartOne(_fileText));
+    [Theory]
+    [InlineData("day03.example2.txt", 48)]
+    [InlineData("day03.txt", 82045421)]
+    public void PartTwo(string filePath, int expected)
+    {
+        var fileText = File.ReadAllText(filePath);
+        CSharp.Day03.PartTwo(fileText).Should().Be(expected);
+    }
     
-    [Fact, Benchmark]
-    public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day03.PartTwo(_fileText));
-    
-    [Fact, Benchmark]
-    public void PartTwo_CSharp_Optimized() => AssertPartTwo(CSharp.Day03Optimized.PartTwo(_fileText));
-    
-    private static void AssertPartOne(int answer) => Assert.Equal(161085926, answer);
-    private static void AssertPartTwo(int answer) => Assert.Equal(82045421, answer);
+    [Theory]
+    [InlineData("day03.example2.txt", 48)]
+    [InlineData("day03.txt", 82045421)]
+    public void PartTwo_Optimized(string filePath, int expected)
+    {
+        var fileText = File.ReadAllText(filePath);
+        CSharp.Day03Optimized.PartTwo(fileText).Should().Be(expected);
+    }
 }

@@ -1,31 +1,40 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
+﻿namespace AoC;
 
-namespace AoC;
-
-[Orderer(SummaryOrderPolicy.FastestToSlowest)]
-public class Day01
+public sealed class Day01
 {
-    private readonly string[] _fileLines = File.ReadAllLines("day01.txt");
-    
-    [Benchmark, Fact]
-    public void PartOne_CSharp() => AssertPartOne(CSharp.Day01.PartOne(_fileLines));
-    
-    [Benchmark, Fact]
-    public void PartOne_CSharp_Optimized() => AssertPartOne(CSharp.Day01Optimized.PartOne(_fileLines));
-    
-    [Benchmark, Fact]
-    public void PartOne_FSharp() => AssertPartOne(fsharp.day01.part1(_fileLines));
-    
-    [Benchmark, Fact]
-    public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day01.PartTwo(_fileLines));
-    
-    [Benchmark, Fact]
-    public void PartTwo_CSharp_Optimized() => AssertPartTwo(CSharp.Day01Optimized.PartTwo(_fileLines));
-    
-    [Benchmark, Fact]
-    public void PartTwo_FSharp() => AssertPartTwo(fsharp.day01.part2(_fileLines));
-    
-    private static void AssertPartOne(int answer) => Assert.Equal(1879048, answer);
-    private static void AssertPartTwo(int answer) => Assert.Equal(21024792, answer);
+    [Theory]
+    [InlineData("day01.example.txt", 11)]
+    [InlineData("day01.txt", 1879048)]
+    public void PartOne(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day01.PartOne(fileLines).Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("day01.example.txt", 11)]
+    [InlineData("day01.txt", 1879048)]
+    public void PartOne_Optimized(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day01Optimized.PartOne(fileLines).Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("day01.example.txt", 31)]
+    [InlineData("day01.txt", 21024792)]
+    public void PartTwo(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day01.PartTwo(fileLines).Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("day01.example.txt", 31)]
+    [InlineData("day01.txt", 21024792)]
+    public void PartTwo_Optimized(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day01Optimized.PartTwo(fileLines).Should().Be(expected);
+    }
 }

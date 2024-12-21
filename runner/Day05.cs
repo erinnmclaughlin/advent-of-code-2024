@@ -1,22 +1,31 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
-
 namespace AoC;
 
-[Orderer(SummaryOrderPolicy.Declared)]
-public class Day05
+public sealed class Day05
 {
-    private readonly string[] _fileLines = File.ReadAllLines("day05.txt");
+    [Theory]
+    [InlineData("day05.example.txt", 143)]
+    [InlineData("day05.txt", 5268)]
+    public void PartOne_CSharp(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day05.PartOne(fileLines).Should().Be(expected);
+    }
 
-    [Fact, Benchmark]
-    public void PartOne_CSharp() => AssertPartOne(CSharp.Day05.PartOne(_fileLines));
+    [Theory]
+    [InlineData("day05.example.txt", 143)]
+    [InlineData("day05.txt", 5268)]
+    public void PartOne_CSharp_Optimized(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day05Optimized.PartOne(fileLines).Should().Be(expected);
+    }
 
-    [Fact, Benchmark]
-    public void PartOne_CSharp_Optimized() => AssertPartOne(CSharp.Day05Optimized.PartOne(_fileLines));
-    
-    [Fact, Benchmark]
-    public void PartTwo_CSharp() => AssertPartTwo(CSharp.Day05.PartTwo(_fileLines));
-    
-    private static void AssertPartOne(int answer) => Assert.Equal(5268, answer);
-    private static void AssertPartTwo(int answer) => Assert.Equal(5799, answer);
+    [Theory]
+    [InlineData("day05.example.txt", 123)]
+    [InlineData("day05.txt", 5799)]
+    public void PartTwo_CSharp(string filePath, int expected)
+    {
+        var fileLines = File.ReadAllLines(filePath);
+        CSharp.Day05.PartTwo(fileLines).Should().Be(expected);
+    }
 }
