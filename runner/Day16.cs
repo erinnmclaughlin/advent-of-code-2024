@@ -43,15 +43,15 @@ public class Day16(ITestOutputHelper output)
             .SelectMany(x => x.Visited.Keys)
             .ToHashSet();
 
-        for (var y = 0; y < maze.Height; y++)
+        for (var y = 0; y < maze.Maze.Height; y++)
         {
             var sb = new StringBuilder();
             
-            for (var x = 0; x < maze.Width; x++)
+            for (var x = 0; x < maze.Maze.Width; x++)
             {
                 var pos = new Vector2D(x, y);
 
-                if (maze.Walls.ContainsKey(pos))
+                if (maze.Maze.Walls.Contains(pos))
                     sb.Append('#');
                 else if (bestSeats.Contains(pos))
                     sb.Append('O');

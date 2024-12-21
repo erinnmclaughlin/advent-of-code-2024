@@ -1,10 +1,5 @@
 ﻿namespace AoC.CSharp.Common;
 
-public class GridObject(Vector2D position)
-{
-    public Vector2D Position { get; set; } = position;
-}
-
 public readonly struct Vector2D(int x, int y) : IEquatable<Vector2D>
 {
     public int X { get; } = x;

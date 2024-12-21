@@ -1,25 +1,21 @@
-﻿using System.Collections.Immutable;
-
-namespace AoC.CSharp;
+﻿namespace AoC.CSharp;
 
 public static class Day16
 {
     public class MazeModel
     {
-        public required int Height { get; init; }
-        public required int Width { get; init; }
-        public required Vector2D Target { get; init; }
-        public HashSet<MazeRunner> Runners { get; } = [];
-        //public HashSet<Vector2D> BadPositions { get; } = [];
+        public required Maze2D Maze { get; init; }
+        public Vector2D Target { get; set; }
+        public HashSet<MazeRunner> Runners { get; init; } = [];
         public Dictionary<Vector2D, HashSet<MazeRunner>> Visited { get; private set; } = [];
-        public required ImmutableDictionary<Vector2D, GridObject> Walls { get; init; }
 
         public static MazeModel Parse(ReadOnlySpan<string> text)
         {
-            var (start, target) = (Vector2D.Zero, Vector2D.Zero);
-            var paths = new HashSet<Vector2D>();
-            var walls = new Dictionary<Vector2D, GridObject>();
-        
+            var model = new MazeModel
+            {
+                Maze = new Maze2D(text.Length, text[0].Length)
+            };
+            
             for (var y = 0; y < text.Length; y++)
             {
                 var line = text[y].AsSpan();
@@ -30,26 +26,25 @@ public static class Day16
 
                     switch (line[x])
                     {
-                        case '#': walls.Add(position, new GridObject(position)); break;
-                        case 'S': start = position; paths.Add(position); break;
-                        case 'E': target = position; paths.Add(position); break;
-                        default: paths.Add(position); break;
+                        case '#': 
+                            model.Maze.Walls.Add(position);
+                            break;
+                        case 'S':
+                            model.Runners.Add(model.CreateRunner(position));
+                            model.Visited.Add(position, []); 
+                            break;
+                        case 'E': 
+                            model.Target = position; 
+                            model.Visited.Add(position, []);  
+                            break;
+                        default: 
+                            model.Visited.Add(position, []); 
+                            break;
                     }
                 }
             }
 
-            var maze = new MazeModel
-            {
-                Height = text.Length,
-                Width = text[0].Length,
-                Target = target,
-                Walls = walls.ToImmutableDictionary()
-            };
-
-            maze.Runners.Add(maze.CreateRunner(start));
-            maze.Visited = paths.ToDictionary(x => x, _ => new HashSet<MazeRunner>());
-
-            return maze;
+            return model;
         }
         
         public MazeRunner CreateRunner(Vector2D position)
@@ -57,44 +52,23 @@ public static class Day16
             return new MazeRunner(Runners.Count + 1, this, position);
         }
         
-        public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumerateOpenAdjacentPaths(Vector2D position, Vector2D dir)
-        {
-            foreach (var possibleDirection in EnumerateDirections(dir))
-            {
-                var result = position + possibleDirection;
-
-                if (result.X < 0 || result.X >= Width) continue;
-                if (result.Y < 0 || result.Y >= Height) continue;
-                
-                if (Walls.ContainsKey(result)) continue;
-                //if (BadPositions.Contains(result)) continue;
-                //if (Visited.TryGetValue(result, out var visited) && visited.Any(x => x.Facing == possibleDirection)) continue;
-                
-                yield return (result, possibleDirection);
-            }
-        }
-
-        private static IEnumerable<Vector2D> EnumerateDirections(Vector2D dir)
-        {
-            yield return dir;
-            yield return new Vector2D(dir.Y, -dir.X);
-            yield return new Vector2D(-dir.Y, dir.X);
-        }
     }
 
-    public class MazeRunner(int id, MazeModel maze, Vector2D position) : GridObject(position)
+    public class MazeRunner(int id, MazeModel maze, Vector2D position)
     {
         private readonly MazeModel _maze = maze;
 
         public int Id { get; } = id;
         public HashSet<MazeRunner> Clones { get; set; } = [];
-        public Vector2D Direction { get; private set; } = Vector2D.Right;
+        public Vector2D Direction { get; set; } = Vector2D.Right;
+        public Vector2D Position { get; set; } = position;
         public int Score { get; private set; }
         public bool IsDead { get; set; }
         public Dictionary<Vector2D, HashSet<Vector2D>> Visited { get; set; } = new();
 
         public IEnumerable<(Vector2D Position, Vector2D Direction)> EnumeratePossibleNextSteps() => _maze
-            .EnumerateOpenAdjacentPaths(Position, Direction)
+            .Maze
+            .EnumerateOpenAdjacentPaths(Position)
             .Where(x => !Visited.ContainsKey(x.Position));
 
         public bool Move()
