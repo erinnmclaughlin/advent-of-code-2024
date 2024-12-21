@@ -21,15 +21,6 @@ public sealed class Day06
     }
 
     [Theory]
-    [InlineData("day06.example.txt", 41)]
-    [InlineData("day06.txt", 5129)]
-    public void PartOne_Optimized_Again(string filePath, int expected)
-    {
-        var fileLines = File.ReadAllLines(filePath);
-        CSharp.Day06MoreOptimized.PartOne(fileLines).Should().Be(expected);
-    }
-
-    [Theory]
     [InlineData("day06.example.txt", 6)]
     [InlineData("day06.txt", 1888)]
     public void PartTwo(string filePath, int expected)

@@ -26,9 +26,10 @@ public sealed class Rectangle2DTests
     [Fact]
     public void CreateMethodsAreEquivalent()
     {
-        var rect1 = Rectangle2D.Create(-5, -5, 11, 11);
-        var rect2 = Rectangle2D.Create(new Vector2D(-5, -5), 11, 11);
+        var rect1 = new Rectangle2D(new Vector2D(-5, -5), 11, 11);
+        var rect2 = Rectangle2D.Create(-5, -5, 11, 11);
         var rect3 = Rectangle2D.Create(new Vector2D(-5, -5), new Vector2D(5, 5));
+        
         rect1.Should().BeEquivalentTo(rect2).And.BeEquivalentTo(rect3);
     }
 }
