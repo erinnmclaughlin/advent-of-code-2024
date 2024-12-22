@@ -25,6 +25,20 @@ public class Day16(ITestOutputHelper output)
         Assert.Equal(expected, maze.Runners.Min(x => x.Score));
     }
     
+    [Theory]
+    [InlineData("day16.example1.txt", 7036)]
+    [InlineData("day16.example2.txt", 11048)]
+    [InlineData("day16.txt", 147628)]
+    public void PartOneAlt(string path, int expected)
+    {
+        var container = CreateStateContainer(File.ReadAllLines(path));
+        
+        while(container.HasNext())
+            container.MoveNext();
+        
+        Assert.Equal(expected, container.LowestTotalCost);
+    }
+    
     // 628 is too low
     
     [Theory]
@@ -65,6 +79,39 @@ public class Day16(ITestOutputHelper output)
         Assert.Equal(expected, bestSeats.Count + 1);
     }
 
+    private static MazeRunnerStateContainer CreateStateContainer(string[] fileLines)
+    {
+        var maze = new Maze2D(fileLines.Length, fileLines[0].Length);
+        var initialState = new MazeRunnerStateContainer.MazeRunnerStateSnapshot(Direction.Right, Vector2D.Zero);
+        var target = Vector2D.Zero;
+        
+        for (var y = 0; y < maze.Height; y++)
+        for (var x = 0; x < maze.Width; x++)
+        {
+            var character = fileLines[y][x];
+
+            if (character == '.')
+                continue;
+
+            var position = new Vector2D(x, y);
+
+            switch (character)
+            {
+                case '#':
+                    maze.Walls.Add(position);
+                    break;
+                case 'S':
+                    initialState = initialState with { Position = position };
+                    break;
+                case 'E':
+                    target = position;
+                    break;
+            }
+        }
+
+        return new MazeRunnerStateContainer(maze, initialState, target);
+    }
+    
     private static void Solve(CSharp.Day16.MazeModel maze)
     {
         while (maze.Runners.Any(x => x.Position != maze.Target))

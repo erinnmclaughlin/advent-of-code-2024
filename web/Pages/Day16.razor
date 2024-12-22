@@ -1,85 +1,90 @@
 ﻿@page "/2024/day16"
 
-@if (Maze is null)
+@if (StateContainer is null)
 {
     <p>Loading...</p>
 }
 else
 {
     <div class="container">
-        <div class="grid" style="@CreateGridTemplateCss(Maze)">
 
-            <div class="start" style="@CreateGridCellCss(Start)">
-                
-            </div>
-            
-            <div class="current" style="@CreateGridCellCss(Current)">
-                👟
-            </div>
-            
-            <div class="target" style="@CreateGridCellCss(Target)">
-                🏁
-            </div>
+        <div>
+            <p style="font-weight: 500">Best Score:</p>
+            <p>@(StateContainer.LowestTotalCost?.ToString() ?? "???")</p>
+        </div>
 
-            @foreach (var rect in Maze.Walls)
+        <div>
+            <p style="font-weight: 500"># Paths:</p>
+            <p>@StateContainer.Runners.SelectMany(x => x.Path).Distinct().Count()</p>
+        </div>
+
+        <div>
+            <p style="font-weight: 500">Solutions:</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap">
+                <label for="selectedSolutionAll">
+                    <input id="selectedSolutionAll" name="selectedSolution" type="radio" @onchange="() => Select(null)" checked="@(SelectedSolution == null)" />
+                    <text>All</text>
+                </label>
+                @for (var i = 0; i < StateContainer.Runners.Count; i++)
+                {
+                    var runner = StateContainer.Runners[i];
+                    var isSelected = SelectedSolution == runner;
+
+                    <label for="selectedSolution@(i + 1)">
+                        <input id="selectedSolution@(i + 1)" name="selectedSolution" type="radio" @onchange="() => Select(runner)" checked="@isSelected"/>
+                        <text>Solution @(i + 1)</text>
+                    </label>
+                }
+            </div>
+        </div>
+
+        <div class="grid" style="@CreateGridTemplateCss(StateContainer.Maze)">
+
+            <div class="start" style="@CreateGridCellCss(StateContainer.Start)"></div>
+            <div class="target" style="@CreateGridCellCss(StateContainer.Target)"></div>
+
+            @foreach (var rect in StateContainer.Maze.Walls)
             {
                 <div class="wall" style="@CreateGridCellCss(rect)"></div>
             }
-            
-            @foreach (var (pos, cost) in GetScoresAtPoints(Current, Direction))
-            {
-                <div class="next" style="@CreateGridCellCss(pos)">@cost</div>
-            }
-            
-            @*
-            @foreach (var (next, dir, cost) in GetNextDecisionPoints())
-            {
-                <div class="next" style="@CreateGridCellCss(next)">
-                    @cost
-                </div>
 
-                foreach (var (next2, dir2, cost2) in GetNextDecisionPoints(next, dir))
-                {
-                    <div class="next2" style="@CreateGridCellCss(next2)">
-                        @(cost + cost2)
-                    </div>
-                    
-                    foreach (var (next3, dir3, cost3) in GetNextDecisionPoints(next2, dir2))
-                    {
-                        <div class="next3" style="@CreateGridCellCss(next3)">
-                            @(cost + cost2 + cost3)
-                        </div>
-                    }
-                }
-            }*@
-            
-            @*@foreach (var dir in Maze.EnumerateOpenDirections(Current))
+            @foreach (var (pos, scores) in GetScoresForSolutions())
             {
-                <div class="next" style="@CreateGridCellCss(Current + dir)">
-                    @CalculateUnitCost(dir)
-                </div>
-            }*@
+                foreach (var score in scores)
+                {
+                    <div class="selected" style="@CreateGridCellCss(pos)">
+                        @if (score == scores[0])
+                        {
+                            <span class="score">@score</span>
+                        }
+                    </div>
+                }
+            }
         </div>
     </div>
+    
+    <button type="button" @onclick="Next">Next</button>
 }
 
 @code {
 
+    private void Next() => StateContainer!.MoveNext();
+    
     private static string CreateGridTemplateCss(Maze2D maze)
     {
         return $"grid-template-columns: repeat({maze.Width}, calc(100cqw / {maze.Width})); grid-template-rows: repeat({maze.Height}, calc(100cqw / {maze.Width}));";
-    }
-
-    private static string CreateGridCellCss(Rectangle2D rect)
-    {
-        return $"grid-row-start: {rect.Position.Y + 1}; " +
-               $"grid-row-end: { rect.Position.Y + rect.Height};" +
-               $"grid-column-start: {rect.Position.X + 1};" +
-               $"grid-column-end: { rect.Position.X + rect.Width};";
     }
 
     private static string CreateGridCellCss(Vector2D position)
     {
         return $"grid-row-start: {position.Y + 1}; grid-column-start: {position.X + 1};";
     }
+
+    private Dictionary<Vector2D, List<long>> GetScoresForSolutions()
+    {
+        return (SelectedSolution?.History ?? StateContainer!.Runners.SelectMany(x => x.History))
+            .GroupBy(x => x.Position, x => x.Cost)
+            .ToDictionary(x => x.Key, x => x.Order().ToList());
+    }
+
 }
