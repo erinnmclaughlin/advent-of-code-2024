@@ -11,18 +11,34 @@ public class Day16(ITestOutputHelper output)
     [Theory]
     [InlineData("day16.example1.txt", 7036)]
     [InlineData("day16.example2.txt", 11048)]
-    [InlineData("day16.txt", 147628, Skip = "Too long to run.")]
+    [InlineData("day16.txt", 147628)]
     public void PartOne(string path, int expected)
     {
-        var maze = CSharp.Day16.MazeModel.Parse(File.ReadAllLines(path));
-        Solve(maze);
+        var container = CreateStateContainer(File.ReadAllLines(path));
+        var seen = new HashSet<(Direction, Vector2D)>();
+        var queue = new PriorityQueue<(Direction Direction, Vector2D Position), int>();
         
-        foreach (var runner in maze.Runners)
+        queue.Enqueue((Direction.Right, container.Start), 0);
+
+        while (queue.TryDequeue(out var current, out var cost))
         {
-            output.WriteLine("Runner {0}: Score: {1}; Tiles: {2}", runner.Id, runner.Score, runner.Visited.Count);
+            if (!seen.Add(current)) continue;
+            
+            if (current.Position == container.Target)
+            {
+                Assert.Equal(expected, cost);
+                break;
+            }
+
+            var currentDirection = current.Direction;
+            var oppositeDirection = current.Direction.GetOpposite();
+            
+            foreach (var item in container.Maze.EnumerateOpenAdjacentPaths(current.Position))
+            {
+                if (item.Direction == oppositeDirection) continue;
+                queue.Enqueue((item.Direction, item.Position), cost + (item.Direction == currentDirection ? 1 : 1001));
+            }
         }
-        
-        Assert.Equal(expected, maze.Runners.Min(x => x.Score));
     }
     
     [Theory]
