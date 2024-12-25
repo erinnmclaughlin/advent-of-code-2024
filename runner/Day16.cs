@@ -14,23 +14,24 @@ public class MazePositionState
     {
         var solution = new MazeSolution { Cost = Cost };
 
-        solution.Paths.Add((Direction, Position), Cost);
+        solution.Paths.Add((Direction, Position));
 
         var previous = PreviousPosition;
         while (previous != null)
         {
-            solution.Paths.Add((previous.Direction, previous.Position), previous.Cost);
+            solution.Paths.Add((previous.Direction, previous.Position));
             previous = previous.PreviousPosition;
         }
 
+        solution.Paths = solution.Paths.Reverse().ToHashSet();
         return solution;
     }
 }
 
 public class MazeSolution
 {
-    public int Cost { get; set; }
-    public Dictionary<(Direction Direction, Vector2D Position), int> Paths { get; } = [];
+    public int Cost { get; init; }
+    public HashSet<(Direction Direction, Vector2D Position)> Paths { get; set; } = [];
 }
 
 public class Day16
@@ -42,8 +43,8 @@ public class Day16
     public void PartOne(string filePath, int expected)
     {
         var (maze, start, target) = CreateStateContainer(File.ReadAllLines(filePath));
-        var solution = FindBestSolution(maze, start, target);
-        Assert.Equal(expected, solution?.Cost);
+        var solution = EnumerateBestSolutions(maze, start, target).First();
+        Assert.Equal(expected, solution.Cost);
     }
     
     [Theory]
@@ -54,10 +55,70 @@ public class Day16
     {
         var (maze, start, target) = CreateStateContainer(File.ReadAllLines(filePath));
 
-        var solutions = EnumerateBestSolutions(maze, start, target).SelectMany(x => x.Paths.Keys)
+        var solutions = EnumerateBestSolutions(maze, start, target)
+            .SelectMany(x => x.Paths)
             .Select(x => x.Position).Distinct().Count();
         
         Assert.Equal(expected, solutions);
+    }
+    
+    private static IEnumerable<MazeSolution> EnumerateBestSolutions(Maze2D maze, Vector2D start, Vector2D target)
+    {
+        var solution = FindBestSolution(maze, start, target);
+        if (solution is null) yield break;
+        yield return solution;
+        
+        var seen = new HashSet<(Direction, Vector2D)>();
+        var queue = new PriorityQueue<MazePositionState, int>();
+
+        var initialState = new MazePositionState
+        {
+            PreviousPosition = null,
+            Direction = Direction.Right,
+            Position = start,
+            Cost = 0
+        };
+        
+        queue.Enqueue(initialState, 0);
+
+        while (queue.TryDequeue(out var current, out var cost))
+        {
+            var state = (current.Direction, current.Position);
+            
+            if (!solution.Paths.Contains(state) && !seen.Add(state))
+                continue;
+            
+            if (current.Position == target)
+            {
+                if (current.Cost == solution.Cost)
+                {
+                    var altSolution = current.ToSolution();
+                    
+                    if (altSolution.Paths != solution.Paths)
+                        yield return altSolution;
+                }
+                
+                continue;
+            }
+
+            var currentDirection = current.Direction;
+            var oppositeDirection = current.Direction.GetOpposite();
+            
+            foreach (var item in maze.EnumerateOpenAdjacentPaths(current.Position))
+            {
+                if (item.Direction == oppositeDirection) continue;
+
+                var nextState = new MazePositionState
+                {
+                    PreviousPosition = current,
+                    Direction = item.Direction,
+                    Position = item.Position,
+                    Cost = cost + (item.Direction == currentDirection ? 1 : 1001)
+                };
+                
+                queue.Enqueue(nextState, nextState.Cost);
+            }
+        }
     }
     
     private static MazeSolution? FindBestSolution(Maze2D maze, Vector2D start, Vector2D target)
@@ -106,62 +167,7 @@ public class Day16
 
         return null;
     }
-    
-    private static IEnumerable<MazeSolution> EnumerateBestSolutions(Maze2D maze, Vector2D start, Vector2D target)
-    {
-        var solution = FindBestSolution(maze, start, target);
-        if (solution is null) yield break;
-        
-        var seen = new HashSet<(Direction, Vector2D)>();
-        var queue = new PriorityQueue<MazePositionState, int>();
 
-        var initialState = new MazePositionState
-        {
-            PreviousPosition = null,
-            Direction = Direction.Right,
-            Position = start,
-            Cost = 0
-        };
-        
-        queue.Enqueue(initialState, 0);
-
-        while (queue.TryDequeue(out var current, out var cost))
-        {
-            var state = (current.Direction, current.Position);
-            
-            if (!solution.Paths.ContainsKey(state) && !seen.Add((current.Direction, current.Position)))
-                continue;
-            
-            if (current.Position == target)
-            {
-                if (current.Cost == solution.Cost)
-                {
-                    yield return current.ToSolution();
-                }
-                
-                continue;
-            }
-
-            var currentDirection = current.Direction;
-            var oppositeDirection = current.Direction.GetOpposite();
-            
-            foreach (var item in maze.EnumerateOpenAdjacentPaths(current.Position))
-            {
-                if (item.Direction == oppositeDirection) continue;
-
-                var nextState = new MazePositionState
-                {
-                    PreviousPosition = current,
-                    Direction = item.Direction,
-                    Position = item.Position,
-                    Cost = cost + (item.Direction == currentDirection ? 1 : 1001)
-                };
-                
-                queue.Enqueue(nextState, nextState.Cost);
-            }
-        }
-    }
-    
     private static (Maze2D maze, Vector2D start, Vector2D target) CreateStateContainer(string[] fileLines)
     {
         var maze = new Maze2D(fileLines.Length, fileLines[0].Length);
