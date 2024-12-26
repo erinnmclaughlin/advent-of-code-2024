@@ -43,6 +43,6 @@ public sealed partial class Day16 : ComponentBase
         }
 
         MazeRunner = new MazeRunner2D(maze, Direction.Right, start, target);
-        Solutions = MazeRunner.Solve();
+        Solutions = MazeRunner.EnumerateSolutions().ToList();
     }
 }
